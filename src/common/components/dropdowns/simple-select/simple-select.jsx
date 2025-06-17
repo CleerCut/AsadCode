@@ -57,7 +57,7 @@ export default function SimpleSelect({
       <div
         ref={inputRef}
         onClick={handleInputClick}
-        className="flex justify-between items-center px-3 py-[9px] rounded-md border border-text-dark-gray  bg-white shadow-sm text-sm text-gray-700 cursor-pointer transition-colors"
+        className="flex justify-between items-center px-3 py-[9px] rounded-md border border-[#7e7d7d]  bg-white shadow-sm text-sm text-gray-700 cursor-pointer transition-colors"
       >
         <div className="truncate">{getDisplay()}</div>
         <Icon isOpen={showMenu} />
