@@ -169,7 +169,7 @@ function useSidebar() {
 
   const [expandedSections, setExpandedSections] = useState({});
   const [activeItem, setActiveItem] = useState(sidebarToggleItem || "Dashboard");
-  const navItems = isCreatorMode ? creatorNavItems : brandNavItems;
+  const navItems = isCreatorMode ? creatorNavItems : creatorNavItems;
 
   useEffect(() => {
     setActiveItem(
