@@ -1,14 +1,13 @@
-import { Bell, X } from "lucide-react";
-import React from "react";
-import useNotifications from "./use-notifications.hook";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import SidebarLayout from "@/common/layouts/sidebar.layout";
+import { Bell, X } from "lucide-react";
+import useNotifications from "./use-notifications.hook";
 
 function Notifications() {
   const { notifications, markAsRead, removeNotification } = useNotifications();
   return (
     <SidebarLayout>
-      <div className="flex gap-60">
+      <div className="flex gap-60 min-h-screen">
         <div className="w-[50%] space-y-4">
           {notifications["brand"].length === 0 ? (
             <div className="text-center py-12">

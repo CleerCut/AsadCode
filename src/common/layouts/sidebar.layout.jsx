@@ -36,11 +36,11 @@ export default function SidebarLayout({
           onClose={() => setSidebarOpen(false)}
           hasHeader={showHeader}
         />
-        <main className="ml-0 lg:ml-64 min-h-screen">
+        <main className="ml-0 lg:ml-72 min-h-screen">
           {showDashboardHeader && (
             <DashboardHeader notifications={notificationsMockData} unreadCount={unreadCount} />
           )}
-          <div className="flex-1 py-8 px-4 sm:px-6 lg:px-8 bg-white">{children}</div>
+          <div className="flex-1 py-6 px-2 sm:px-4 lg:px-6 bg-white">{children}</div>
           {/* {showFooter && <Footer />} */}
         </main>
       </div>

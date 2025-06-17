@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { Mail, Phone, Plus, X, Check, AlertCircle, Shield, Edit2, Trash2 } from "lucide-react";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import CustomInput from "@/common/components/custom-input/custom-input.component";
 import SidebarLayout from "@/common/layouts/sidebar.layout";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { AlertCircle, Check, Edit2, Mail, Phone, Plus, Shield, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
 
 // Validation schemas
 const emailSchema = yup.object().shape({
@@ -36,15 +36,13 @@ const ContactMethodCard = ({ method, onEdit, onDelete, onSetPrimary, onVerify })
           <div
             className={`
             flex items-center justify-center w-8 h-8 rounded-lg flex-shrink-0
-            ${method.type === "email" ? "bg-blue-100" : "bg-green-100"}
+            bg-blue-600}
           `}
           >
             {method.type === "email" ? (
-              <Mail
-                className={`h-4 w-4 ${method.type === "email" ? "text-blue-600" : "text-green-600"}`}
-              />
+              <Mail className={`h-4 w-4 text-blue-600`} />
             ) : (
-              <Phone className="h-4 w-4 text-green-600" />
+              <Phone className="h-4 w-4 text-blue-600" />
             )}
           </div>
 
@@ -322,8 +320,8 @@ export default function ContactMethodsPage() {
             <div className="p-4">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center">
-                  <div className="flex items-center justify-center w-8 h-8 bg-green-100 rounded-lg mr-3 flex-shrink-0">
-                    <Phone className="h-4 w-4 text-green-600" />
+                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg mr-3 flex-shrink-0">
+                    <Phone className="h-4 w-4 text-blue-600" />
                   </div>
                   <h2 className="text-lg font-semibold text-gray-900">Phone Numbers</h2>
                 </div>

@@ -73,25 +73,25 @@ const brandNavItems = [
         label: "Billing & Payments",
         icon: CreditCard,
         children: [
-          { label: "Billing Methods", href: "/billing/methods" },
-          { label: "Transaction History", href: "/billing/history" },
-          { label: "Invoices & Receipts", href: "/billing/invoices" },
+          { label: "Billing Methods", href: "/settings/payments/payout-methods" },
+          { label: "Transaction History", href: "/settings/payments/payment-history" },
+          { label: "Invoices & Receipts", href: "/settings/payments/invoice-receipt" },
         ],
       },
       {
         label: "Privacy & Safety",
         icon: Shield,
         children: [
-          { label: "Blocking & Restrictions", href: "/privacy/blocking" },
-          { label: "Data Privacy", href: "/privacy/data" },
+          { label: "Blocked Brands", href: "/settings/privacy-safety/blocked-brands" },
+          { label: "Data Privacy", href: "/settings/privacy-safety/data-privacy" },
         ],
       },
       {
         label: "Communications",
         icon: Mail,
         children: [
-          { label: "Email Preferences", href: "/communications/email" },
-          { label: "Push Notifications", href: "/communications/push" },
+          { label: "Email Preferences", href: "/settings/communications/email-preferrence" },
+          { label: "Push Notifications", href: "/" },
         ],
       },
     ],
@@ -122,31 +122,39 @@ const creatorNavItems = [
         label: "Campaign Defaults",
         icon: Target,
         children: [
-          { label: "Collaboration Type", href: "/campaigns/collaboration" },
-          { label: "Filter Settings", href: "/campaigns/filters" },
+          {
+            label: "Preferred Collaboration Type",
+            href: "/settings/campaign-defaults/preferred-collaboration-type",
+          },
+          {
+            label: "Saved Filter Settings",
+            href: "/settings/campaign-defaults/saved-default-filter",
+          },
         ],
       },
       {
         label: "Payments",
         icon: CreditCard,
         children: [
-          { label: "Payout Methods", href: "/payments/methods" },
-          { label: "Payment History", href: "/payments/history" },
-          { label: "Invoices & Receipts", href: "/payments/invoices" },
+          { label: "Payout Methods", href: "/settings/payments/payout-methods" },
+          { label: "Payment History", href: "/settings/payments/payment-history" },
+          { label: "Invoices & Receipts", href: "/settings/payments/invoice-receipt" },
         ],
       },
       {
         label: "Privacy & Safety",
         icon: Shield,
         children: [
-          { label: "Blocked Brands", href: "/privacy/blocked" },
-          { label: "Data Privacy", href: "/privacy/data" },
+          { label: "Blocked Brands", href: "/settings/privacy-safety/blocked-brands" },
+          { label: "Data Privacy", href: "/settings/privacy-safety/data-privacy" },
         ],
       },
       {
         label: "Communications",
         icon: Mail,
-        children: [{ label: "Email Preferences", href: "/communications/email" }],
+        children: [
+          { label: "Email Preferences", href: "/settings/communications/email-preferrence" },
+        ],
       },
     ],
   },
