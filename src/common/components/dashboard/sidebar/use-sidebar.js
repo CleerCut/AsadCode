@@ -1,29 +1,38 @@
+import { capitalizeFirstWord } from "@/common/utils/helper.utils";
+import { setSidebarToggleItem } from "@/provider/features/auth/auth.slice";
 import {
   Bell,
   Briefcase,
   CreditCard,
+  LayoutDashboard,
   Mail,
   Settings,
   Shield,
   Target,
   User,
-  Users,
 } from "lucide-react";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-// Define nav items for Brand users
-const brandNavItems = [
+const commonNavItems = [
   {
-    label: "User Waitlist",
-    icon: Users,
+    label: "Dashboard",
+    icon: LayoutDashboard,
     isActive: true,
+    href: "/dashboard",
   },
   {
     label: "Notifications",
     icon: Bell,
     isActive: false,
+    href: "/notifications",
   },
+];
+
+// Define nav items for Brand users
+const brandNavItems = [
+  ...commonNavItems,
   {
     label: "Settings",
     icon: Settings,
@@ -33,9 +42,12 @@ const brandNavItems = [
         label: "Account Settings",
         icon: User,
         children: [
-          { label: "Personal Information", href: "/settings/personal" },
-          { label: "Security Settings", href: "/settings/security" },
-          { label: "Email & Phone", href: "/settings/contact" },
+          {
+            label: "Personal Information",
+            href: "/settings/account-settings/personal-information",
+          },
+          { label: "Security Settings", href: "/settings/account-settings/security-settings" },
+          { label: "Email & Phone", href: "/settings/account-settings/email-phone" },
         ],
       },
       {
@@ -88,16 +100,7 @@ const brandNavItems = [
 
 // Define nav items for Creator users
 const creatorNavItems = [
-  {
-    label: "User Waitlist",
-    icon: Users,
-    isActive: true,
-  },
-  {
-    label: "Notifications",
-    icon: Bell,
-    isActive: false,
-  },
+  ...commonNavItems,
   {
     label: "Settings",
     icon: Settings,
@@ -107,9 +110,12 @@ const creatorNavItems = [
         label: "Account Settings",
         icon: User,
         children: [
-          { label: "Personal Information", href: "/settings/personal" },
-          { label: "Security Settings", href: "/settings/security" },
-          { label: "Email & Phone", href: "/settings/contact" },
+          {
+            label: "Personal Information",
+            href: "/settings/account-settings/personal-information",
+          },
+          { label: "Security Settings", href: "/settings/account-settings/security-settings" },
+          { label: "Email & Phone", href: "/settings/account-settings/email-phone" },
         ],
       },
       {
@@ -147,12 +153,23 @@ const creatorNavItems = [
 ];
 
 function useSidebar() {
-  const isCreatorMode = useSelector(({ auth }) => auth.isCreatorMode);
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const pathname = usePathname();
+
+  const { isCreatorMode, sidebarToggleItem } = useSelector(({ auth }) => auth);
 
   const [expandedSections, setExpandedSections] = useState({});
-  const [activeItem, setActiveItem] = useState("");
-
+  const [activeItem, setActiveItem] = useState(sidebarToggleItem || "Dashboard");
   const navItems = isCreatorMode ? creatorNavItems : brandNavItems;
+
+  useEffect(() => {
+    setActiveItem(
+      navItems?.map((item) => item.href === pathname)
+        ? capitalizeFirstWord(pathname?.split("/")[1])
+        : navItems?.[0]?.label
+    );
+  }, [pathname]);
 
   const toggleSection = (sectionPath) => {
     setExpandedSections((prev) => ({
@@ -161,17 +178,17 @@ function useSidebar() {
     }));
   };
 
-  const handleItemClick = (href, label) => {
-    setActiveItem(href);
-    // Handle navigation here
-    // console.log(`Navigating to: ${href}`);
+  const handleItemClick = ({ hasChildren, currentPath, href, label }) => {
+    toggleSection(currentPath);
+    href && router.push(href);
+    label && dispatch(setSidebarToggleItem(label));
+    setActiveItem(label);
   };
 
   return {
     expandedSections,
     activeItem,
     navItems,
-    toggleSection,
     handleItemClick,
   };
 }
