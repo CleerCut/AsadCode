@@ -2,8 +2,9 @@
 
 import { useSelector } from "react-redux";
 import BrandOnboardingFlow from "./brand/brand-onboarding.component";
+import CreatorOnboardingFlow from "./creator/creator-onboarding.component";
 
-export default function CreatorOnboardingFlow() {
+export default function SignUp() {
   const isCreatorMode = useSelector(({ auth }) => auth.isCreatorMode);
 
   return (
