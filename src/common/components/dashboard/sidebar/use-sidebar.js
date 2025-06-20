@@ -1,5 +1,5 @@
 import { capitalizeFirstWord } from "@/common/utils/helper.utils";
-import { setSidebarToggleItem } from "@/provider/features/auth/auth.slice";
+import { expandedSidebarSections, setSidebarActiveItem } from "@/provider/features/auth/auth.slice";
 import {
   Bell,
   Briefcase,
@@ -54,19 +54,22 @@ const brandNavItems = [
         label: "Brand Profile",
         icon: Briefcase,
         children: [
-          { label: "Profile Information", href: "/brand/profile" },
-          { label: "Social Links", href: "/brand/social" },
-          { label: "Niche Tags", href: "/brand/niches" },
+          { label: "Profile Information", href: "/settings/brand-profile/profile-information" },
+          { label: "Social Links", href: "/settings/brand-profile/social-links" },
+          { label: "Niche Tags", href: "/settings/brand-profile/niche-tags" },
         ],
       },
       {
         label: "Campaign Defaults",
         icon: Target,
         children: [
-          { label: "Default Requirements", href: "/campaigns/defaults" },
-          { label: "Payment Type", href: "/campaigns/payment" },
-          { label: "Auto-Reply Template", href: "/campaigns/templates" },
-          { label: "Brief Template", href: "/campaigns/briefs" },
+          {
+            label: "Default Requirements",
+            href: "/settings/campaign-defaults/default-campaign-requirement",
+          },
+          { label: "Payment Type", href: "/settings/campaign-defaults/preffered-payment-type" },
+          { label: "Auto-Reply Template", href: "/settings/campaign-defaults/auto-reply-template" },
+          { label: "Brief Template", href: "/settings/campaign-defaults/breif-template" },
         ],
       },
       {
@@ -82,7 +85,7 @@ const brandNavItems = [
         label: "Privacy & Safety",
         icon: Shield,
         children: [
-          { label: "Blocked Brands", href: "/settings/privacy-safety/blocked-brands" },
+          { label: "Blocking & Restrictions", href: "/settings/privacy-safety/blocked-brands" },
           { label: "Data Privacy", href: "/settings/privacy-safety/data-privacy" },
         ],
       },
@@ -91,7 +94,7 @@ const brandNavItems = [
         icon: Mail,
         children: [
           { label: "Email Preferences", href: "/settings/communications/email-preferrence" },
-          { label: "Push Notifications", href: "/" },
+          // { label: "Push Notifications", href: "/" },
         ],
       },
     ],
@@ -165,11 +168,11 @@ function useSidebar() {
   const dispatch = useDispatch();
   const pathname = usePathname();
 
-  const { isCreatorMode, sidebarToggleItem } = useSelector(({ auth }) => auth);
+  const { isCreatorMode, sidebarActiveItem, sidebarSections } = useSelector(({ auth }) => auth);
 
-  const [expandedSections, setExpandedSections] = useState({});
-  const [activeItem, setActiveItem] = useState(sidebarToggleItem || "Dashboard");
-  const navItems = isCreatorMode ? creatorNavItems : creatorNavItems;
+  const [expandedSections, setExpandedSections] = useState(sidebarSections || {});
+  const [activeItem, setActiveItem] = useState(sidebarActiveItem || "Dashboard");
+  const navItems = isCreatorMode ? creatorNavItems : brandNavItems;
 
   useEffect(() => {
     setActiveItem(
@@ -177,6 +180,8 @@ function useSidebar() {
         ? capitalizeFirstWord(pathname?.split("/")[1])
         : navItems?.[0]?.label
     );
+    setExpandedSections(sidebarSections);
+    setActiveItem(sidebarActiveItem);
   }, [pathname]);
 
   const toggleSection = (sectionPath) => {
@@ -184,12 +189,13 @@ function useSidebar() {
       ...prev,
       [sectionPath]: !prev[sectionPath],
     }));
+    dispatch(expandedSidebarSections(expandedSections));
   };
 
   const handleItemClick = ({ hasChildren, currentPath, href, label }) => {
     toggleSection(currentPath);
     href && router.push(href);
-    label && dispatch(setSidebarToggleItem(label));
+    label && dispatch(setSidebarActiveItem(label));
     setActiveItem(label);
   };
 
