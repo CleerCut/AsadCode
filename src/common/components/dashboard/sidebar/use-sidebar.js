@@ -1,4 +1,3 @@
-import { capitalizeFirstWord } from "@/common/utils/helper.utils";
 import { expandedSidebarSections, setSidebarActiveItem } from "@/provider/features/auth/auth.slice";
 import {
   Bell,
@@ -12,7 +11,7 @@ import {
   User,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const commonNavItems = [
@@ -170,34 +169,64 @@ function useSidebar() {
 
   const { isCreatorMode, sidebarActiveItem, sidebarSections } = useSelector(({ auth }) => auth);
 
-  const [expandedSections, setExpandedSections] = useState(sidebarSections || {});
-  const [activeItem, setActiveItem] = useState(sidebarActiveItem || "Dashboard");
-  const navItems = isCreatorMode ? creatorNavItems : brandNavItems;
+  // Use Redux state directly, fallback to empty object
+  const expandedSections = sidebarSections || {};
+  const activeItem = sidebarActiveItem || "Dashboard";
 
+  // Memoize navItems to prevent recreation
+  const navItems = useMemo(() => {
+    return isCreatorMode ? creatorNavItems : brandNavItems;
+  }, [isCreatorMode]);
+
+  // Memoize the active item finder function
+  const findActiveItemFromPath = useCallback((items, currentPath) => {
+    for (const item of items) {
+      if (item.href === currentPath) {
+        return item.label;
+      }
+      if (item.children) {
+        const found = findActiveItemFromPath(item.children, currentPath);
+        if (found) return found;
+      }
+    }
+    return null;
+  }, []);
+
+  // Only update active item when pathname changes
   useEffect(() => {
-    setActiveItem(
-      navItems?.map((item) => item.href === pathname)
-        ? capitalizeFirstWord(pathname?.split("/")[1])
-        : navItems?.[0]?.label
-    );
-    setExpandedSections(sidebarSections);
-    setActiveItem(sidebarActiveItem);
-  }, [pathname]);
+    const foundActiveItem = findActiveItemFromPath(navItems, pathname);
+    if (foundActiveItem && foundActiveItem !== activeItem) {
+      dispatch(setSidebarActiveItem(foundActiveItem));
+    }
+  }, [pathname, navItems, findActiveItemFromPath, dispatch, activeItem]);
 
-  const toggleSection = (sectionPath) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [sectionPath]: !prev[sectionPath],
-    }));
-    dispatch(expandedSidebarSections(expandedSections));
-  };
+  const toggleSection = useCallback(
+    (sectionPath) => {
+      const newExpandedSections = {
+        ...expandedSections,
+        [sectionPath]: !expandedSections[sectionPath],
+      };
+      dispatch(expandedSidebarSections(newExpandedSections));
+    },
+    [expandedSections, dispatch]
+  );
 
-  const handleItemClick = ({ hasChildren, currentPath, href, label }) => {
-    toggleSection(currentPath);
-    href && router.push(href);
-    label && dispatch(setSidebarActiveItem(label));
-    setActiveItem(label);
-  };
+  const handleItemClick = useCallback(
+    ({ hasChildren, currentPath, href, label }) => {
+      if (hasChildren) {
+        toggleSection(currentPath);
+      }
+
+      if (href) {
+        router.push(href);
+      }
+
+      if (label && label !== activeItem) {
+        dispatch(setSidebarActiveItem(label));
+      }
+    },
+    [toggleSection, router, dispatch, activeItem]
+  );
 
   return {
     expandedSections,
