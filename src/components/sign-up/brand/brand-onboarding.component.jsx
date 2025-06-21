@@ -2,18 +2,17 @@
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import BrandCampaignPreferences from "./brand/campaign-preferences/campaign-preferences.component";
-import IdealCreator from "./brand/ideal-creator/ideal-creator.component";
-import BrandProfile from "./brand/profile-setup/profile-setup.component";
-import AccountType from "./components/account-type/account-type.component";
-import EmailVerification from "./components/email-verification/email-verification";
-import Register from "./components/sign-up/sign-up.component";
-import CampaignPreferences from "./creator/campaign-preferences/campaign-preferences.component";
-import ProfileSetup from "./creator/profile-setup/profile-setup.component";
+import AccountType from "../components/account-type/account-type.component";
+import EmailVerification from "../components/email-verification/email-verification";
+import SignUp from "../components/sign-up/sign-up.component";
+import ProfileSetup from "../creator/profile-setup/profile-setup.component";
+import BrandCampaignPreferences from "./campaign-preferences/campaign-preferences.component";
+import BrandProfile from "./profile-setup/profile-setup.component";
+import IdealCreator from "./ideal-creator/ideal-creator.component";
+import CampaignPreferences from "../creator/campaign-preferences/campaign-preferences.component";
 
-export default function SignUp() {
-  // const isCreatorMode = useSelector(({ auth }) => auth.isCreatorMode);
-  const isCreatorMode = false;
+export default function BrandOnboardingFlow() {
+  const isCreatorMode = useSelector(({ auth }) => auth.isCreatorMode);
 
   const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(1);
@@ -47,7 +46,7 @@ export default function SignUp() {
           />
         );
       case 2:
-        return <Register onNext={nextStep} onBack={prevStep} />;
+        return <SignUp onNext={nextStep} onBack={prevStep} />;
       case 3:
         return <EmailVerification onNext={nextStep} onBack={prevStep} />;
       case 4:
