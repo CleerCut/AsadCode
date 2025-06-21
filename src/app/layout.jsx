@@ -55,7 +55,7 @@ function LayoutWrapper({ children }) {
           <Loader className="animate-spin" />
         </div>
       )}
-      {isCreatorMode || isCreatorMode === false ? (
+      {/* {isCreatorMode || isCreatorMode === false ? (
         !layoutNotToShow.includes(pathname) ? (
           <React.Fragment>
             <Header />
@@ -65,9 +65,9 @@ function LayoutWrapper({ children }) {
         ) : (
           <React.Fragment>{children}</React.Fragment>
         )
-      ) : (
-        <React.Fragment>{children}</React.Fragment>
-      )}
+      // ) : ( */}
+      <React.Fragment>{children}</React.Fragment>
+      {/* // )} */}
     </>
   );
 }

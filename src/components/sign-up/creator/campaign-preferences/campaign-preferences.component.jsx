@@ -220,7 +220,7 @@ const CampaignPreferences = ({ onNext, onBack }) => {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-4">
                   <CheckCircle className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Almost Done!</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Done!</h3>
                 <p className="text-gray-600">
                   Save your preferences and start receiving campaign opportunities
                 </p>

@@ -2,24 +2,13 @@ import CustomButton from "@/common/components/custom-button/custom-button.compon
 import CustomInput from "@/common/components/custom-input/custom-input.component";
 import SimpleSelect from "@/common/components/dropdowns/simple-select/simple-select";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  ArrowLeft,
-  Calendar,
-  ChevronDown,
-  Eye,
-  EyeOff,
-  Globe,
-  Lock,
-  Mail,
-  MapPin,
-  User,
-} from "lucide-react";
+import { ArrowLeft, Calendar, Lock, Mail, MapPin, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import * as yup from "yup";
 
-const SignUp = ({ onNext, onBack }) => {
+const Register = ({ onNext, onBack }) => {
   const isCreatorMode = useSelector(({ auth }) => auth.isCreatorMode);
 
   const [selectedType, setSelectedType] = useState("");
@@ -100,7 +89,7 @@ const SignUp = ({ onNext, onBack }) => {
 
         {/* Header */}
         <div className="text-center mb-5">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Your Creator Account</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h1>
           <p className="text-gray-600">Let's set up your profile to start connecting with brands</p>
         </div>
 
@@ -244,22 +233,23 @@ const SignUp = ({ onNext, onBack }) => {
             )}
 
             {/* Creator Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Creator Type <span className="text-red-500">*</span>
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {[
-                  { label: "Solo Creator" },
-                  { label: "Couple" },
-                  { label: "Family" },
-                  { label: "Pet" },
-                ].map((type) => (
-                  <button
-                    key={type.label}
-                    type="button"
-                    onClick={() => setSelectedType(type.label)}
-                    className={`
+            {!isCreatorMode && (
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Creator Type <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { label: "Solo Creator" },
+                    { label: "Couple" },
+                    { label: "Family" },
+                    { label: "Pet" },
+                  ].map((type) => (
+                    <button
+                      key={type.label}
+                      type="button"
+                      onClick={() => setSelectedType(type.label)}
+                      className={`
                       px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all duration-200 hover:scale-105
                       ${
                         selectedType === type.label
@@ -267,12 +257,13 @@ const SignUp = ({ onNext, onBack }) => {
                           : "border-gray-200 text-gray-700 hover:border-indigo-200"
                       }
                     `}
-                  >
-                    {type.label}
-                  </button>
-                ))}
+                    >
+                      {type.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Checkboxes */}
             <div className="space-y-4 bg-gray-100 p-4 rounded-xl">
@@ -317,4 +308,4 @@ const SignUp = ({ onNext, onBack }) => {
   );
 };
 
-export default SignUp;
+export default Register;

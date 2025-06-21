@@ -1,22 +1,12 @@
-import React from "react";
-import {
-  User,
-  Building2,
-  CheckCircle,
-  ArrowRight,
-  Star,
-  TrendingUp,
-  Users2,
-  Zap,
-} from "lucide-react";
-import useBackgroundEffect from "@/common/hooks/use-background-effect.hook";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
+import useBackgroundEffect from "@/common/hooks/use-background-effect.hook";
+import { CheckCircle } from "lucide-react";
 
 const AccountType = ({ selectedType, handleSelectMode, onNext }) => {
   const { position } = useBackgroundEffect();
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
       {/* Animated background circles */}
       <div className="absolute inset-0 overflow-hidden">
         <div
@@ -44,84 +34,65 @@ const AccountType = ({ selectedType, handleSelectMode, onNext }) => {
           }}
         />
       </div>
-      <div className="max-w-6xl w-full">
+      {/* Container */}
+      <div className="w-full max-w-3xl rounded-3xl shadow-2xl p-10 space-y-5">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">Let's Get Started</h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-3xl mx-autoa">
             Choose how you'd like to use CleerCut and unlock opportunities that match your goals
           </p>
         </div>
 
-        {/* Account Type Cards */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
-          {/* Creator Card */}
-          <div
+        {/* Selection Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AccountCard
+            title="I'm a Creator"
+            description="Collaborate with brands and grow your influence."
+            selected={selectedType === "creator"}
             onClick={() => handleSelectMode("creator")}
-            className={`
-              relative p-8 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:shadow-2xl
-              ${
-                selectedType === "creator"
-                  ? "border-indigo-500 bg-indigo-50 shadow-xl"
-                  : "border-gray-200 bg-white hover:border-indigo-200"
-              }
-            `}
-          >
-            {selectedType === "creator" && (
-              <div className="absolute -top-4 -right-4 w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center shadow-lg">
-                <CheckCircle className="h-6 w-6 text-white" />
-              </div>
-            )}
+          />
 
-            <div className="text-center">
-              <h3 className="text-2xl bg-primary rounded-lg p-4 font-bold text-white mb-4">
-                I'm a Creator
-              </h3>
-              <p className="text-gray-600 text-lg">
-                Looking to collaborate with brands and grow my influence
-              </p>
-            </div>
-          </div>
-
-          {/* Brand Card */}
-          <div
+          <AccountCard
+            title="I'm a Brand or Agency"
+            description="Post campaigns and work with top creators."
+            selected={selectedType === "brand"}
             onClick={() => handleSelectMode("brand")}
-            className={`
-              relative p-8 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:shadow-2xl
-              ${
-                selectedType === "brand"
-                  ? "border-indigo-500 bg-indigo-50 shadow-xl"
-                  : "border-gray-200 bg-white hover:border-indigo-200"
-              }
-            `}
-          >
-            {selectedType === "brand" && (
-              <div className="absolute -top-4 -right-4 w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center shadow-lg">
-                <CheckCircle className="h-6 w-6 text-white" />
-              </div>
-            )}
-
-            <div className="text-center">
-              <h3 className="text-2xl bg-primary rounded-lg p-4 font-bold text-white mb-4">
-                I'm a Brand or Agency
-              </h3>
-              <p className="text-gray-600 text-left text-lg">
-                Looking to post campaigns and work with creators
-              </p>
-            </div>
-          </div>
+          />
         </div>
 
         {/* Continue Button */}
-        <div className="flex justify-end">
+        <div className="pt-4 flex justify-center">
           <CustomButton
             onClick={onNext}
             disabled={!selectedType}
-            className="btn-primary"
-            text={`Continue as
-            ${selectedType === "creator" ? "Creator" : selectedType === "brand" ? "Brand" : "..."}`}
+            text={`Continue as ${
+              selectedType === "creator" ? "Creator" : selectedType === "brand" ? "Brand" : "..."
+            }`}
+            className="btn-primary text-white"
           />
         </div>
+      </div>
+    </div>
+  );
+};
+
+const AccountCard = ({ title, description, selected, onClick }) => {
+  return (
+    <div
+      onClick={onClick}
+      className={`relative p-6 rounded-xl border-2 transition-all duration-300 cursor-pointer group hover:shadow-lg
+        ${selected ? "border-primary bg-indigo-50 shadow-xl" : "border-gray-200 bg-white"}
+      `}
+    >
+      {selected && (
+        <div className="absolute -top-3 -right-3 bg-primary rounded-full w-9 h-9 flex items-center justify-center shadow">
+          <CheckCircle className="w-5 h-5 text-white" />
+        </div>
+      )}
+      <div className="space-y-3">
+        <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+        <p className="text-gray-600 text-sm">{description}</p>
       </div>
     </div>
   );

@@ -20,76 +20,74 @@ const EmailVerification = ({ onNext, onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+        {/* Progress */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center text-sm text-gray-500 mb-2">
             <button
               onClick={onBack}
               className="flex items-center text-indigo-600 hover:text-indigo-700 font-medium"
             >
-              <ArrowLeft className="h-4 w-4 mr-1" />
+              <ArrowLeft className="w-4 h-4 mr-1" />
               Back
             </button>
-            <span>Step 3 of 5</span>
-            <span>60% Complete</span>
+            <span className="text-gray-500">Step 3 of 5</span>
+            <span className="text-gray-500">60% Complete</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full w-3/5 transition-all duration-500"></div>
+          <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-full w-[60%] bg-gradient-to-r from-indigo-500 to-purple-600 transition-all rounded-full" />
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-2xl p-8">
-          {/* Email Icon */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-primary rounded-full mb-6 ">
-              <Mail className="h-12 w-12 text-white" />
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-xl px-8 py-10 space-y-6">
+          {/* Icon and Info */}
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center">
+              <div className="w-20 h-20 flex items-center justify-center rounded-full bg-primary/90">
+                <Mail className="w-10 h-10 text-white" />
+              </div>
             </div>
-
-            <h1 className="text-lg font-bold text-gray-900">Verify Your Email to Continue</h1>
-
-            <p className="text-gray-600 mb-2">We've sent a verification link to</p>
-            <p className="font-semibold text-gray-900 mb-3 bg-gray-100 px-4 py-2 rounded-lg">
+            <h2 className="text-xl font-bold text-gray-900">Verify Your Email to Continue</h2>
+            <p className="text-gray-600">We’ve sent a verification link to:</p>
+            <div className="bg-gray-100 text-gray-800 font-medium py-2 px-4 rounded-lg inline-block">
               creator***@gmail.com
-            </p>
-
-            <p className="text-sm text-gray-600">
+            </div>
+            <p className="text-sm text-gray-500">
               Click the link to confirm your account and begin setting up your profile.
             </p>
           </div>
 
-          {/* Resend Section */}
-          <div className="text-center mb-3">
-            <p className="text-sm text-gray-600">Didn't get it? Check your spam folder or</p>
-
+          {/* Resend Message */}
+          <div className="text-center space-y-2">
+            <p className="text-sm text-gray-600">Didn’t get it? Check your spam folder or</p>
             {countdown > 0 ? (
-              <div className="text-sm text-gray-500">Resend available in {countdown}s</div>
+              <p className="text-sm text-gray-400">Resend available in {countdown}s</p>
             ) : !emailSent ? (
               <button
                 onClick={handleResend}
-                className="text-indigo-600 hover:text-indigo-700 font-medium text-sm underline"
+                className="text-indigo-600 hover:text-indigo-700 text-sm underline font-medium"
               >
                 Resend Email
               </button>
             ) : (
-              <div className="inline-flex items-center text-green-600 text-sm bg-green-50 px-4 py-2 rounded-lg">
+              <div className="inline-flex items-center justify-center bg-green-50 text-green-700 text-sm font-medium px-4 py-2 rounded-lg">
                 <CheckCircle className="h-4 w-4 mr-2" />
                 Email sent! Please check your inbox.
               </div>
             )}
           </div>
 
-          {/* Continue Button (for demo) */}
-          <div className="space-y-4">
+          {/* Continue Button */}
+          <div className="pt-4 space-y-3">
             <CustomButton
               text="Continue to Profile Setup"
               className="btn-primary w-full"
               onClick={onNext}
             />
-
-            <p className="w-full text-sm text-center text-gray-500 hover:text-gray-700">
-              Having trouble? Contact support
+            <p className="text-sm text-center text-gray-400 hover:text-gray-600 transition">
+              Having trouble? <span className="underline cursor-pointer">Contact Support</span>
             </p>
           </div>
         </div>
