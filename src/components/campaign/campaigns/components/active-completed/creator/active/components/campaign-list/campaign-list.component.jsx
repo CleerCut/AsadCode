@@ -14,7 +14,6 @@ const getDaysUntilDeadline = (deadline) => {
 };
 
 const CampaignList = ({ campaigns, selectedCampaign, setSelectedCampaign }) => {
-  console.log(selectedCampaign);
   return (
     <div className="bg-white w-1/5">
       <div className="p-4 border-b border-gray-200">

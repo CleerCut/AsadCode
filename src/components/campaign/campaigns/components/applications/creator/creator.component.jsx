@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Eye, X, Calendar, Package, DollarSign, Gift, Percent } from "lucide-react";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
+import { Calendar, DollarSign, Eye, Gift, Package, Percent, X } from "lucide-react";
+import { useState } from "react";
 
 const CreatorApplications = () => {
   const [activeTab, setActiveTab] = useState("pending");

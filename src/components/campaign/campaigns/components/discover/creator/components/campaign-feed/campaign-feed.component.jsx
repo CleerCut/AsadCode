@@ -3,11 +3,8 @@ import Modal from "@/common/components/modal/modal.component";
 import TextArea from "@/common/components/text-area/text-area.component";
 import { product } from "@/common/constants/auth.constant";
 import Niche from "@/components/niche/niche";
-import { useCampaignFeed } from "./use-campaign-feed.hook";
 import { Globe } from "lucide-react";
-import CompensationIcon from "@/common/icons/compensation-icon";
-import { Campaign } from "@mui/icons-material";
-import React from "react";
+import { useCampaignFeed } from "./use-campaign-feed.hook";
 
 function CampaignFeed() {
   const {
