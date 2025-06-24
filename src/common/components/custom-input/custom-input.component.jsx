@@ -63,7 +63,7 @@ export default function CustomInput({
       className={`${
         inlineLabel
           ? "grid w-full grid-cols-[130px_1fr] items-center capitalize"
-          : "flex w-full flex-col gap-2 text-xs font-medium capitalize not-italic leading-6 text-text-black"
+          : "flex w-full flex-col gap-[6px] text-xs font-medium capitalize not-italic leading-6 text-text-black"
       }`}
     >
       {label && <FieldLabel label={label} isRequired={isRequired} className={labelClassName} />}
