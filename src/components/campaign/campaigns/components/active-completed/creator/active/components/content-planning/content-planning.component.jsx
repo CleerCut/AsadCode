@@ -70,42 +70,82 @@ const ContentPlanning = () => {
   // Calendar data structure for tasks
   const [calendarTasks, setCalendarTasks] = useState({
     15: [
-      { id: 1, text: "Draft skincare video script", completed: false, tag: "Campaign Deadline" },
-      { id: 2, text: "Research trending skincare topics", completed: true, tag: "Research" },
+      {
+        id: 1,
+        text: "Draft skincare video script",
+        completed: false,
+        tag: { label: "Campaign Deadline", value: "bg-red-100 text-red-800" },
+      },
+      {
+        id: 2,
+        text: "Research trending skincare topics",
+        completed: true,
+        tag: { label: "Research", value: "bg-yellow-100 text-yellow-800" },
+      },
     ],
     18: [
-      { id: 3, text: "Film fitness equipment review", completed: false, tag: "Content Creation" },
-      { id: 4, text: "Edit previous video", completed: false, tag: "Post Production" },
+      {
+        id: 3,
+        text: "Film fitness equipment review",
+        completed: false,
+        tag: { label: "Campaign Deadline", value: "bg-red-100 text-red-800" },
+      },
+      {
+        id: 4,
+        text: "Edit previous video",
+        completed: false,
+        tag: { label: "Post Production", value: "bg-purple-100 text-purple-800" },
+      },
     ],
     22: [
-      { id: 5, text: "Unbox tech gadgets", completed: false, tag: "Campaign Deadline" },
-      { id: 6, text: "Prepare lighting setup", completed: true, tag: "Preparation" },
+      {
+        id: 5,
+        text: "Unbox tech gadgets",
+        completed: false,
+        tag: { label: "Campaign Deadline", value: "bg-red-100 text-red-800" },
+      },
+      {
+        id: 6,
+        text: "Prepare lighting setup",
+        completed: true,
+        tag: { label: "Preparation", value: "bg-orange-100 text-orange-800" },
+      },
     ],
     25: [
       {
         id: 7,
         text: "Record fashion haul intro",
         completed: false,
-        tag: "Record clips for Loreal",
+        tag: { label: "Record clips for Loreal", value: "bg-blue-100 text-blue-800" },
       },
-      { id: 8, text: "Style outfits for shoot", completed: false, tag: "Preparation" },
-      { id: 9, text: "Upload to social platforms", completed: true, tag: "Distribution" },
+      {
+        id: 8,
+        text: "Style outfits for shoot",
+        completed: false,
+        tag: { label: "Preparation", value: "bg-orange-100 text-orange-800" },
+      },
+      {
+        id: 9,
+        text: "Upload to social platforms",
+        completed: true,
+        tag: { label: "Distribution", value: "bg-teal-100 text-teal-800" },
+      },
     ],
   });
 
   // Color tags for calendar
   const [colorTags, setColorTags] = useState([
-    { name: "Campaign Deadline", color: "bg-red-100 text-red-800" },
-    { name: "Record clips for Loreal", color: "bg-blue-100 text-blue-800" },
-    { name: "Content Creation", color: "bg-green-100 text-green-800" },
-    { name: "Post Production", color: "bg-purple-100 text-purple-800" },
-    { name: "Research", color: "bg-yellow-100 text-yellow-800" },
-    { name: "Preparation", color: "bg-orange-100 text-orange-800" },
-    { name: "Distribution", color: "bg-teal-100 text-teal-800" },
+    { label: "Campaign Deadline", value: "bg-red-100 text-red-800" },
+    { label: "Record clips for Loreal", value: "bg-blue-100 text-blue-800" },
+    { label: "Content Creation", value: "bg-green-100 text-green-800" },
+    { label: "Post Production", value: "bg-purple-100 text-purple-800" },
+    { label: "Research", value: "bg-yellow-100 text-yellow-800" },
+    { label: "Preparation", value: "bg-orange-100 text-orange-800" },
+    { label: "Distribution", value: "bg-teal-100 text-teal-800" },
   ]);
 
   const [newTaskText, setNewTaskText] = useState("");
-  const [selectedTag, setSelectedTag] = useState("Campaign Deadline");
+  const [selectedTag, setSelectedTag] = useState("");
   const [showAddTag, setShowAddTag] = useState(false);
   const [newTagName, setNewTagName] = useState("");
   const [newTagColor, setNewTagColor] = useState("bg-gray-100 text-gray-800");
@@ -132,8 +172,6 @@ const ContentPlanning = () => {
 
   const plannerTabs = ["Hook Ideas", "Script", "Shot Ideas", "General Notes"];
   const editorRef = useRef(null);
-
-  const { getPlatformIcon, getPlatformColor } = useGetplatform();
 
   const monthNames = [
     "January",
@@ -195,15 +233,15 @@ const ContentPlanning = () => {
 
   const addColorTag = () => {
     if (newTagName.trim()) {
-      setColorTags((prev) => [...prev, { name: newTagName, color: newTagColor }]);
+      setColorTags((prev) => [...prev, { label: newTagName, value: newTagColor }]);
       setNewTagName("");
       setShowAddTag(false);
     }
   };
 
   const getTagColor = (tagName) => {
-    const tag = colorTags.find((t) => t.name === tagName);
-    return tag ? tag.color : "bg-gray-100 text-gray-800";
+    const tag = colorTags.find((t) => t.label === tagName);
+    return tag ? tag.value : "bg-gray-100 text-gray-800";
   };
 
   const navigateGoalMonth = (direction) => {
@@ -239,7 +277,7 @@ const ContentPlanning = () => {
   };
 
   return (
-    <div className="w-1/5 space-y-4">
+    <div className="w-[27%] space-y-4">
       {/* Content Planner */}
       <div className="bg-white">
         <div className="p-4 border-b border-gray-200">
@@ -284,7 +322,7 @@ const ContentPlanning = () => {
 
       {/* Upcoming Tasks */}
       <div className="mx-4">
-        a<h3 className="text-lg font-semibold text-gray-800 pb-2">Upcoming Tasks</h3>
+        <h3 className="text-lg font-semibold text-gray-800 pb-2">Upcoming Tasks</h3>
         <div className="space-y-3">
           {upcomingTasks.map((item, index) => (
             <div
@@ -472,9 +510,9 @@ const ContentPlanning = () => {
             {/* Color Legend */}
             <div className="space-y-2">
               {colorTags.slice(0, 3).map((tag) => (
-                <div key={tag.name} className="flex items-center text-xs">
-                  <div className={`w-3 h-3 rounded mr-2 ${tag.color.split(" ")[0]}`}></div>
-                  <span className="text-gray-600">{tag.name}</span>
+                <div key={tag.label} className="flex items-center text-xs">
+                  <div className={`w-3 h-3 rounded mr-2 ${tag.value.split(" ")[0]}`}></div>
+                  <span className="text-gray-600">{tag.label}</span>
                 </div>
               ))}
 
@@ -487,12 +525,11 @@ const ContentPlanning = () => {
                 </button>
               ) : (
                 <div className="space-y-2 p-2 bg-gray-50 rounded">
-                  <input
+                  <CustomInput
                     type="text"
                     placeholder="Tag name"
                     value={newTagName}
                     onChange={(e) => setNewTagName(e.target.value)}
-                    className="w-full p-1 text-xs border rounded"
                   />
                   <div className="flex gap-1">
                     {colorOptions.map((color) => (
@@ -532,24 +569,24 @@ const ContentPlanning = () => {
 
             <div className="space-y-3 mb-4">
               {(calendarTasks[selectedDate] || []).map((task) => (
-                <div key={task.id} className="flex items-start gap-3">
-                  <button onClick={() => toggleTask(task.id)} className="mt-0.5">
+                <div key={task.id} className="flex items-center gap-3">
+                  <button onClick={() => toggleTask(task.id)}>
                     {task.completed ? (
                       <CheckSquare className="w-4 h-4 text-green-600" />
                     ) : (
                       <Square className="w-4 h-4 text-gray-400" />
                     )}
                   </button>
-                  <div className="flex-1">
+                  <div className="flex justify-between w-full items-center">
                     <p
                       className={`text-sm ${task.completed ? "line-through text-gray-500" : "text-gray-700"}`}
                     >
                       {task.text}
                     </p>
                     <span
-                      className={`inline-block px-2 py-1 text-xs rounded-full mt-1 ${getTagColor(task.tag)}`}
+                      className={`inline-block px-2 py-1 text-xs rounded-full mt-1 ${getTagColor(task.tag.label)}`}
                     >
-                      {task.tag}
+                      {task.tag.label}
                     </span>
                   </div>
                 </div>
@@ -560,15 +597,15 @@ const ContentPlanning = () => {
             <div className="space-y-2">
               <CustomInput
                 type="text"
-                placeholder="Add a new task..."
+                placeholder="Add a new task"
                 value={newTaskText}
                 onChange={(e) => setNewTaskText(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addTask()}
               />
               <SimpleSelect
-                placeHolder="Campaign Deadline"
+                placeHolder="Select an option"
                 options={colorTags}
-                onChange={(e) => setSelectedTag(e.target.value)}
+                onChange={(value) => setSelectedTag(value)}
               />
 
               <CustomButton text="Add Task" onClick={addTask} />
