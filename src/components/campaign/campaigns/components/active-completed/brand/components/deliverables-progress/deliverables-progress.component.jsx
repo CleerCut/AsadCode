@@ -3,12 +3,11 @@ import CustomInput from "@/common/components/custom-input/custom-input.component
 import Modal from "@/common/components/modal/modal.component";
 import TextArea from "@/common/components/text-area/text-area.component";
 import { avatar } from "@/common/constants/auth.constant";
-import useGetplatform from "@/common/hooks/use-get-social-platform.hook";
-import PlusIconBlack from "@/common/icons/plus-icon-black";
 import { Avatar } from "@mui/material";
-import { Calendar, CheckCircle2, DollarSign, Edit3, MapPin, PlusIcon, Star } from "lucide-react";
+import { Calendar, CheckCircle2, DollarSign, Edit3, MapPin, Star } from "lucide-react";
 import React from "react";
 import useDeliverablesProgress from "./use-deliverables-progress.hook";
+import useGetplatform from "@/common/hooks/use-get-social-platform.hook";
 
 const DeliverablesProgress = ({ isCompleted = false }) => {
   const { getPlatformColor, getPlatformIcon } = useGetplatform();
@@ -29,6 +28,14 @@ const DeliverablesProgress = ({ isCompleted = false }) => {
     setMessageDialogOpen,
   } = useDeliverablesProgress();
 
+  const handleExportReport = () => {
+    // console.log("Exporting campaign report...");
+  };
+
+  const handleProcessPayments = () => {
+    // console.log("Processing final payments...");
+  };
+
   const platforms = {
     instagram: { followers: 285000, verified: true },
     youtube: { followers: 95000, verified: true },
@@ -42,7 +49,7 @@ const DeliverablesProgress = ({ isCompleted = false }) => {
   };
 
   return (
-    <div className="w-1/4 bg-white flex flex-col border h-screen pb-20">
+    <div className="w-[27%] bg-white flex flex-col border h-screen pb-20">
       {/* Sticky Profile Section */}
       <div className="flex flex-col items-center pt-3 pb-4 px-4 border-b sticky gap-2 top-0 bg-white z-10">
         <div className="relative">
@@ -60,6 +67,9 @@ const DeliverablesProgress = ({ isCompleted = false }) => {
             </span>
           )}
         </div>
+        <h3>
+          Sam Waters <span className="text-xs font-bold text-gray-600">(27 Years)</span>
+        </h3>
 
         <div className="flex items-center">
           {[...Array(5)].map((_, i) => (
@@ -75,7 +85,6 @@ const DeliverablesProgress = ({ isCompleted = false }) => {
         <div className="flex items-center space-x-2 text-sm text-gray-600">
           <MapPin className="w-4 h-4" />
           <span>Los Angeles, CA</span>
-          <span className="text-sm text-gray-500 ml-1">(27 Years)</span>
         </div>
 
         {isCompleted && (
@@ -93,7 +102,7 @@ const DeliverablesProgress = ({ isCompleted = false }) => {
             {Object.entries(platforms).map(([platform, data]) => (
               <div
                 key={platform}
-                className="flex items-center justify-between bg-gray-100 rounded-lg p-1 pr-3
+                className="flex items-center justify-between bg-gray-100 rounded-lg px-1 pr-3
                                     hover:bg-gray-100/80 transition-colors duration-200"
               >
                 <div className="flex items-center space-x-2">
@@ -124,43 +133,23 @@ const DeliverablesProgress = ({ isCompleted = false }) => {
               {isCompleted ? (
                 <>
                   {/* Primary Actions - Completed State */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="flex flex-col 2xl:flex-row gap-3">
+                    <CustomButton text="Export Report" onClick={handleExportReport} />
                     <CustomButton
-                      text="Save"
-                      className="btn-outline w-full"
-                      endIcon={<PlusIcon className="text-primary w-4 h-4" />}
+                      text="Payment Summary"
+                      className="btn-primary w-full whitespace-nowrap"
+                      onClick={handleProcessPayments}
                     />
-                    <CustomButton text="Message" className="btn-primary w-full whitespace-nowrap" />
                   </div>
 
                   {/* Secondary Actions Group */}
-                  <div className="bg-gray-100 rounded-xl p-4 border">
+                  <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-200/60">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-sm font-semibold text-gray-700">Completed content</h4>
+                      <h4 className="text-sm font-semibold text-gray-700">Additional Reports</h4>
                       <div className="h-px bg-gradient-to-r from-gray-300 to-transparent flex-1 ml-3" />
                     </div>
-                    <div className="w-full flex flex-col gap-3 mt-2">
-                      {Object.entries(platforms)
-                        .slice(0, 1)
-                        .map(([platform, data]) => (
-                          <div
-                            key={platform}
-                            className="flex items-center justify-between bg-white rounded-lg p-1 pr-3
-                                    transition-colors duration-200"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <span className={`${getPlatformColor(platform)} p-1 rounded-md`}>
-                                {getPlatformIcon(platform)}
-                              </span>
-                              <span className="text-xs capitalize font-semibold text-gray-700">
-                                {platform}
-                              </span>
-                            </div>
-                            <div className="text-sm font-bold text-gray-900">
-                              {formatFollowers(data.followers)}
-                            </div>
-                          </div>
-                        ))}
+                    <div className="w-full">
+                      <CustomButton text="Performance Report" className="w-full btn-secondary" />
                     </div>
                   </div>
                 </>
