@@ -1,6 +1,3 @@
-import { useState } from "react";
-import useCommonHelpers from "@/common/hooks/use-common-helper.hook";
-
 const useDeliverablesProgress = () => {
   const privateNotes = [
     {
@@ -13,6 +10,7 @@ const useDeliverablesProgress = () => {
       timestamp: "2025-04-23 10:18 AM",
     },
   ];
+
   return {
     privateNotes,
   };
