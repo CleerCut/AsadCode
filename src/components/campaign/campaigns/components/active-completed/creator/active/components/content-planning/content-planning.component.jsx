@@ -217,9 +217,7 @@ const ContentPlanning = () => {
         [selectedDate]: [...(prev[selectedDate] || []), newTask],
       }));
 
-      console.log(calendarTasks);
-
-      // setNewTaskText("");
+      setNewTaskText("");
     }
   };
 
