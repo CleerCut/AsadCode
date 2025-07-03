@@ -103,7 +103,6 @@ const CampaignList = ({ campaigns, selectedCampaign, setSelectedCampaign }) => {
       <div className="p-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-900">Campaigns by Deadline</h2>
       </div>
-
       <div className="flex-1 overflow-y-auto">
         {campaigns.map((campaign) => {
           const daysLeft = getDaysUntilDeadline(campaign.deadline);

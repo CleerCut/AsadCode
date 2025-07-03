@@ -44,6 +44,7 @@ export default function CustomInput({
   labelClassName = "",
   readOnly = false,
   onClick = null,
+  onKeyPress = null,
   onKeyDown = null,
   customRef = null,
   onBlur = null,
@@ -71,6 +72,7 @@ export default function CustomInput({
         <Input
           {...(register && register(`${name}`))}
           {...(onClick && { onClick })}
+          {...(onKeyPress && { onKeyPress })}
           {...(onKeyDown && { onKeyDown })}
           name={name}
           onFocus={onFocus}
@@ -120,6 +122,7 @@ CustomInput.propTypes = {
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   onClick: PropTypes.func,
+  onKeyPress: PropTypes.func,
   onKeyDown: PropTypes.func,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
