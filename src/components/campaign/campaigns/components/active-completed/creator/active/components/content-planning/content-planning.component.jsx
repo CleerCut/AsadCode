@@ -678,7 +678,7 @@ const ContentPlanning = () => {
                             )}
                           </button>
 
-                          <div className="w-full flex justify-between">
+                          <div className="w-full flex justify-between items-center">
                             <p
                               className={`text-xs font-medium leading-relaxed ${
                                 task.completed ? "line-through text-gray-500" : "text-gray-700"
