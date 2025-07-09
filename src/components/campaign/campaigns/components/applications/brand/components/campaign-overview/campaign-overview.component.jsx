@@ -2,17 +2,46 @@ import CustomButton from "@/common/components/custom-button/custom-button.compon
 import CustomInput from "@/common/components/custom-input/custom-input.component";
 import SimpleSelect from "@/common/components/dropdowns/simple-select/simple-select";
 import Modal from "@/common/components/modal/modal.component";
+import TextArea from "@/common/components/text-area/text-area.component";
 import useCampaignList from "@/common/hooks/use-campaign-list.hook";
 import Niche from "@/components/niche/niche";
 import { RefreshRounded } from "@mui/icons-material";
 import { ChevronDown, ChevronUp, Filter } from "lucide-react";
+import { useState } from "react";
+import HireCreatorModal from "../hire-creator-modal/hire-creator-modal.component";
 import useCampaignOverview from "./use-campaign-overview.hook";
-import TextArea from "@/common/components/text-area/text-area.component";
 
 export default function CampaignOverview() {
+  const [hireModalOpen, setHireModalOpen] = useState(false);
+  const [selectedCreator, setSelectedCreator] = useState(null);
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+
   const { options, handleChange } = useCampaignList();
   const { openFilterModal, setOpenFilterModal, messageDialogOpen, setMessageDialogOpen } =
     useCampaignOverview();
+
+  const handleHireClick = () => {
+    // You'll need to get the selected creator and campaign data
+    setSelectedCreator({
+      id: 1,
+      name: "Sam Waters",
+      email: "sam@example.com",
+    });
+    setSelectedCampaign({
+      title: "Summer Launch Campaign",
+      brandName: "Brand Name",
+      deliverables: "1 TikTok, 3 Instagram Stories",
+      hashtags: "#summer #brand",
+      mentions: "@brand",
+    });
+    setHireModalOpen(true);
+  };
+
+  const handleSendOffer = (contractData) => {
+    console.log("Contract data:", contractData);
+    // Here you'll make API call to backend
+    // createContract(contractData);
+  };
 
   const countries = [
     { value: "United States", label: "United States" },
@@ -42,7 +71,7 @@ export default function CampaignOverview() {
               onClick={() => setMessageDialogOpen(true)}
               className="btn-primary"
             />
-            <CustomButton text="Hire" className="btn-outline" />
+            <CustomButton text="Hire" className="btn-outline" onClick={handleHireClick} />
             <CustomButton text="Reject" className="btn-danger" />
           </div>
         </div>
@@ -100,6 +129,14 @@ export default function CampaignOverview() {
           {openFilterModal ? "See Less" : "See More"}
         </button>
       </div>
+
+      <HireCreatorModal
+        show={hireModalOpen}
+        onClose={() => setHireModalOpen(false)}
+        creatorData={selectedCreator}
+        campaignData={selectedCampaign}
+        onSendOffer={handleSendOffer}
+      />
 
       {/* Message Creator Dialog */}
       <Modal
