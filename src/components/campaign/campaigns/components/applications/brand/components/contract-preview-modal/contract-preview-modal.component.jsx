@@ -111,10 +111,10 @@ Timestamp Recorded: ${new Date().toISOString()}`;
   };
 
   return (
-    <Modal title="Contract Preview" show={show} onClose={onClose} size="lg">
+    <Modal title="Contract Preview" show={show} onClose={onClose} size="xl" height={true}>
       <div className="space-y-4">
         {/* Contract Document Container */}
-        <div className="bg-gray-100 border border-gray-200 rounded-lg p-6 max-h-96 overflow-y-auto">
+        <div className="bg-gray-100 border border-gray-200 rounded-lg p-6 max-h-[33rem] overflow-y-auto">
           <div className="bg-white p-6 rounded-md shadow-sm">
             <div className="contract-content">
               <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">
