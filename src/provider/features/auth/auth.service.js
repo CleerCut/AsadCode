@@ -56,6 +56,11 @@ const loginAndSignUpWithLinkedin = async (payload) => {
   return response.data;
 };
 
+const changePassword = async (passwordData) => {
+  const response = await api().post("/auth/change-password", passwordData);
+  return response.data;
+};
+
 const authService = {
   logout,
   login,
@@ -64,6 +69,7 @@ const authService = {
   resendEmail,
   loginAndSignUpWithOAuth,
   loginAndSignUpWithLinkedin,
+  changePassword,
 };
 
 export default authService;

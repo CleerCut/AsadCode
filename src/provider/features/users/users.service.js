@@ -173,6 +173,75 @@ const disconnectSocialAccount = async (platform) => {
   }
 };
 
+// Contact methods (email/phone)
+const getContactMethods = async () => {
+  const response = await api().get(`/user/contact-methods`);
+  return response.data;
+};
+
+const addContactMethod = async (payload) => {
+  const response = await api().post(`/user/contact-methods`, payload);
+  return response.data;
+};
+
+const updateContactMethod = async ({ id, ...payload }) => {
+  const response = await api().put(`/user/contact-methods/${id}`, payload);
+  return response.data;
+};
+
+const deleteContactMethod = async (id) => {
+  const response = await api().delete(`/user/contact-methods/${id}`);
+  return response.data;
+};
+
+const verifyContactMethod = async ({ id, code }) => {
+  const response = await api().post(`/user/contact-methods/${id}/verify`, { code });
+  return response.data;
+};
+
+const setPrimaryContactMethod = async (id) => {
+  const response = await api().post(`/user/contact-methods/${id}/set-primary`);
+  return response.data;
+};
+
+// Email preferences
+const getEmailPreferences = async () => {
+  const response = await api().get(`/user/email-preferences`);
+  return response.data;
+};
+
+const updateEmailPreferences = async (payload) => {
+  const response = await api().put(`/user/email-preferences`, payload);
+  return response.data;
+};
+
+// Data Privacy
+const getDataPrivacy = async () => {
+  const response = await api().get(`/user/data-privacy`);
+  return response.data;
+};
+
+const updateDataPrivacy = async (payload) => {
+  const response = await api().put(`/user/data-privacy`, payload);
+  return response.data;
+};
+
+// Blocked Brands
+const getBlockedBrands = async () => {
+  const response = await api().get(`/user/blocked-brands`);
+  return response.data;
+};
+
+const blockBrand = async (payload) => {
+  const response = await api().post(`/user/blocked-brands`, payload);
+  return response.data;
+};
+
+const unblockBrand = async (payload) => {
+  const response = await api().delete(`/user/blocked-brands`, { data: payload });
+  return response.data;
+};
+
 const usersService = {
   getAllUsers,
   discoverCreators,
@@ -188,6 +257,20 @@ const usersService = {
   connectSocialMedia,
   getSocialAccounts,
   disconnectSocialAccount,
+  // contact methods
+  getContactMethods,
+  addContactMethod,
+  updateContactMethod,
+  deleteContactMethod,
+  verifyContactMethod,
+  setPrimaryContactMethod,
+  getEmailPreferences,
+  updateEmailPreferences,
+  getDataPrivacy,
+  updateDataPrivacy,
+  getBlockedBrands,
+  blockBrand,
+  unblockBrand,
 };
 
 export default usersService;

@@ -17,61 +17,62 @@ import {
   Shield,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import useBlockedBrands from "./use-blocked-brands.hook";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+  email: yup.string().email("Invalid email format").required("Email is required"),
+  brand_name: yup.string().required("Brand name is required"),
+  reason: yup.string().required("Reason is required"),
+  notes: yup.string(),
+});
 
 const BlockedBrandsPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newBrandName, setNewBrandName] = useState("");
-  const [newBrandReason, setNewBrandReason] = useState("");
-  const [selectedBlocks, setSelectedBlocks] = useState([]);
-  const [filterReason, setFilterReason] = useState("all");
+  const {
+    blockedBrands,
+    searchTerm,
+    showAddModal,
+    selectedBlocks,
+    filterReason,
+    isLoading,
+    setShowAddModal,
+    setSelectedBlocks,
+    setFilterReason,
+    handleSearchChange,
+    handleAddBrand,
+    handleUnblock,
+    handleBulkUnblock,
+  } = useBlockedBrands();
+
+  const form = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      email: "",
+      brand_name: "",
+      reason: "",
+      notes: "",
+    },
+  });
 
   const creatorMode = isCreatorMode();
 
-  // Sample blocked brands data
-  const [blockedBrands, setBlockedBrands] = useState([
-    {
-      id: "1",
-      brandName: "FastFashion Co.",
-      reason: "inappropriate_content",
-      dateBlocked: "2024-05-15",
+  // Map API data to UI format
+  const mappedBlockedBrands = useMemo(() => {
+    return (blockedBrands || []).map((brand) => ({
+      id: brand.id,
+      brandName: brand.brand_name,
+      email: brand.email,
+      reason: brand.reason,
+      dateBlocked: brand.created_at,
       blockedBy: "user",
-      status: "active",
-      lastContactAttempt: "2024-06-10",
-      notes: "Requested content that didn't align with my values",
-    },
-    {
-      id: "2",
-      brandName: "QuickCash Marketing",
-      reason: "payment_issues",
-      dateBlocked: "2024-04-22",
-      blockedBy: "user",
-      status: "active",
-      lastContactAttempt: "2024-06-01",
-      notes: "Failed to pay for completed campaign",
-    },
-    {
-      id: "3",
-      brandName: "SpamBrand Inc.",
-      reason: "spam_harassment",
-      dateBlocked: "2024-03-10",
-      blockedBy: "system",
-      status: "active",
-      lastContactAttempt: "2024-05-28",
-      notes: "Excessive unwanted contact attempts",
-    },
-    {
-      id: "4",
-      brandName: "UnethicalBiz Ltd.",
-      reason: "other",
-      dateBlocked: "2024-02-18",
-      blockedBy: "user",
-      status: "pending_review",
-      lastContactAttempt: null,
-      notes: "Unethical business practices",
-    },
-  ]);
+      status: brand.status,
+      lastContactAttempt: brand.last_contact_attempt,
+      notes: brand.notes,
+    }));
+  }, [blockedBrands]);
 
   // Define table columns
   const columns = [
@@ -207,7 +208,7 @@ const BlockedBrandsPage = () => {
   };
 
   // Filter data
-  const filteredData = blockedBrands.filter((brand) => {
+  const filteredData = mappedBlockedBrands.filter((brand) => {
     const matchesSearch = brand.brandName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesReason = filterReason === "all" || brand.reason === filterReason;
     return matchesSearch && matchesReason;
@@ -220,48 +221,35 @@ const BlockedBrandsPage = () => {
         console.log("View brand details:", row);
         break;
       case "unblock":
-        console.log("Unblock brand:", row);
-        // Implement unblock logic
+        handleUnblock(row.email);
         break;
       case "delete":
-        console.log("Remove block:", row);
-        setBlockedBrands((prev) => prev.filter((brand) => brand.id !== row.id));
+        handleUnblock(row.email);
         break;
       default:
         break;
     }
   };
 
+  const onSubmit = async (data) => {
+    await handleAddBrand({
+      email: data.email,
+      brand_name: data.brand_name,
+      reason: data.reason,
+      notes: data.notes,
+    });
+    form.reset();
+  };
+
   const handleSelectionChange = (selectedIds) => {
     setSelectedBlocks(selectedIds);
   };
 
-  const handleSearchChange = (value) => {
-    setSearchTerm(value);
-  };
-
-  const handleAddBrand = () => {
-    if (newBrandName.trim()) {
-      const newBlock = {
-        id: Date.now().toString(),
-        brandName: newBrandName.trim(),
-        reason: newBrandReason || "other",
-        dateBlocked: new Date().toISOString().split("T")[0],
-        blockedBy: "user",
-        status: "active",
-        lastContactAttempt: null,
-        notes: "",
-      };
-      setBlockedBrands((prev) => [newBlock, ...prev]);
-      setNewBrandName("");
-      setNewBrandReason("");
-      setShowAddModal(false);
-    }
-  };
-
-  const handleBulkUnblock = () => {
-    console.log("Bulk unblock:", selectedBlocks);
-    // Implement bulk unblock logic
+  const handleBulkUnblockClick = () => {
+    const emailsToUnblock = selectedBlocks
+      .map((id) => mappedBlockedBrands.find((b) => b.id === id)?.email)
+      .filter(Boolean);
+    handleBulkUnblock(emailsToUnblock);
   };
 
   return (
@@ -355,7 +343,7 @@ const BlockedBrandsPage = () => {
                   text={`Unblock (${selectedBlocks.length})`}
                   className="btn-secondary"
                   icon={CheckCircle}
-                  onClick={handleBulkUnblock}
+                  onClick={handleBulkUnblockClick}
                 />
               )}
 
@@ -388,15 +376,30 @@ const BlockedBrandsPage = () => {
 
       <Modal
         show={showAddModal}
-        title={`Block New ${creatorMode ? "Brands" : "Creators"}`}
-        onClose={() => setShowAddModal(false)}
+        title={`Block New ${creatorMode ? "Brand" : "Creator"}`}
+        onClose={() => {
+          setShowAddModal(false);
+          form.reset();
+        }}
       >
-        <div className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <CustomInput
+            label="Email"
+            name="email"
+            type="email"
+            register={form.register}
+            errors={form.formState.errors}
+            placeholder="Enter email to block"
+            required
+          />
+
           <CustomInput
             label="Brand Name"
-            value={newBrandName}
-            onChange={(e) => setNewBrandName(e.target.value)}
-            placeholder="Enter brand name to block"
+            name="brand_name"
+            type="text"
+            register={form.register}
+            errors={form.formState.errors}
+            placeholder="Enter brand name"
             required
           />
 
@@ -404,24 +407,48 @@ const BlockedBrandsPage = () => {
             label="Reason for Blocking"
             placeHolder="Select an option"
             options={reasonOptions}
-            onChange={(value) => setNewBrandReason(value)}
+            onChange={(selected) => {
+              const value = typeof selected === "object" ? selected.value : selected;
+              form.setValue("reason", value, { shouldValidate: true });
+            }}
+          />
+          {form.formState.errors.reason && (
+            <p className="text-sm text-red-600 mt-1">{form.formState.errors.reason.message}</p>
+          )}
+
+          <CustomInput
+            label="Notes (Optional)"
+            name="notes"
+            type="text"
+            register={form.register}
+            errors={form.formState.errors}
+            placeholder="Additional notes"
           />
 
           <div className="flex space-x-3 pt-4">
             <CustomButton
               text="Cancel"
+              type="button"
               className="btn-secondary flex-1"
-              onClick={() => setShowAddModal(false)}
+              onClick={() => {
+                setShowAddModal(false);
+                form.reset();
+              }}
             />
             <CustomButton
               text="Block Brand"
+              type="submit"
               className="btn-primary flex-1"
               icon={Ban}
-              onClick={handleAddBrand}
-              disabled={!newBrandName.trim()}
+              disabled={
+                !form.watch("email") ||
+                !form.watch("brand_name") ||
+                !form.watch("reason") ||
+                form.formState.isSubmitting
+              }
             />
           </div>
-        </div>
+        </form>
       </Modal>
 
       {/* Info Section */}

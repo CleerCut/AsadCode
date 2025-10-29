@@ -16,81 +16,22 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
+import useEmailPreferences from "./use-email-preferences.hook";
 
 const EmailPreferencesPage = () => {
-  const [preferences, setPreferences] = useState({
-    // Campaign & Collaboration
-    campaignInvites: true,
-    campaignUpdates: true,
-    campaignDeadlines: false,
-    collaborationRequests: true,
-
-    // Payment & Financial
-    paymentAlerts: true,
-    invoiceReminders: true,
-    paymentConfirmations: true,
-    monthlyEarnings: false,
-
-    // Platform Updates
-    newFeatures: true,
-    platformUpdates: false,
-    maintenanceAlerts: true,
-    securityAlerts: true,
-
-    // Marketing & Promotional
-    weeklyNewsletter: false,
-    marketingTips: false,
-    promotionalOffers: false,
-    partnerOffers: false,
-
-    // Communication Settings
-    emailFrequency: "immediate",
-    digestTime: "morning",
-  });
-
-  const [emailAddress, setEmailAddress] = useState("user@example.com");
-  const [backupEmail, setBackupEmail] = useState("");
-  const [hasChanges, setHasChanges] = useState(false);
-
-  const handlePreferenceChange = (key, value) => {
-    setPreferences((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-    setHasChanges(true);
-  };
-
-  const handleSave = () => {
-    console.log("Saving preferences:", preferences);
-    setHasChanges(false);
-    // Implement save logic
-  };
-
-  const handleReset = () => {
-    // Reset to default preferences
-    setPreferences({
-      campaignInvites: true,
-      campaignUpdates: true,
-      campaignDeadlines: false,
-      collaborationRequests: true,
-      paymentAlerts: true,
-      invoiceReminders: true,
-      paymentConfirmations: true,
-      monthlyEarnings: false,
-      newFeatures: true,
-      platformUpdates: false,
-      maintenanceAlerts: true,
-      securityAlerts: true,
-      weeklyNewsletter: false,
-      marketingTips: false,
-      promotionalOffers: false,
-      partnerOffers: false,
-      emailFrequency: "immediate",
-      digestTime: "morning",
-    });
-    setHasChanges(true);
-  };
+  const {
+    preferences,
+    emailAddress,
+    backupEmail,
+    hasChanges,
+    isLoading,
+    setBackupEmail,
+    handlePreferenceChange,
+    handleSave,
+    handleReset,
+    handleEnableAllEssential,
+    handleDisableAllMarketing,
+  } = useEmailPreferences();
 
   const PreferenceItem = ({ title, description, icon: Icon, preferenceKey, badge = null }) => (
     <div className="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
@@ -141,24 +82,14 @@ const EmailPreferencesPage = () => {
               <h3 className="text-lg font-semibold text-gray-900">Email Addresses</h3>
             </div>
 
-            <div className="flex gap-6">
-              <CustomInput
-                label="Primary Email"
-                type="email"
-                value={emailAddress}
-                onChange={(e) => setEmailAddress(e.target.value)}
-                placeholder="Enter your primary email"
-                required
-              />
-
-              <CustomInput
-                label="Backup Email (Optional)"
-                type="email"
-                value={backupEmail}
-                onChange={(e) => setBackupEmail(e.target.value)}
-                placeholder="Enter backup email for important notifications"
-              />
-            </div>
+            <CustomInput
+              label="Primary Email"
+              type="email"
+              value={emailAddress}
+              disabled
+              placeholder="Your primary email"
+              required
+            />
           </div>
 
           {/* Campaign & Collaboration */}
@@ -425,24 +356,14 @@ const EmailPreferencesPage = () => {
                 text="Enable All Essential"
                 className="btn-secondary w-full"
                 icon={Bell}
-                onClick={() => {
-                  handlePreferenceChange("campaignInvites", true);
-                  handlePreferenceChange("paymentAlerts", true);
-                  handlePreferenceChange("securityAlerts", true);
-                  handlePreferenceChange("maintenanceAlerts", true);
-                }}
+                onClick={handleEnableAllEssential}
               />
 
               <CustomButton
                 text="Disable All Marketing"
                 className="btn-secondary w-full"
                 icon={Mail}
-                onClick={() => {
-                  handlePreferenceChange("weeklyNewsletter", false);
-                  handlePreferenceChange("marketingTips", false);
-                  handlePreferenceChange("promotionalOffers", false);
-                  handlePreferenceChange("partnerOffers", false);
-                }}
+                onClick={handleDisableAllMarketing}
               />
             </div>
           </div>
@@ -455,7 +376,7 @@ const EmailPreferencesPage = () => {
                 className={`btn-primary w-full ${!hasChanges ? "opacity-50 cursor-not-allowed" : ""}`}
                 icon={Save}
                 onClick={handleSave}
-                disabled={!hasChanges}
+                disabled={!hasChanges || isLoading}
               />
 
               <CustomButton

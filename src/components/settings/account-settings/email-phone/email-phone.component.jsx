@@ -3,230 +3,83 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import CustomInput from "@/common/components/custom-input/custom-input.component";
 import DashboardLayout from "@/common/layouts/dashboard-layout";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { AlertCircle, Check, Edit2, Mail, Phone, Plus, Shield, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-
-// Validation schemas
-const emailSchema = yup.object().shape({
-  email: yup.string().email("Invalid email format").required("Email is required"),
-});
-
-const phoneSchema = yup.object().shape({
-  phone: yup.string().required("Phone number is required"),
-});
-
-// Contact Method Card Component
-const ContactMethodCard = ({ method, onEdit, onDelete, onSetPrimary, onVerify }) => {
-  const isPrimary = method.isPrimary;
-  const isVerified = method.isVerified;
-
-  return (
-    <div
-      className={`
-      p-4 border rounded-lg transition-all duration-200
-      ${isPrimary ? "border-indigo-200 bg-indigo-50" : "border-gray-200 bg-white"}
-      hover:shadow-sm
-    `}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex items-start space-x-3">
-          <div
-            className={`
-            flex items-center justify-center w-8 h-8 rounded-lg flex-shrink-0
-            bg-blue-600}
-          `}
-          >
-            {method.type === "email" ? (
-              <Mail className={`h-4 w-4 text-blue-600`} />
-            ) : (
-              <Phone className="h-4 w-4 text-blue-600" />
-            )}
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-gray-900 truncate">{method.value}</p>
-            <div className="flex items-center space-x-2 mt-1">
-              {isPrimary && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
-                  <Shield className="h-3 w-3 mr-1" />
-                  Primary
-                </span>
-              )}
-              {isVerified ? (
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                  <Check className="h-3 w-3 mr-1" />
-                  Verified
-                </span>
-              ) : (
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  Unverified
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2 ml-4">
-          {!isVerified && (
-            <button
-              onClick={() => onVerify(method.id)}
-              className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
-            >
-              Verify
-            </button>
-          )}
-
-          {!isPrimary && isVerified && (
-            <button
-              onClick={() => onSetPrimary(method.id)}
-              className="text-xs text-gray-600 hover:text-gray-800 font-medium"
-            >
-              Set Primary
-            </button>
-          )}
-
-          <button onClick={() => onEdit(method)} className="p-1 text-gray-400 hover:text-gray-600">
-            <Edit2 className="h-4 w-4" />
-          </button>
-
-          {!isPrimary && (
-            <button
-              onClick={() => onDelete(method.id)}
-              className="p-1 text-gray-400 hover:text-red-600"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+import ConfirmationDialog from "@/common/components/custom-dialog-confirmation/ConfirmationDialog";
+import { AlertCircle, Mail, Phone, Plus } from "lucide-react";
+import ContactMethodCard from "./components/contract-method.component";
+import useEmailPhone from "./use-email-phone.hook";
 
 export default function ContactMethodsPage() {
-  // Sample data
-  const [emailMethods, setEmailMethods] = useState([
-    { id: 1, type: "email", value: "john.doe@example.com", isPrimary: true, isVerified: true },
-    { id: 2, type: "email", value: "john.work@company.com", isPrimary: false, isVerified: false },
-  ]);
-
-  const [phoneMethods, setPhoneMethods] = useState([
-    { id: 1, type: "phone", value: "+1 (555) 123-4567", isPrimary: true, isVerified: true },
-    { id: 2, type: "phone", value: "+1 (555) 987-6543", isPrimary: false, isVerified: false },
-  ]);
-
-  const [showEmailForm, setShowEmailForm] = useState(false);
-  const [showPhoneForm, setShowPhoneForm] = useState(false);
-  const [editingMethod, setEditingMethod] = useState(null);
-
-  // Email form
-  const emailForm = useForm({
-    resolver: yupResolver(emailSchema),
-    defaultValues: { email: "" },
-  });
-
-  // Phone form
-  const phoneForm = useForm({
-    resolver: yupResolver(phoneSchema),
-    defaultValues: { phone: "" },
-  });
-
-  const onAddEmail = async (data) => {
-    try {
-      const newEmail = {
-        id: Date.now(),
-        type: "email",
-        value: data.email,
-        isPrimary: emailMethods.length === 0,
-        isVerified: false,
-      };
-      setEmailMethods([...emailMethods, newEmail]);
-      emailForm.reset();
-      setShowEmailForm(false);
-      alert("Email added successfully! Please check your inbox to verify.");
-    } catch (error) {
-      alert("Failed to add email. Please try again.");
-    }
-  };
-
-  const onAddPhone = async (data) => {
-    try {
-      const newPhone = {
-        id: Date.now(),
-        type: "phone",
-        value: data.phone,
-        isPrimary: phoneMethods.length === 0,
-        isVerified: false,
-      };
-      setPhoneMethods([...phoneMethods, newPhone]);
-      phoneForm.reset();
-      setShowPhoneForm(false);
-      alert("Phone number added successfully! Please verify via SMS.");
-    } catch (error) {
-      alert("Failed to add phone number. Please try again.");
-    }
-  };
-
-  const handleEdit = (method) => {
-    setEditingMethod(method);
-    if (method.type === "email") {
-      emailForm.setValue("email", method.value);
-      setShowEmailForm(true);
-    } else {
-      phoneForm.setValue("phone", method.value);
-      setShowPhoneForm(true);
-    }
-  };
-
-  const handleDelete = (id, type) => {
-    if (window.confirm("Are you sure you want to remove this contact method?")) {
-      if (type === "email") {
-        setEmailMethods(emailMethods.filter((email) => email.id !== id));
-      } else {
-        setPhoneMethods(phoneMethods.filter((phone) => phone.id !== id));
-      }
-    }
-  };
-
-  const handleSetPrimary = (id, type) => {
-    if (type === "email") {
-      setEmailMethods(
-        emailMethods.map((email) => ({
-          ...email,
-          isPrimary: email.id === id,
-        }))
-      );
-    } else {
-      setPhoneMethods(
-        phoneMethods.map((phone) => ({
-          ...phone,
-          isPrimary: phone.id === id,
-        }))
-      );
-    }
-    alert("Primary contact method updated successfully!");
-  };
-
-  const handleVerify = (id, type) => {
-    if (type === "email") {
-      setEmailMethods(
-        emailMethods.map((email) => (email.id === id ? { ...email, isVerified: true } : email))
-      );
-      alert("Email verified successfully!");
-    } else {
-      setPhoneMethods(
-        phoneMethods.map((phone) => (phone.id === id ? { ...phone, isVerified: true } : phone))
-      );
-      alert("Phone number verified successfully!");
-    }
-  };
+  const {
+    emailMethods,
+    phoneMethods,
+    showEmailForm,
+    showPhoneForm,
+    editingMethod,
+    showVerifyModal,
+    methodToVerify,
+    verificationCode,
+    showDeleteModal,
+    methodToDelete,
+    emailForm,
+    phoneForm,
+    onSubmitAddEmail,
+    onSubmitAddPhone,
+    handleVerifyClick,
+    handleVerifySubmit,
+    handleCancelVerify,
+    handleDelete,
+    handleConfirmDelete,
+    handleCancelDelete,
+    handleEdit,
+    handleSetPrimary,
+    handleOpenAddEmailForm,
+    handleOpenAddPhoneForm,
+    handleCloseEmailForm,
+    handleClosePhoneForm,
+    onUpdate,
+    onSetPrimary,
+    setVerificationCode,
+  } = useEmailPhone();
 
   return (
     <DashboardLayout>
+      {/* Verification Code Modal */}
+      <ConfirmationDialog
+        show={showVerifyModal}
+        onClose={handleCancelVerify}
+        onConfirm={handleVerifySubmit}
+        message="Enter Verification Code"
+        content={
+          <div className="space-y-4">
+            <div className="text-sm text-gray-600 text-left">
+              Enter the verification code sent to <strong>{methodToVerify?.value}</strong>
+            </div>
+            <CustomInput
+              label="Verification Code"
+              name="code"
+              type="text"
+              placeholder="Enter code"
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              isRequired={true}
+            />
+          </div>
+        }
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationDialog
+        show={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        message="Delete Contact Method"
+        content={
+          <div className="text-sm text-gray-600 text-center">
+            Are you sure you want to remove <strong>{methodToDelete?.value}</strong>? This action
+            cannot be undone.
+          </div>
+        }
+      />
       {/* Header */}
       <div className="bg-primary p-4 rounded-lg text-white mb-4">
         <h1 className="text-xl font-bold text-white">Email & Phone Numbers</h1>
@@ -250,11 +103,7 @@ export default function ContactMethodsPage() {
                   text="Add Email"
                   className="btn-primary"
                   icon={Plus}
-                  onClick={() => {
-                    setEditingMethod(null);
-                    emailForm.reset();
-                    setShowEmailForm(true);
-                  }}
+                  onClick={handleOpenAddEmailForm}
                 />
               </div>
 
@@ -265,9 +114,9 @@ export default function ContactMethodsPage() {
                     key={email.id}
                     method={email}
                     onEdit={handleEdit}
-                    onDelete={(id) => handleDelete(id, "email")}
+                    onDeleteClick={handleDelete}
                     onSetPrimary={(id) => handleSetPrimary(id, "email")}
-                    onVerify={(id) => handleVerify(id, "email")}
+                    onVerifyClick={handleVerifyClick}
                   />
                 ))}
               </div>
@@ -278,7 +127,7 @@ export default function ContactMethodsPage() {
                   <h3 className="text-sm font-medium text-gray-900 mb-4">
                     {editingMethod ? "Edit Email Address" : "Add New Email Address"}
                   </h3>
-                  <form onSubmit={emailForm.handleSubmit(onAddEmail)} className="space-y-4">
+                  <form onSubmit={emailForm.handleSubmit(onSubmitAddEmail)} className="space-y-4">
                     <div className="max-w-md">
                       <CustomInput
                         label="Email Address"
@@ -293,20 +142,27 @@ export default function ContactMethodsPage() {
                     </div>
 
                     <div className="flex space-x-3">
-                      <CustomButton
-                        text={editingMethod ? "Update" : "Add Email"}
-                        className="btn-primary"
-                        type="submit"
-                        disabled={emailForm.formState.isSubmitting}
-                      />
+                      {editingMethod ? (
+                        <CustomButton
+                          text="Update"
+                          className="btn-primary"
+                          onClick={emailForm.handleSubmit((data) =>
+                            onUpdate({ id: editingMethod.id, email: data.email })
+                          )}
+                          disabled={emailForm.formState.isSubmitting}
+                        />
+                      ) : (
+                        <CustomButton
+                          text="Add Email"
+                          className="btn-primary"
+                          type="submit"
+                          disabled={emailForm.formState.isSubmitting}
+                        />
+                      )}
                       <CustomButton
                         text="Cancel"
                         className="btn-secondary"
-                        onClick={() => {
-                          setShowEmailForm(false);
-                          setEditingMethod(null);
-                          emailForm.reset();
-                        }}
+                        onClick={handleCloseEmailForm}
                       />
                     </div>
                   </form>
@@ -330,11 +186,7 @@ export default function ContactMethodsPage() {
                   text="Add Phone"
                   className="btn-primary"
                   icon={Plus}
-                  onClick={() => {
-                    setEditingMethod(null);
-                    phoneForm.reset();
-                    setShowPhoneForm(true);
-                  }}
+                  onClick={handleOpenAddPhoneForm}
                 />
               </div>
 
@@ -345,9 +197,9 @@ export default function ContactMethodsPage() {
                     key={phone.id}
                     method={phone}
                     onEdit={handleEdit}
-                    onDelete={(id) => handleDelete(id, "phone")}
+                    onDeleteClick={handleDelete}
                     onSetPrimary={(id) => handleSetPrimary(id, "phone")}
-                    onVerify={(id) => handleVerify(id, "phone")}
+                    onVerifyClick={handleVerifyClick}
                   />
                 ))}
               </div>
@@ -358,7 +210,7 @@ export default function ContactMethodsPage() {
                   <h3 className="text-sm font-medium text-gray-900 mb-4">
                     {editingMethod ? "Edit Phone Number" : "Add New Phone Number"}
                   </h3>
-                  <form onSubmit={phoneForm.handleSubmit(onAddPhone)} className="space-y-4">
+                  <form onSubmit={phoneForm.handleSubmit(onSubmitAddPhone)} className="space-y-4">
                     <div className="max-w-md">
                       <CustomInput
                         label="Phone Number"
@@ -373,20 +225,27 @@ export default function ContactMethodsPage() {
                     </div>
 
                     <div className="flex space-x-3">
-                      <CustomButton
-                        text={editingMethod ? "Update" : "Add Phone"}
-                        className="btn-primary"
-                        type="submit"
-                        disabled={phoneForm.formState.isSubmitting}
-                      />
+                      {editingMethod ? (
+                        <CustomButton
+                          text="Update"
+                          className="btn-primary"
+                          onClick={phoneForm.handleSubmit((data) =>
+                            onUpdate({ id: editingMethod.id, phone: data.phone })
+                          )}
+                          disabled={phoneForm.formState.isSubmitting}
+                        />
+                      ) : (
+                        <CustomButton
+                          text="Add Phone"
+                          className="btn-primary"
+                          type="submit"
+                          disabled={phoneForm.formState.isSubmitting}
+                        />
+                      )}
                       <CustomButton
                         text="Cancel"
                         className="btn-secondary"
-                        onClick={() => {
-                          setShowPhoneForm(false);
-                          setEditingMethod(null);
-                          phoneForm.reset();
-                        }}
+                        onClick={handleClosePhoneForm}
                       />
                     </div>
                   </form>

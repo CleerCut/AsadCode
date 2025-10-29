@@ -24,6 +24,23 @@ const initialState = {
   connectSocialMedia: { ...generalState },
   getSocialAccounts: { ...generalState },
   disconnectSocialAccount: { ...generalState },
+  // contact methods
+  getContactMethods: { ...generalState },
+  addContactMethod: { ...generalState },
+  updateContactMethod: { ...generalState },
+  deleteContactMethod: { ...generalState },
+  verifyContactMethod: { ...generalState },
+  setPrimaryContactMethod: { ...generalState },
+  // email preferences
+  getEmailPreferences: { ...generalState },
+  updateEmailPreferences: { ...generalState },
+  // data privacy
+  getDataPrivacy: { ...generalState },
+  updateDataPrivacy: { ...generalState },
+  // blocked brands
+  getBlockedBrands: { ...generalState },
+  blockBrand: { ...generalState },
+  unblockBrand: { ...generalState },
 };
 
 export const getAllUsers = createAsyncThunk("users/getAllUsers", async (payload, thunkAPI) => {
@@ -209,6 +226,167 @@ export const disconnectSocialAccount = createAsyncThunk(
   }
 );
 
+// Contact methods thunks
+export const getContactMethods = createAsyncThunk(
+  "users/getContactMethods",
+  async (_, thunkAPI) => {
+    try {
+      const response = await usersService.getContactMethods();
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+// Email preferences thunks
+export const getEmailPreferences = createAsyncThunk(
+  "users/getEmailPreferences",
+  async (_, thunkAPI) => {
+    try {
+      const response = await usersService.getEmailPreferences();
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateEmailPreferences = createAsyncThunk(
+  "users/updateEmailPreferences",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.updateEmailPreferences(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+// Data privacy thunks
+export const getDataPrivacy = createAsyncThunk("users/getDataPrivacy", async (_, thunkAPI) => {
+  try {
+    const response = await usersService.getDataPrivacy();
+    if (response.success) return response;
+    return thunkAPI.rejectWithValue(response);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const updateDataPrivacy = createAsyncThunk(
+  "users/updateDataPrivacy",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.updateDataPrivacy(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+// Blocked brands thunks
+export const getBlockedBrands = createAsyncThunk("users/getBlockedBrands", async (_, thunkAPI) => {
+  try {
+    const response = await usersService.getBlockedBrands();
+    if (response.success) return response;
+    return thunkAPI.rejectWithValue(response);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const blockBrand = createAsyncThunk("users/blockBrand", async (payload, thunkAPI) => {
+  try {
+    const response = await usersService.blockBrand(payload);
+    if (response.success) return response;
+    return thunkAPI.rejectWithValue(response);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const unblockBrand = createAsyncThunk("users/unblockBrand", async (payload, thunkAPI) => {
+  try {
+    const response = await usersService.unblockBrand(payload);
+    if (response.success) return response;
+    return thunkAPI.rejectWithValue(response);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const addContactMethod = createAsyncThunk(
+  "users/addContactMethod",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.addContactMethod(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateContactMethod = createAsyncThunk(
+  "users/updateContactMethod",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.updateContactMethod(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteContactMethod = createAsyncThunk(
+  "users/deleteContactMethod",
+  async (id, thunkAPI) => {
+    try {
+      const response = await usersService.deleteContactMethod(id);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const verifyContactMethod = createAsyncThunk(
+  "users/verifyContactMethod",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.verifyContactMethod(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const setPrimaryContactMethod = createAsyncThunk(
+  "users/setPrimaryContactMethod",
+  async (id, thunkAPI) => {
+    try {
+      const response = await usersService.setPrimaryContactMethod(id);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -225,6 +403,19 @@ export const usersSlice = createSlice({
       state.getBlockedUsers = { ...generalState };
       state.isUserBlocked = { ...generalState };
       state.addUserToWaitlist = { ...generalState };
+      state.getContactMethods = { ...generalState };
+      state.addContactMethod = { ...generalState };
+      state.updateContactMethod = { ...generalState };
+      state.deleteContactMethod = { ...generalState };
+      state.verifyContactMethod = { ...generalState };
+      state.setPrimaryContactMethod = { ...generalState };
+      state.getEmailPreferences = { ...generalState };
+      state.updateEmailPreferences = { ...generalState };
+      state.getDataPrivacy = { ...generalState };
+      state.updateDataPrivacy = { ...generalState };
+      state.getBlockedBrands = { ...generalState };
+      state.blockBrand = { ...generalState };
+      state.unblockBrand = { ...generalState };
     },
   },
   extraReducers: (builder) => {
@@ -469,6 +660,267 @@ export const usersSlice = createSlice({
           state.disconnectSocialAccount.isLoading = false;
           state.disconnectSocialAccount.isError = true;
           state.disconnectSocialAccount.message = action.payload;
+        }
+      })
+      // contact methods reducers
+      .addCase(getContactMethods.pending, (state) => {
+        if (state.getContactMethods) {
+          state.getContactMethods.isLoading = true;
+        }
+      })
+      .addCase(getContactMethods.fulfilled, (state, action) => {
+        if (state.getContactMethods) {
+          state.getContactMethods.isLoading = false;
+          state.getContactMethods.isSuccess = true;
+          state.getContactMethods.data = action.payload;
+        }
+      })
+      .addCase(getContactMethods.rejected, (state, action) => {
+        if (state.getContactMethods) {
+          state.getContactMethods.isLoading = false;
+          state.getContactMethods.isError = true;
+          state.getContactMethods.message =
+            action.payload?.message || "Failed to get contact methods";
+        }
+      })
+      .addCase(addContactMethod.pending, (state) => {
+        if (state.addContactMethod) {
+          state.addContactMethod.isLoading = true;
+        }
+      })
+      .addCase(addContactMethod.fulfilled, (state, action) => {
+        if (state.addContactMethod) {
+          state.addContactMethod.isLoading = false;
+          state.addContactMethod.isSuccess = true;
+          state.addContactMethod.data = action.payload;
+        }
+      })
+      .addCase(addContactMethod.rejected, (state, action) => {
+        if (state.addContactMethod) {
+          state.addContactMethod.isLoading = false;
+          state.addContactMethod.isError = true;
+          state.addContactMethod.message =
+            action.payload?.message || "Failed to add contact method";
+        }
+      })
+      .addCase(updateContactMethod.pending, (state) => {
+        if (state.updateContactMethod) {
+          state.updateContactMethod.isLoading = true;
+        }
+      })
+      .addCase(updateContactMethod.fulfilled, (state, action) => {
+        if (state.updateContactMethod) {
+          state.updateContactMethod.isLoading = false;
+          state.updateContactMethod.isSuccess = true;
+          state.updateContactMethod.data = action.payload;
+        }
+      })
+      .addCase(updateContactMethod.rejected, (state, action) => {
+        if (state.updateContactMethod) {
+          state.updateContactMethod.isLoading = false;
+          state.updateContactMethod.isError = true;
+          state.updateContactMethod.message =
+            action.payload?.message || "Failed to update contact method";
+        }
+      })
+      .addCase(deleteContactMethod.pending, (state) => {
+        if (state.deleteContactMethod) {
+          state.deleteContactMethod.isLoading = true;
+        }
+      })
+      .addCase(deleteContactMethod.fulfilled, (state, action) => {
+        if (state.deleteContactMethod) {
+          state.deleteContactMethod.isLoading = false;
+          state.deleteContactMethod.isSuccess = true;
+          state.deleteContactMethod.data = action.payload;
+        }
+      })
+      .addCase(deleteContactMethod.rejected, (state, action) => {
+        if (state.deleteContactMethod) {
+          state.deleteContactMethod.isLoading = false;
+          state.deleteContactMethod.isError = true;
+          state.deleteContactMethod.message =
+            action.payload?.message || "Failed to delete contact method";
+        }
+      })
+      .addCase(verifyContactMethod.pending, (state) => {
+        if (state.verifyContactMethod) {
+          state.verifyContactMethod.isLoading = true;
+        }
+      })
+      .addCase(verifyContactMethod.fulfilled, (state, action) => {
+        if (state.verifyContactMethod) {
+          state.verifyContactMethod.isLoading = false;
+          state.verifyContactMethod.isSuccess = true;
+          state.verifyContactMethod.data = action.payload;
+        }
+      })
+      .addCase(verifyContactMethod.rejected, (state, action) => {
+        if (state.verifyContactMethod) {
+          state.verifyContactMethod.isLoading = false;
+          state.verifyContactMethod.isError = true;
+          state.verifyContactMethod.message =
+            action.payload?.message || "Failed to verify contact method";
+        }
+      })
+      .addCase(setPrimaryContactMethod.pending, (state) => {
+        if (state.setPrimaryContactMethod) {
+          state.setPrimaryContactMethod.isLoading = true;
+        }
+      })
+      .addCase(setPrimaryContactMethod.fulfilled, (state, action) => {
+        if (state.setPrimaryContactMethod) {
+          state.setPrimaryContactMethod.isLoading = false;
+          state.setPrimaryContactMethod.isSuccess = true;
+          state.setPrimaryContactMethod.data = action.payload;
+        }
+      })
+      .addCase(setPrimaryContactMethod.rejected, (state, action) => {
+        if (state.setPrimaryContactMethod) {
+          state.setPrimaryContactMethod.isLoading = false;
+          state.setPrimaryContactMethod.isError = true;
+          state.setPrimaryContactMethod.message =
+            action.payload?.message || "Failed to set primary contact method";
+        }
+      })
+      // email preferences reducers
+      .addCase(getEmailPreferences.pending, (state) => {
+        if (state.getEmailPreferences) {
+          state.getEmailPreferences.isLoading = true;
+        }
+      })
+      .addCase(getEmailPreferences.fulfilled, (state, action) => {
+        if (state.getEmailPreferences) {
+          state.getEmailPreferences.isLoading = false;
+          state.getEmailPreferences.isSuccess = true;
+          state.getEmailPreferences.data = action.payload;
+        }
+      })
+      .addCase(getEmailPreferences.rejected, (state, action) => {
+        if (state.getEmailPreferences) {
+          state.getEmailPreferences.isLoading = false;
+          state.getEmailPreferences.isError = true;
+          state.getEmailPreferences.message =
+            action.payload?.message || "Failed to fetch email preferences";
+        }
+      })
+      .addCase(updateEmailPreferences.pending, (state) => {
+        if (state.updateEmailPreferences) {
+          state.updateEmailPreferences.isLoading = true;
+        }
+      })
+      .addCase(updateEmailPreferences.fulfilled, (state, action) => {
+        if (state.updateEmailPreferences) {
+          state.updateEmailPreferences.isLoading = false;
+          state.updateEmailPreferences.isSuccess = true;
+          state.updateEmailPreferences.data = action.payload;
+        }
+      })
+      .addCase(updateEmailPreferences.rejected, (state, action) => {
+        if (state.updateEmailPreferences) {
+          state.updateEmailPreferences.isLoading = false;
+          state.updateEmailPreferences.isError = true;
+          state.updateEmailPreferences.message =
+            action.payload?.message || "Failed to update email preferences";
+        }
+      })
+      // data privacy reducers
+      .addCase(getDataPrivacy.pending, (state) => {
+        if (state.getDataPrivacy) {
+          state.getDataPrivacy.isLoading = true;
+        }
+      })
+      .addCase(getDataPrivacy.fulfilled, (state, action) => {
+        if (state.getDataPrivacy) {
+          state.getDataPrivacy.isLoading = false;
+          state.getDataPrivacy.isSuccess = true;
+          state.getDataPrivacy.data = action.payload;
+        }
+      })
+      .addCase(getDataPrivacy.rejected, (state, action) => {
+        if (state.getDataPrivacy) {
+          state.getDataPrivacy.isLoading = false;
+          state.getDataPrivacy.isError = true;
+          state.getDataPrivacy.message = action.payload?.message || "Failed to get data privacy";
+        }
+      })
+      .addCase(updateDataPrivacy.pending, (state) => {
+        if (state.updateDataPrivacy) {
+          state.updateDataPrivacy.isLoading = true;
+        }
+      })
+      .addCase(updateDataPrivacy.fulfilled, (state, action) => {
+        if (state.updateDataPrivacy) {
+          state.updateDataPrivacy.isLoading = false;
+          state.updateDataPrivacy.isSuccess = true;
+          state.updateDataPrivacy.data = action.payload;
+        }
+      })
+      .addCase(updateDataPrivacy.rejected, (state, action) => {
+        if (state.updateDataPrivacy) {
+          state.updateDataPrivacy.isLoading = false;
+          state.updateDataPrivacy.isError = true;
+          state.updateDataPrivacy.message =
+            action.payload?.message || "Failed to update data privacy";
+        }
+      })
+      // blocked brands reducers
+      .addCase(getBlockedBrands.pending, (state) => {
+        if (state.getBlockedBrands) {
+          state.getBlockedBrands.isLoading = true;
+        }
+      })
+      .addCase(getBlockedBrands.fulfilled, (state, action) => {
+        if (state.getBlockedBrands) {
+          state.getBlockedBrands.isLoading = false;
+          state.getBlockedBrands.isSuccess = true;
+          state.getBlockedBrands.data = action.payload;
+        }
+      })
+      .addCase(getBlockedBrands.rejected, (state, action) => {
+        if (state.getBlockedBrands) {
+          state.getBlockedBrands.isLoading = false;
+          state.getBlockedBrands.isError = true;
+          state.getBlockedBrands.message =
+            action.payload?.message || "Failed to get blocked brands";
+        }
+      })
+      .addCase(blockBrand.pending, (state) => {
+        if (state.blockBrand) {
+          state.blockBrand.isLoading = true;
+        }
+      })
+      .addCase(blockBrand.fulfilled, (state, action) => {
+        if (state.blockBrand) {
+          state.blockBrand.isLoading = false;
+          state.blockBrand.isSuccess = true;
+          state.blockBrand.data = action.payload;
+        }
+      })
+      .addCase(blockBrand.rejected, (state, action) => {
+        if (state.blockBrand) {
+          state.blockBrand.isLoading = false;
+          state.blockBrand.isError = true;
+          state.blockBrand.message = action.payload?.message || "Failed to block brand";
+        }
+      })
+      .addCase(unblockBrand.pending, (state) => {
+        if (state.unblockBrand) {
+          state.unblockBrand.isLoading = true;
+        }
+      })
+      .addCase(unblockBrand.fulfilled, (state, action) => {
+        if (state.unblockBrand) {
+          state.unblockBrand.isLoading = false;
+          state.unblockBrand.isSuccess = true;
+          state.unblockBrand.data = action.payload;
+        }
+      })
+      .addCase(unblockBrand.rejected, (state, action) => {
+        if (state.unblockBrand) {
+          state.unblockBrand.isLoading = false;
+          state.unblockBrand.isError = true;
+          state.unblockBrand.message = action.payload?.message || "Failed to unblock brand";
         }
       });
   },

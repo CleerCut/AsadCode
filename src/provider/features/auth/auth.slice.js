@@ -38,6 +38,7 @@ const initialState = {
   logout: generalState,
   loginAndSignUpWithOAuth: generalState,
   loginAndSignUpWithLinkedin: generalState,
+  changePassword: generalState,
 };
 
 // Login user
@@ -83,6 +84,16 @@ export const resendEmail = createAsyncThunk("auth/resendEmail", async (payload, 
   }
 });
 
+export const changePassword = createAsyncThunk("auth/changePassword", async (payload, thunkAPI) => {
+  try {
+    const response = await authService.changePassword(payload);
+    if (response.success) return response;
+    return thunkAPI.rejectWithValue(response);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(getSerializableError(error));
+  }
+});
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -107,9 +118,14 @@ export const authSlice = createSlice({
       state.resendEmail = generalState;
       state.loginAndSignUpWithOAuth = generalState;
       state.loginAndSignUpWithLinkedin = generalState;
+      state.changePassword = generalState;
     },
   },
   extraReducers: (builder) => {
+    const ensureStateKey = (state, key) => {
+      if (!state[key]) state[key] = { ...generalState };
+      return state[key];
+    };
     builder
       .addCase(login.pending, (state) => {
         state.login.isLoading = true;
@@ -182,6 +198,27 @@ export const authSlice = createSlice({
         state.resendEmail.isLoading = false;
         state.resendEmail.isError = true;
         state.resendEmail.data = null;
+      })
+      .addCase(changePassword.pending, (state) => {
+        const cp = ensureStateKey(state, "changePassword");
+        cp.isLoading = true;
+        cp.message = "";
+        cp.isError = false;
+        cp.isSuccess = false;
+        cp.data = null;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        const cp = ensureStateKey(state, "changePassword");
+        cp.isLoading = false;
+        cp.isSuccess = true;
+        cp.data = action.payload;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        const cp = ensureStateKey(state, "changePassword");
+        cp.message = action.payload?.message || "Change password failed";
+        cp.isLoading = false;
+        cp.isError = true;
+        cp.data = null;
       });
   },
 });

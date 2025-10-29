@@ -3,55 +3,19 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import CustomInput from "@/common/components/custom-input/custom-input.component";
 import DashboardLayout from "@/common/layouts/dashboard-layout";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { CheckCircle, Lock, Shield } from "lucide-react";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-
-// Validation schema for password change
-const passwordSchema = yup.object().shape({
-  currentPassword: yup.string().required("Current password is required"),
-  newPassword: yup
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must contain uppercase, lowercase, number and special character"
-    )
-    .required("New password is required"),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("newPassword")], "Passwords must match")
-    .required("Please confirm your password"),
-});
+import useSecuritySettings from "./use-security-settings.hook";
 
 export default function SecuritySettings() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
+    onSubmit,
+    changePasswordLoading,
+    changePasswordMessage,
     reset,
-  } = useForm({
-    resolver: yupResolver(passwordSchema),
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    },
-  });
-
-  const onSubmit = async (data) => {
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Password change data:", data);
-      alert("Password updated successfully!");
-      reset();
-    } catch (error) {
-      console.error("Error updating password:", error);
-      alert("Failed to update password. Please try again.");
-    }
-  };
+  } = useSecuritySettings();
 
   return (
     <DashboardLayout>
@@ -105,6 +69,7 @@ export default function SecuritySettings() {
             <div className="max-w-md">
               <CustomInput
                 label="Current Password"
+                type="password"
                 name="currentPassword"
                 register={register}
                 errors={errors}
@@ -117,6 +82,7 @@ export default function SecuritySettings() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
               <CustomInput
                 label="New Password"
+                type="password"
                 name="newPassword"
                 register={register}
                 errors={errors}
@@ -127,6 +93,7 @@ export default function SecuritySettings() {
 
               <CustomInput
                 label="Confirm New Password"
+                type="password"
                 name="confirmPassword"
                 register={register}
                 errors={errors}
@@ -145,9 +112,9 @@ export default function SecuritySettings() {
               />
 
               <CustomButton
-                text={isSubmitting ? "Updating..." : "Update Password"}
+                text={changePasswordLoading ? "Updating..." : "Update Password"}
                 className="btn-primary w-full sm:w-auto"
-                disabled={isSubmitting}
+                disabled={changePasswordLoading}
                 type="submit"
               />
             </div>

@@ -19,10 +19,27 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import useDataPrivacy from "./use-data-privacy.hook";
 
 const DataPrivacyPage = () => {
-  const [privacySettings, setPrivacySettings] = useState({
+  const {
+    privacySettings,
+    hasChanges,
+    activeTab,
+    showExportModal,
+    showDeleteModal,
+    isLoading,
+    setActiveTab,
+    setShowExportModal,
+    setShowDeleteModal,
+    handleSettingChange,
+    handleSave,
+    handleExportData,
+    handleDeleteAccount,
+  } = useDataPrivacy();
+
+  // Remove dummy state - now using hook
+  const _unused = {
     // Profile Visibility
     profilePublic: true,
     showRealName: false,
@@ -54,38 +71,8 @@ const DataPrivacyPage = () => {
     dataUpdateNotifications: true,
     securityAlerts: true,
     policyChangeNotifications: true,
-  });
-
-  const [hasChanges, setHasChanges] = useState(false);
-  const [activeTab, setActiveTab] = useState("visibility");
-  const [showExportModal, setShowExportModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const handleSettingChange = (key, value) => {
-    setPrivacySettings((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-    setHasChanges(true);
   };
-
-  const handleSave = () => {
-    console.log("Saving privacy settings:", privacySettings);
-    setHasChanges(false);
-    // Implement save logic
-  };
-
-  const handleExportData = () => {
-    console.log("Exporting user data");
-    setShowExportModal(false);
-    // Implement data export logic
-  };
-
-  const handleDeleteAccount = () => {
-    console.log("Account deletion requested");
-    setShowDeleteModal(false);
-    // Implement account deletion logic
-  };
+  // End unused state
 
   const PrivacyToggle = ({
     title,
