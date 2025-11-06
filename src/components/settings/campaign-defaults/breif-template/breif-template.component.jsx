@@ -3,93 +3,25 @@ import CustomInput from "@/common/components/custom-input/custom-input.component
 import Modal from "@/common/components/modal/modal.component";
 import TextArea from "@/common/components/text-area/text-area.component";
 import DashboardLayout from "@/common/layouts/dashboard-layout";
-import { Eye, FileText, Info, Plus, Save, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Eye, FileText, Plus, Save, Trash2 } from "lucide-react";
+import SimpleSelect from "@/common/components/dropdowns/simple-select/simple-select";
+import useBriefTemplate from "./use-brief-template.hook";
 
 const BriefTemplate = () => {
-  const [templates, setTemplates] = useState([
-    {
-      id: 1,
-      name: "Instagram Post Campaign",
-      category: "Social Media",
-      description: "Create an engaging Instagram post showcasing our product",
-      requirements: [
-        "High-quality images (minimum 1080x1080)",
-        "Include product in lifestyle setting",
-        "Use brand hashtags #YourBrand #Campaign2024",
-      ],
-      deliverables: ["1 Instagram post", "Instagram story (24 hours)", "Usage rights for 6 months"],
-      timeline: "7 days",
-      notes: "Please tag our official account and include discount code",
-    },
-  ]);
-
-  const [newTemplate, setNewTemplate] = useState({
-    name: "",
-    category: "",
-    description: "",
-    requirements: [""],
-    deliverables: [""],
-    timeline: "",
-    notes: "",
-  });
-
-  const [editingTemplate, setEditingTemplate] = useState(null);
-  const [showPreview, setShowPreview] = useState(null);
-
-  const handleInputChange = (field, value) => {
-    setNewTemplate((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleArrayInputChange = (field, index, value) => {
-    setNewTemplate((prev) => ({
-      ...prev,
-      [field]: prev[field].map((item, i) => (i === index ? value : item)),
-    }));
-  };
-
-  const addArrayItem = (field) => {
-    setNewTemplate((prev) => ({
-      ...prev,
-      [field]: [...prev[field], ""],
-    }));
-  };
-
-  const removeArrayItem = (field, index) => {
-    setNewTemplate((prev) => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
-    }));
-  };
-
-  const saveTemplate = () => {
-    if (newTemplate.name && newTemplate.description) {
-      const templateData = {
-        ...newTemplate,
-        id: Date.now(),
-        requirements: newTemplate.requirements.filter((req) => req.trim()),
-        deliverables: newTemplate.deliverables.filter((del) => del.trim()),
-      };
-
-      setTemplates((prev) => [...prev, templateData]);
-      setNewTemplate({
-        name: "",
-        category: "",
-        description: "",
-        requirements: [""],
-        deliverables: [""],
-        timeline: "",
-        notes: "",
-      });
-    }
-  };
-
-  const deleteTemplate = (templateId) => {
-    setTemplates((prev) => prev.filter((template) => template.id !== templateId));
-  };
+  const {
+    templates,
+    newTemplate,
+    showPreview,
+    isLoading,
+    setShowPreview,
+    setNewTemplate,
+    handleInputChange,
+    handleArrayInputChange,
+    addArrayItem,
+    removeArrayItem,
+    handleSave,
+    handleDelete,
+  } = useBriefTemplate();
 
   const categories = [
     "Social Media",
@@ -106,21 +38,6 @@ const BriefTemplate = () => {
       <div className="bg-primary p-4 rounded-lg text-white mb-4">
         <h1 className="text-xl font-bold text-white">Content Brief Templates</h1>
         <p className="text-sm mt-1">Create reusable content briefs to speed up campaign creation</p>
-      </div>
-
-      {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <div className="flex items-start space-x-3">
-          <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg flex-shrink-0">
-            <Info className="h-4 w-4 text-blue-600" />
-          </div>
-          <div>
-            <h3 className="font-medium text-blue-900 mb-1">Brief Templates</h3>
-            <p className="text-blue-800 text-sm leading-relaxed">
-              Save time by creating reusable content brief templates for your campaigns.
-            </p>
-          </div>
-        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
@@ -144,19 +61,20 @@ const BriefTemplate = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-              <select
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                value={newTemplate.category}
-                onChange={(e) => handleInputChange("category", e.target.value)}
-              >
-                <option value="">Select category</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+              <SimpleSelect
+                label="Category"
+                placeHolder="Select category"
+                options={categories.map((c) => ({ value: c, label: c }))}
+                value={
+                  newTemplate.category
+                    ? { value: newTemplate.category, label: newTemplate.category }
+                    : null
+                }
+                onChange={(selected) => {
+                  const value = typeof selected === "object" ? selected?.value : selected;
+                  handleInputChange("category", value || "");
+                }}
+              />
             </div>
 
             <div>
@@ -246,13 +164,12 @@ const BriefTemplate = () => {
               text="Save Template"
               className="btn-primary w-full"
               icon={Save}
-              onClick={saveTemplate}
+              onClick={handleSave}
               disabled={!newTemplate.name || !newTemplate.description}
             />
           </div>
-        </div>
-
-        {/* Saved Templates */}
+        </div>{" "}
+        bdf 1{/* Saved Templates */}
         <div className="bg-white rounded-lg shadow-sm p-5 border">
           <div className="flex items-center mb-4">
             <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
@@ -284,7 +201,7 @@ const BriefTemplate = () => {
                     Preview
                   </button>
                   <button
-                    onClick={() => deleteTemplate(template.id)}
+                    onClick={() => handleDelete(template.id)}
                     className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200"
                   >
                     <Trash2 className="h-3 w-3 mr-1" />
@@ -305,49 +222,75 @@ const BriefTemplate = () => {
       >
         <div>
           {templates.find((t) => t.id === showPreview) && (
-            <div className="space-y-4">
+            <div className="space-y-5">
               {(() => {
                 const template = templates.find((t) => t.id === showPreview);
                 return (
                   <>
-                    <div>
-                      <h4 className="font-medium text-gray-900">{template.name}</h4>
-                      <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full mt-1">
-                        {template.category}
-                      </span>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Description:</label>
-                      <p className="text-sm text-gray-900 mt-1">{template.description}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Requirements:</label>
-                      <ul className="text-sm text-gray-900 mt-1 list-disc list-inside">
-                        {template.requirements.map((req, index) => (
-                          <li key={index}>{req}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Deliverables:</label>
-                      <ul className="text-sm text-gray-900 mt-1 list-disc list-inside">
-                        {template.deliverables.map((del, index) => (
-                          <li key={index}>{del}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    {template.timeline && (
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">Timeline:</label>
-                        <p className="text-sm text-gray-900 mt-1">{template.timeline}</p>
+                    {/* Header */}
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-sm">
+                          <FileText className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-gray-900">{template.name}</h4>
+                          {template.category && (
+                            <span className="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[11px] font-medium rounded mt-1">
+                              {template.category}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    )}
-                    {template.notes && (
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">Notes:</label>
-                        <p className="text-sm text-gray-900 mt-1">{template.notes}</p>
+                    </div>
+
+                    {/* Content grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <div className="rounded-lg border border-gray-200 p-3 bg-white">
+                          <div className="text-[11px] text-gray-500">Description</div>
+                          <p className="text-sm text-gray-900 mt-0.5 leading-relaxed">
+                            {template.description}
+                          </p>
+                        </div>
+                        {template.timeline && (
+                          <div className="rounded-lg border border-gray-200 p-3 bg-white">
+                            <div className="text-[11px] text-gray-500">Timeline</div>
+                            <div className="text-sm text-gray-900 mt-0.5">{template.timeline}</div>
+                          </div>
+                        )}
                       </div>
-                    )}
+                      <div className="space-y-3">
+                        {template.notes && (
+                          <div className="rounded-lg border border-gray-200 p-3 bg-white">
+                            <div className="text-[11px] text-gray-500">Notes</div>
+                            <div className="text-sm text-gray-900 mt-0.5 leading-relaxed">
+                              {template.notes}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Lists */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="rounded-lg border border-gray-200 p-3 bg-white">
+                        <div className="text-[11px] text-gray-500">Requirements</div>
+                        <ul className="text-sm text-gray-900 mt-1 list-disc list-inside space-y-1">
+                          {template.requirements.map((req, index) => (
+                            <li key={index}>{req}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="rounded-lg border border-gray-200 p-3 bg-white">
+                        <div className="text-[11px] text-gray-500">Deliverables</div>
+                        <ul className="text-sm text-gray-900 mt-1 list-disc list-inside space-y-1">
+                          {template.deliverables.map((del, index) => (
+                            <li key={index}>{del}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </>
                 );
               })()}

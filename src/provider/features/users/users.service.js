@@ -242,6 +242,48 @@ const unblockBrand = async (payload) => {
   return response.data;
 };
 
+// Auto Reply Templates
+const getAutoReplyTemplates = async () => {
+  const response = await api().get(`/user/auto-reply-templates`);
+  return response.data;
+};
+
+// Brief Templates
+const getBriefTemplates = async () => {
+  const response = await api().get(`/user/brief-templates`);
+  return response.data;
+};
+
+const createBriefTemplate = async (payload) => {
+  const response = await api().post(`/user/brief-templates`, payload);
+  return response.data;
+};
+
+const updateBriefTemplate = async ({ id, ...payload }) => {
+  const response = await api().put(`/user/brief-templates/${id}`, payload);
+  return response.data;
+};
+
+const deleteBriefTemplate = async (id) => {
+  const response = await api().delete(`/user/brief-templates/${id}`);
+  return response.data;
+};
+
+const createAutoReplyTemplate = async (payload) => {
+  const response = await api().post(`/user/auto-reply-templates`, payload);
+  return response.data;
+};
+
+const updateAutoReplyTemplate = async ({ id, ...payload }) => {
+  const response = await api().put(`/user/auto-reply-templates/${id}`, payload);
+  return response.data;
+};
+
+const deleteAutoReplyTemplate = async (id) => {
+  const response = await api().delete(`/user/auto-reply-templates/${id}`);
+  return response.data;
+};
+
 const usersService = {
   getAllUsers,
   discoverCreators,
@@ -271,6 +313,16 @@ const usersService = {
   getBlockedBrands,
   blockBrand,
   unblockBrand,
+  // auto reply templates
+  getAutoReplyTemplates,
+  createAutoReplyTemplate,
+  updateAutoReplyTemplate,
+  deleteAutoReplyTemplate,
+  // brief templates
+  getBriefTemplates,
+  createBriefTemplate,
+  updateBriefTemplate,
+  deleteBriefTemplate,
 };
 
 export default usersService;

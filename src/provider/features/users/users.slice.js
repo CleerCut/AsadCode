@@ -41,6 +41,16 @@ const initialState = {
   getBlockedBrands: { ...generalState },
   blockBrand: { ...generalState },
   unblockBrand: { ...generalState },
+  // auto reply templates
+  getAutoReplyTemplates: { ...generalState },
+  createAutoReplyTemplate: { ...generalState },
+  updateAutoReplyTemplate: { ...generalState },
+  deleteAutoReplyTemplate: { ...generalState },
+  // brief templates
+  getBriefTemplates: { ...generalState },
+  createBriefTemplate: { ...generalState },
+  updateBriefTemplate: { ...generalState },
+  deleteBriefTemplate: { ...generalState },
 };
 
 export const getAllUsers = createAsyncThunk("users/getAllUsers", async (payload, thunkAPI) => {
@@ -322,6 +332,112 @@ export const unblockBrand = createAsyncThunk("users/unblockBrand", async (payloa
   }
 });
 
+// Brief templates thunks
+export const getBriefTemplates = createAsyncThunk(
+  "users/getBriefTemplates",
+  async (_, thunkAPI) => {
+    try {
+      const response = await usersService.getBriefTemplates();
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const createBriefTemplate = createAsyncThunk(
+  "users/createBriefTemplate",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.createBriefTemplate(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateBriefTemplate = createAsyncThunk(
+  "users/updateBriefTemplate",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.updateBriefTemplate(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteBriefTemplate = createAsyncThunk(
+  "users/deleteBriefTemplate",
+  async (id, thunkAPI) => {
+    try {
+      const response = await usersService.deleteBriefTemplate(id);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+// Auto reply templates thunks
+export const getAutoReplyTemplates = createAsyncThunk(
+  "users/getAutoReplyTemplates",
+  async (_, thunkAPI) => {
+    try {
+      const response = await usersService.getAutoReplyTemplates();
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const createAutoReplyTemplate = createAsyncThunk(
+  "users/createAutoReplyTemplate",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.createAutoReplyTemplate(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateAutoReplyTemplate = createAsyncThunk(
+  "users/updateAutoReplyTemplate",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await usersService.updateAutoReplyTemplate(payload);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteAutoReplyTemplate = createAsyncThunk(
+  "users/deleteAutoReplyTemplate",
+  async (id, thunkAPI) => {
+    try {
+      const response = await usersService.deleteAutoReplyTemplate(id);
+      if (response.success) return response;
+      return thunkAPI.rejectWithValue(response);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const addContactMethod = createAsyncThunk(
   "users/addContactMethod",
   async (payload, thunkAPI) => {
@@ -416,6 +532,14 @@ export const usersSlice = createSlice({
       state.getBlockedBrands = { ...generalState };
       state.blockBrand = { ...generalState };
       state.unblockBrand = { ...generalState };
+      state.getAutoReplyTemplates = { ...generalState };
+      state.createAutoReplyTemplate = { ...generalState };
+      state.updateAutoReplyTemplate = { ...generalState };
+      state.deleteAutoReplyTemplate = { ...generalState };
+      state.getBriefTemplates = { ...generalState };
+      state.createBriefTemplate = { ...generalState };
+      state.updateBriefTemplate = { ...generalState };
+      state.deleteBriefTemplate = { ...generalState };
     },
   },
   extraReducers: (builder) => {
@@ -921,6 +1045,152 @@ export const usersSlice = createSlice({
           state.unblockBrand.isLoading = false;
           state.unblockBrand.isError = true;
           state.unblockBrand.message = action.payload?.message || "Failed to unblock brand";
+        }
+      })
+      // auto reply templates reducers
+      .addCase(getAutoReplyTemplates.pending, (state) => {
+        if (state.getAutoReplyTemplates) state.getAutoReplyTemplates.isLoading = true;
+      })
+      .addCase(getAutoReplyTemplates.fulfilled, (state, action) => {
+        if (state.getAutoReplyTemplates) {
+          state.getAutoReplyTemplates.isLoading = false;
+          state.getAutoReplyTemplates.isSuccess = true;
+          state.getAutoReplyTemplates.data = action.payload;
+        }
+      })
+      .addCase(getAutoReplyTemplates.rejected, (state, action) => {
+        if (state.getAutoReplyTemplates) {
+          state.getAutoReplyTemplates.isLoading = false;
+          state.getAutoReplyTemplates.isError = true;
+          state.getAutoReplyTemplates.message =
+            action.payload?.message || "Failed to fetch templates";
+        }
+      })
+      .addCase(createAutoReplyTemplate.pending, (state) => {
+        if (state.createAutoReplyTemplate) state.createAutoReplyTemplate.isLoading = true;
+      })
+      .addCase(createAutoReplyTemplate.fulfilled, (state, action) => {
+        if (state.createAutoReplyTemplate) {
+          state.createAutoReplyTemplate.isLoading = false;
+          state.createAutoReplyTemplate.isSuccess = true;
+          state.createAutoReplyTemplate.data = action.payload;
+        }
+      })
+      .addCase(createAutoReplyTemplate.rejected, (state, action) => {
+        if (state.createAutoReplyTemplate) {
+          state.createAutoReplyTemplate.isLoading = false;
+          state.createAutoReplyTemplate.isError = true;
+          state.createAutoReplyTemplate.message =
+            action.payload?.message || "Failed to create template";
+        }
+      })
+      .addCase(updateAutoReplyTemplate.pending, (state) => {
+        if (state.updateAutoReplyTemplate) state.updateAutoReplyTemplate.isLoading = true;
+      })
+      .addCase(updateAutoReplyTemplate.fulfilled, (state, action) => {
+        if (state.updateAutoReplyTemplate) {
+          state.updateAutoReplyTemplate.isLoading = false;
+          state.updateAutoReplyTemplate.isSuccess = true;
+          state.updateAutoReplyTemplate.data = action.payload;
+        }
+      })
+      .addCase(updateAutoReplyTemplate.rejected, (state, action) => {
+        if (state.updateAutoReplyTemplate) {
+          state.updateAutoReplyTemplate.isLoading = false;
+          state.updateAutoReplyTemplate.isError = true;
+          state.updateAutoReplyTemplate.message =
+            action.payload?.message || "Failed to update template";
+        }
+      })
+      .addCase(deleteAutoReplyTemplate.pending, (state) => {
+        if (state.deleteAutoReplyTemplate) state.deleteAutoReplyTemplate.isLoading = true;
+      })
+      .addCase(deleteAutoReplyTemplate.fulfilled, (state, action) => {
+        if (state.deleteAutoReplyTemplate) {
+          state.deleteAutoReplyTemplate.isLoading = false;
+          state.deleteAutoReplyTemplate.isSuccess = true;
+          state.deleteAutoReplyTemplate.data = action.payload;
+        }
+      })
+      .addCase(deleteAutoReplyTemplate.rejected, (state, action) => {
+        if (state.deleteAutoReplyTemplate) {
+          state.deleteAutoReplyTemplate.isLoading = false;
+          state.deleteAutoReplyTemplate.isError = true;
+          state.deleteAutoReplyTemplate.message =
+            action.payload?.message || "Failed to delete template";
+        }
+      })
+      // brief templates reducers
+      .addCase(getBriefTemplates.pending, (state) => {
+        if (state.getBriefTemplates) state.getBriefTemplates.isLoading = true;
+      })
+      .addCase(getBriefTemplates.fulfilled, (state, action) => {
+        if (state.getBriefTemplates) {
+          state.getBriefTemplates.isLoading = false;
+          state.getBriefTemplates.isSuccess = true;
+          state.getBriefTemplates.data = action.payload;
+        }
+      })
+      .addCase(getBriefTemplates.rejected, (state, action) => {
+        if (state.getBriefTemplates) {
+          state.getBriefTemplates.isLoading = false;
+          state.getBriefTemplates.isError = true;
+          state.getBriefTemplates.message =
+            action.payload?.message || "Failed to fetch brief templates";
+        }
+      })
+      .addCase(createBriefTemplate.pending, (state) => {
+        if (state.createBriefTemplate) state.createBriefTemplate.isLoading = true;
+      })
+      .addCase(createBriefTemplate.fulfilled, (state, action) => {
+        if (state.createBriefTemplate) {
+          state.createBriefTemplate.isLoading = false;
+          state.createBriefTemplate.isSuccess = true;
+          state.createBriefTemplate.data = action.payload;
+        }
+      })
+      .addCase(createBriefTemplate.rejected, (state, action) => {
+        if (state.createBriefTemplate) {
+          state.createBriefTemplate.isLoading = false;
+          state.createBriefTemplate.isError = true;
+          state.createBriefTemplate.message =
+            action.payload?.message || "Failed to create brief template";
+        }
+      })
+      .addCase(updateBriefTemplate.pending, (state) => {
+        if (state.updateBriefTemplate) state.updateBriefTemplate.isLoading = true;
+      })
+      .addCase(updateBriefTemplate.fulfilled, (state, action) => {
+        if (state.updateBriefTemplate) {
+          state.updateBriefTemplate.isLoading = false;
+          state.updateBriefTemplate.isSuccess = true;
+          state.updateBriefTemplate.data = action.payload;
+        }
+      })
+      .addCase(updateBriefTemplate.rejected, (state, action) => {
+        if (state.updateBriefTemplate) {
+          state.updateBriefTemplate.isLoading = false;
+          state.updateBriefTemplate.isError = true;
+          state.updateBriefTemplate.message =
+            action.payload?.message || "Failed to update brief template";
+        }
+      })
+      .addCase(deleteBriefTemplate.pending, (state) => {
+        if (state.deleteBriefTemplate) state.deleteBriefTemplate.isLoading = true;
+      })
+      .addCase(deleteBriefTemplate.fulfilled, (state, action) => {
+        if (state.deleteBriefTemplate) {
+          state.deleteBriefTemplate.isLoading = false;
+          state.deleteBriefTemplate.isSuccess = true;
+          state.deleteBriefTemplate.data = action.payload;
+        }
+      })
+      .addCase(deleteBriefTemplate.rejected, (state, action) => {
+        if (state.deleteBriefTemplate) {
+          state.deleteBriefTemplate.isLoading = false;
+          state.deleteBriefTemplate.isError = true;
+          state.deleteBriefTemplate.message =
+            action.payload?.message || "Failed to delete brief template";
         }
       });
   },

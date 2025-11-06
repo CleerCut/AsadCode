@@ -3,57 +3,22 @@ import CustomInput from "@/common/components/custom-input/custom-input.component
 import Modal from "@/common/components/modal/modal.component";
 import TextArea from "@/common/components/text-area/text-area.component";
 import DashboardLayout from "@/common/layouts/dashboard-layout";
-import { Eye, Info, MessageSquare, Save, Send } from "lucide-react";
-import { useState } from "react";
+import { Eye, MessageSquare, Save, Send } from "lucide-react";
+import useAutoReplyTemplate from "./use-auto-reply-template.hook";
 
 const AutoReplyTemplate = () => {
-  const [templates, setTemplates] = useState([
-    {
-      id: 1,
-      name: "Welcome Message",
-      subject: "Thank you for your interest!",
-      message:
-        "Hi there!\n\nThank you for your interest in collaborating with me. I'll review your proposal and get back to you within 24-48 hours.\n\nBest regards,\n[Your Name]",
-      isActive: true,
-    },
-  ]);
-  const [newTemplate, setNewTemplate] = useState({
-    name: "",
-    subject: "",
-    message: "",
-  });
-  const [showPreview, setShowPreview] = useState(null);
-
-  const handleInputChange = (field, value) => {
-    setNewTemplate((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const saveTemplate = () => {
-    if (newTemplate.name && newTemplate.message) {
-      setTemplates((prev) => [
-        ...prev,
-        {
-          ...newTemplate,
-          id: Date.now(),
-          isActive: false,
-        },
-      ]);
-      setNewTemplate({ name: "", subject: "", message: "" });
-    }
-    s;
-  };
-
-  const toggleActive = (templateId) => {
-    setTemplates((prev) =>
-      prev.map((template) => ({
-        ...template,
-        isActive: template.id === templateId ? !template.isActive : false,
-      }))
-    );
-  };
+  const {
+    templates,
+    newTemplate,
+    showPreview,
+    isLoading,
+    setShowPreview,
+    handleInputChange,
+    handleSave,
+    handleActivate,
+    handleDeactivate,
+    handleDelete,
+  } = useAutoReplyTemplate();
 
   return (
     <DashboardLayout>
@@ -61,22 +26,6 @@ const AutoReplyTemplate = () => {
       <div className="bg-primary p-4 rounded-lg text-white mb-4">
         <h1 className="text-xl font-bold text-white">Auto-Reply Templates</h1>
         <p className="text-sm mt-1">Create automatic response messages for campaign applications</p>
-      </div>
-
-      {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <div className="flex items-start space-x-3">
-          <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg flex-shrink-0">
-            <Info className="h-4 w-4 text-blue-600" />
-          </div>
-          <div>
-            <h3 className="font-medium text-blue-900 mb-1">Auto-Reply Settings</h3>
-            <p className="text-blue-800 text-sm leading-relaxed">
-              Set up automatic responses that will be sent to influencers when they apply to your
-              campaigns.
-            </p>
-          </div>
-        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
@@ -124,7 +73,7 @@ const AutoReplyTemplate = () => {
               text="Save Template"
               className="btn-primary w-full"
               icon={Save}
-              onClick={saveTemplate}
+              onClick={handleSave}
               disabled={!newTemplate.name || !newTemplate.message}
             />
           </div>
@@ -146,7 +95,7 @@ const AutoReplyTemplate = () => {
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
                       <h4 className="font-medium text-gray-900">{template.name}</h4>
-                      {template.isActive && (
+                      {template.is_active && (
                         <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
                           Active
                         </span>
@@ -169,15 +118,26 @@ const AutoReplyTemplate = () => {
                     <Eye className="h-3 w-3 mr-1" />
                     Preview
                   </button>
+                  {template.is_active ? (
+                    <button
+                      onClick={() => handleDeactivate(template.id)}
+                      className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200"
+                    >
+                      Deactivate
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleActivate(template.id)}
+                      className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200"
+                    >
+                      Activate
+                    </button>
+                  )}
                   <button
-                    onClick={() => toggleActive(template.id)}
-                    className={`inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md ${
-                      template.isActive
-                        ? "text-red-700 bg-red-100 hover:bg-red-200"
-                        : "text-green-700 bg-green-100 hover:bg-green-200"
-                    }`}
+                    onClick={() => handleDelete(template.id)}
+                    className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200"
                   >
-                    {template.isActive ? "Deactivate" : "Activate"}
+                    Delete
                   </button>
                 </div>
               </div>

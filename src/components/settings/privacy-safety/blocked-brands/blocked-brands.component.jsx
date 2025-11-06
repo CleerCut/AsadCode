@@ -5,160 +5,43 @@ import SimpleSelect from "@/common/components/dropdowns/simple-select/simple-sel
 import Modal from "@/common/components/modal/modal.component";
 import DashboardLayout from "@/common/layouts/dashboard-layout";
 import { isCreatorMode } from "@/common/utils/users.util";
-import {
-  AlertTriangle,
-  Ban,
-  Building2,
-  Calendar,
-  CheckCircle,
-  Clock,
-  Eye,
-  Plus,
-  Shield,
-  Trash2,
-} from "lucide-react";
-import { useState, useMemo } from "react";
+import { Ban, Building2, Calendar, CheckCircle, Plus, Shield } from "lucide-react";
 import useBlockedBrands from "./use-blocked-brands.hook";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 
-const schema = yup.object().shape({
-  email: yup.string().email("Invalid email format").required("Email is required"),
-  brand_name: yup.string().required("Brand name is required"),
-  reason: yup.string().required("Reason is required"),
-  notes: yup.string(),
-});
+// Columns and actions moved to hook
 
 const BlockedBrandsPage = () => {
+  const creatorMode = isCreatorMode();
+
   const {
-    blockedBrands,
+    filteredData,
+    stats,
+    columns,
+    actions,
+    reasonOptions,
+    getReasonColor,
+    getStatusColor,
     searchTerm,
     showAddModal,
     selectedBlocks,
     filterReason,
-    isLoading,
+    showDetailsModal,
+    selectedBrand,
+    form,
     setShowAddModal,
     setSelectedBlocks,
     setFilterReason,
     handleSearchChange,
-    handleAddBrand,
     handleUnblock,
-    handleBulkUnblock,
+    handleSelectionChange,
+    handleActionClick,
+    onSubmit,
+    handleBulkUnblockClick,
+    handleCloseAddModal,
+    openDetails,
+    closeDetails,
   } = useBlockedBrands();
 
-  const form = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      email: "",
-      brand_name: "",
-      reason: "",
-      notes: "",
-    },
-  });
-
-  const creatorMode = isCreatorMode();
-
-  // Map API data to UI format
-  const mappedBlockedBrands = useMemo(() => {
-    return (blockedBrands || []).map((brand) => ({
-      id: brand.id,
-      brandName: brand.brand_name,
-      email: brand.email,
-      reason: brand.reason,
-      dateBlocked: brand.created_at,
-      blockedBy: "user",
-      status: brand.status,
-      lastContactAttempt: brand.last_contact_attempt,
-      notes: brand.notes,
-    }));
-  }, [blockedBrands]);
-
-  // Define table columns
-  const columns = [
-    {
-      key: "brandName",
-      title: "Brand Name",
-    },
-    {
-      key: "reason",
-      title: "Reason",
-    },
-    {
-      key: "dateBlocked",
-      title: "Date Blocked",
-    },
-    {
-      key: "status",
-      title: "Status",
-    },
-    {
-      key: "lastContactAttempt",
-      title: "Last Contact Attempt",
-    },
-  ];
-
-  // Define actions
-  const actions = [
-    {
-      key: "view",
-      label: "View Details",
-      icon: <Eye size={16} />,
-    },
-    {
-      key: "unblock",
-      label: "Unblock Brand",
-      icon: <CheckCircle size={16} />,
-    },
-    {
-      key: "delete",
-      label: "Remove Block",
-      icon: <Trash2 size={16} />,
-    },
-  ];
-
-  const reasonOptions = [
-    { value: "inappropriate_content", label: "Inappropriate Content" },
-    { value: "payment_issues", label: "Payment Issues" },
-    { value: "spam_harassment", label: "Spam/Harassment" },
-    { value: "poor_communication", label: "Poor Communication" },
-    { value: "unethical_practices", label: "Unethical Practices" },
-    { value: "other", label: "Other" },
-  ];
-
-  const getReasonColor = (reason) => {
-    switch (reason) {
-      case "inappropriate_content":
-        return "bg-red-100 text-red-800";
-      case "payment_issues":
-        return "bg-orange-100 text-orange-800";
-      case "spam_harassment":
-        return "bg-purple-100 text-purple-800";
-      case "poor_communication":
-        return "bg-yellow-100 text-yellow-800";
-      case "unethical_practices":
-        return "bg-gray-100 text-gray-800";
-      case "other":
-        return "bg-blue-100 text-blue-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-red-100 text-red-800";
-      case "pending_review":
-        return "bg-yellow-100 text-yellow-800";
-      case "expired":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  // Custom cell renderers
   const customCellRenderer = {
     brandName: (value, row) => (
       <div className="flex items-center">
@@ -168,7 +51,8 @@ const BlockedBrandsPage = () => {
         <div>
           <div className="text-sm font-medium text-gray-900">{value}</div>
           <div className="text-xs text-gray-500">
-            Blocked by: {row.blockedBy === "user" ? "You" : "System"}
+            {console.log(row)}
+            {row.email}
           </div>
         </div>
       </div>
@@ -207,51 +91,6 @@ const BlockedBrandsPage = () => {
     ),
   };
 
-  // Filter data
-  const filteredData = mappedBlockedBrands.filter((brand) => {
-    const matchesSearch = brand.brandName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesReason = filterReason === "all" || brand.reason === filterReason;
-    return matchesSearch && matchesReason;
-  });
-
-  // Handle actions
-  const handleActionClick = (actionKey, row) => {
-    switch (actionKey) {
-      case "view":
-        console.log("View brand details:", row);
-        break;
-      case "unblock":
-        handleUnblock(row.email);
-        break;
-      case "delete":
-        handleUnblock(row.email);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const onSubmit = async (data) => {
-    await handleAddBrand({
-      email: data.email,
-      brand_name: data.brand_name,
-      reason: data.reason,
-      notes: data.notes,
-    });
-    form.reset();
-  };
-
-  const handleSelectionChange = (selectedIds) => {
-    setSelectedBlocks(selectedIds);
-  };
-
-  const handleBulkUnblockClick = () => {
-    const emailsToUnblock = selectedBlocks
-      .map((id) => mappedBlockedBrands.find((b) => b.id === id)?.email)
-      .filter(Boolean);
-    handleBulkUnblock(emailsToUnblock);
-  };
-
   return (
     <DashboardLayout>
       {/* Header */}
@@ -266,59 +105,35 @@ const BlockedBrandsPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg border p-4">
-          <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg mr-3">
-              <Ban className="h-5 w-5 text-red-600" />
+        {/* Total */}
+        <div className="bg-white rounded-lg border p-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="p-1.5 bg-red-100 rounded">
+                <Ban className="h-4 w-4 text-red-600" />
+              </div>
+              <span className="text-sm text-gray-700 truncate">Total Blocked</span>
             </div>
-            <div>
-              <p className="text-sm text-gray-600">Total Blocked</p>
-              <p className="text-xl font-semibold text-gray-900">{blockedBrands.length}</p>
-            </div>
+            <span className="text-base font-semibold text-gray-900">{stats.total}</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border p-4">
-          <div className="flex items-center">
-            <div className="p-2 bg-orange-100 rounded-lg mr-3">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Payment Issues</p>
-              <p className="text-xl font-semibold text-gray-900">
-                {blockedBrands.filter((b) => b.reason === "payment_issues").length}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg border p-4">
-          <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg mr-3">
-              <Shield className="h-5 w-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Spam/Harassment</p>
-              <p className="text-xl font-semibold text-gray-900">
-                {blockedBrands.filter((b) => b.reason === "spam_harassment").length}
-              </p>
+        {/* Per-reason counts (generic and modifiable) */}
+        {reasonOptions.map((r) => (
+          <div key={r.value} className="bg-white rounded-lg border p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className={`p-1.5 rounded ${getReasonColor(r.value)}`}>
+                  <Shield className="h-4 w-4" />
+                </div>
+                <span className="text-sm text-gray-700 truncate">{r.label}</span>
+              </div>
+              <span className="text-base font-semibold text-gray-900">
+                {stats.reasonCounts?.[r.value] || 0}
+              </span>
             </div>
           </div>
-        </div>
-
-        <div className="bg-white rounded-lg border p-4">
-          <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg mr-3">
-              <Clock className="h-5 w-5 text-yellow-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Pending Review</p>
-              <p className="text-xl font-semibold text-gray-900">
-                {blockedBrands.filter((b) => b.status === "pending_review").length}
-              </p>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Main Content */}
@@ -333,22 +148,25 @@ const BlockedBrandsPage = () => {
               <div className="w-full min-w-[230px]">
                 <SimpleSelect
                   placeHolder="Select a reason"
-                  options={reasonOptions}
-                  onChange={(value) => setFilterReason(value)}
+                  options={[{ value: "all", label: "All Reasons" }, ...reasonOptions]}
+                  onChange={(selected) => {
+                    const value = typeof selected === "object" ? selected.value : selected;
+                    setFilterReason(value);
+                  }}
                 />
               </div>
 
-              {selectedBlocks.length > 0 && (
+              {selectedBlocks.length > 0 && filteredData.length > 0 ? (
                 <CustomButton
                   text={`Unblock (${selectedBlocks.length})`}
                   className="btn-secondary"
                   icon={CheckCircle}
                   onClick={handleBulkUnblockClick}
                 />
-              )}
+              ) : null}
 
               <CustomButton
-                text="Block New Brand"
+                text={`Block ${creatorMode ? "Brands" : "Creators"}`}
                 className="btn-primary w-full"
                 icon={Plus}
                 onClick={() => setShowAddModal(true)}
@@ -377,10 +195,7 @@ const BlockedBrandsPage = () => {
       <Modal
         show={showAddModal}
         title={`Block New ${creatorMode ? "Brand" : "Creator"}`}
-        onClose={() => {
-          setShowAddModal(false);
-          form.reset();
-        }}
+        onClose={handleCloseAddModal}
       >
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <CustomInput
@@ -430,13 +245,10 @@ const BlockedBrandsPage = () => {
               text="Cancel"
               type="button"
               className="btn-secondary flex-1"
-              onClick={() => {
-                setShowAddModal(false);
-                form.reset();
-              }}
+              onClick={handleCloseAddModal}
             />
             <CustomButton
-              text="Block Brand"
+              text={`Block ${creatorMode ? "Brand" : "Creator"}`}
               type="submit"
               className="btn-primary flex-1"
               icon={Ban}
@@ -449,6 +261,90 @@ const BlockedBrandsPage = () => {
             />
           </div>
         </form>
+      </Modal>
+
+      {/* View Details Modal */}
+      <Modal
+        show={showDetailsModal}
+        title={selectedBrand ? selectedBrand.brandName : "Brand Details"}
+        onClose={closeDetails}
+      >
+        {selectedBrand && (
+          <div className="space-y-4">
+            {/* Header with icon and badges inline */}
+            <div className="flex items-center gap-3 pb-3 border-b border-gray-200">
+              <div className="p-1.5 rounded bg-indigo-100">
+                <Building2 className="h-4 w-4 text-indigo-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-gray-900 truncate">
+                  {selectedBrand.brandName}
+                </div>
+                <a
+                  href={`mailto:${selectedBrand.email}`}
+                  className="text-xs text-indigo-600 hover:text-indigo-700 truncate block"
+                >
+                  {selectedBrand.email}
+                </a>
+              </div>
+              <div className="flex gap-1.5">
+                <span
+                  className={`inline-flex px-2 py-0.5 text-xs font-medium rounded ${getReasonColor(selectedBrand.reason)}`}
+                >
+                  {reasonOptions.find((r) => r.value === selectedBrand.reason)?.label ||
+                    selectedBrand.reason}
+                </span>
+                <span
+                  className={`inline-flex px-2 py-0.5 text-xs font-medium rounded capitalize ${getStatusColor(selectedBrand.status)}`}
+                >
+                  {selectedBrand.status.replace("_", " ")}
+                </span>
+              </div>
+            </div>
+
+            {/* Details - compact list */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-500">Date Blocked</span>
+                <span className="text-gray-900 font-medium">
+                  {new Date(selectedBrand.dateBlocked).toLocaleDateString()}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-500">Last Contact Attempt</span>
+                <span className="text-gray-900 font-medium">
+                  {selectedBrand.lastContactAttempt ? (
+                    new Date(selectedBrand.lastContactAttempt).toLocaleDateString()
+                  ) : (
+                    <span className="text-gray-400">None</span>
+                  )}
+                </span>
+              </div>
+            </div>
+
+            {/* Notes */}
+            {selectedBrand.notes && (
+              <div className="pt-2 border-t border-gray-200">
+                <div className="text-xs text-gray-500 mb-1.5">Notes</div>
+                <div className="text-xs text-gray-900 leading-relaxed">{selectedBrand.notes}</div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2 pt-2 border-t border-gray-200">
+              <CustomButton text="Close" className="btn-cancel flex-1" onClick={closeDetails} />
+              <CustomButton
+                text="Unblock"
+                className="btn-primary flex-1"
+                icon={CheckCircle}
+                onClick={() => {
+                  handleUnblock(selectedBrand.email);
+                  closeDetails();
+                }}
+              />
+            </div>
+          </div>
+        )}
       </Modal>
 
       {/* Info Section */}
