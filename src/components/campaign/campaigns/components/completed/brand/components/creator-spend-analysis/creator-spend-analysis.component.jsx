@@ -5,10 +5,9 @@ import NotFound from "@/common/components/not-found/not-found.component";
 import { avatar, sortOptions } from "@/common/constants/auth.constant";
 import { CAMPAIGN_TYPE } from "@/common/constants/campaign.constant";
 import CampaignCreationWizard from "@/components/campaign/create-campaign/create-campaign";
-import { MapPin, Star } from "lucide-react";
-import CalendarModal from "../../../../active/calendar-modal/calendar-modal.component";
-import TaskManagerModal from "../../../../task-manager/task-manager.component";
+import { MapPin, Star, Download } from "lucide-react";
 import { useCreatorSpendAnalysisCompleted } from "./use-creator-spend-analysis.hook";
+import { useCSVExport } from "@/common/hooks/use-csv-export.hook";
 
 const CreatorSpendAnalysisCompleted = ({
   selectedCampaign,
@@ -28,10 +27,6 @@ const CreatorSpendAnalysisCompleted = ({
     getSuccessRateColor,
     handleOpenModal,
     handleCloseModal,
-    showBrandCalendar,
-    setShowBrandCalendar,
-    showTaskManager,
-    setShowTaskManager,
     getPlatformEntries,
     getPerformanceComparison,
   } = useCreatorSpendAnalysisCompleted({
@@ -41,6 +36,16 @@ const CreatorSpendAnalysisCompleted = ({
     isCompleted,
     isMultiCreator,
   });
+
+  const { exportCompletedCreators } = useCSVExport();
+
+  const handleExportCSV = () => {
+    if (selectedCampaign && creators.length > 0) {
+      exportCompletedCreators(creators, selectedCampaign);
+    }
+  };
+
+  const hasCompletedCreators = creators.length > 0;
 
   const handleSortChange = (option) => {
     if (onSortChange && option?.value) {
@@ -68,32 +73,33 @@ const CreatorSpendAnalysisCompleted = ({
 
           <div className="flex justify-between items-center gap-4">
             <div className="flex-1 max-w-sm">
-              <SimpleSelect
-                placeHolder="Select an option"
-                options={sortOptions}
-                value={
-                  currentSort
-                    ? {
-                        value: currentSort,
-                        label: sortOptions.find((opt) => opt.value === currentSort)?.label,
-                      }
-                    : null
-                }
-                onChange={handleSortChange}
-                className="w-full max-w-[400px]"
-              />
+              {isMultiCreator && (
+                <SimpleSelect
+                  placeHolder="Select an option"
+                  options={sortOptions}
+                  value={
+                    currentSort
+                      ? {
+                          value: currentSort,
+                          label: sortOptions.find((opt) => opt.value === currentSort)?.label,
+                        }
+                      : null
+                  }
+                  onChange={handleSortChange}
+                  className="w-full max-w-[400px]"
+                />
+              )}
             </div>
             <div className="flex gap-3">
-              <CustomButton
-                text="Calendar"
-                className="btn-primary"
-                onClick={() => setShowBrandCalendar(true)}
-              />
-              <CustomButton
-                text="Task Manager"
-                className="btn-outline"
-                onClick={() => setShowTaskManager(true)}
-              />
+              {isMultiCreator && (
+                <CustomButton
+                  text="Export as CSV"
+                  className="btn-outline"
+                  onClick={handleExportCSV}
+                  disabled={!selectedCampaign || !hasCompletedCreators}
+                  startIcon={<Download className="w-4 h-4" />}
+                />
+              )}
               <CustomButton
                 text="Start a new campaign"
                 className="btn-primary"
@@ -297,12 +303,6 @@ const CreatorSpendAnalysisCompleted = ({
       </div>
 
       <CampaignCreationWizard open={open} close={handleCloseModal} />
-      <CalendarModal
-        show={showBrandCalendar}
-        onClose={() => setShowBrandCalendar(false)}
-        selectedCampaign={selectedCampaign}
-      />
-      <TaskManagerModal show={showTaskManager} onClose={() => setShowTaskManager(false)} />
     </div>
   );
 };

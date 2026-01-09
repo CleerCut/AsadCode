@@ -27,6 +27,7 @@ const DeliverablesProgressCompleted = ({
     messageThreadHook,
     handleMessageClick,
     creator,
+    creatorUserId,
     privateNotes,
     editingNote,
     newNoteText,
@@ -221,14 +222,6 @@ const DeliverablesProgressCompleted = ({
       : selectedCampaign?.id;
 
     if (!campaignId) {
-      return null;
-    }
-
-    const creatorUserId = isIndividualCreator
-      ? selectedCreator?.creatorUserId || selectedCreator?.creator?.id || selectedCreator?.id
-      : selectedCreator?.creator?.id || selectedCreator?.creator_id;
-
-    if (!creatorUserId) {
       return null;
     }
 
