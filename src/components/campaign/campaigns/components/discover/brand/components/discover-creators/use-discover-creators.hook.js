@@ -406,6 +406,7 @@ export default function useDiscoverCreators() {
     showInviteModal,
     setShowInviteModal,
     selectedCreator,
+    setSelectedCreator,
     showFilterModal,
     setShowFilterModal,
     filterType,

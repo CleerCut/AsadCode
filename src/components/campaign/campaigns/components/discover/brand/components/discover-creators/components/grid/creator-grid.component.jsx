@@ -3,7 +3,10 @@ import CreatorCard from "@/components/campaign/campaigns/components/creator-card
 const CreatorGrid = ({
   creators,
   isShortlist = false,
+  isBulkMode = false,
+  selectedCreatorIds = new Set(),
   onCreatorPreview,
+  onCreatorToggle,
   onSaveToShortlist,
   onRemoveFromShortlist,
   onInviteClick,
@@ -15,7 +18,10 @@ const CreatorGrid = ({
           key={creator.id}
           creator={creator}
           isShortlist={isShortlist}
+          isBulkMode={isBulkMode}
+          isSelected={selectedCreatorIds.has(creator.id)}
           onCreatorPreview={onCreatorPreview}
+          onCreatorToggle={onCreatorToggle}
           onSaveToShortlist={onSaveToShortlist}
           onRemoveFromShortlist={onRemoveFromShortlist}
           onInviteClick={onInviteClick}

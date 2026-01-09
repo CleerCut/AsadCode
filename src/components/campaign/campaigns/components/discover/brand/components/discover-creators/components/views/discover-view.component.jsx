@@ -114,4 +114,3 @@ const DiscoverView = ({
 };
 
 export default DiscoverView;
-

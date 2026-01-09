@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sendInvitation } from "@/provider/features/invitation/invitation.slice";
+import {
+  sendInvitation,
+  sendBulkInvitations,
+} from "@/provider/features/invitation/invitation.slice";
 import { COLLABORATION_TYPE, COMPENSATION_TYPE } from "@/common/constants/campaign.constant";
 
 const useInvitationModal = () => {
@@ -10,6 +13,9 @@ const useInvitationModal = () => {
     isSuccess,
     isError,
   } = useSelector((state) => state.invitation?.sendInvitation || {});
+  const {
+    isLoading: isBulkSending,
+  } = useSelector((state) => state.invitation?.sendBulkInvitations || {});
 
   const [customMessage, setCustomMessage] = useState("");
   const [selectedCampaign, setSelectedCampaign] = useState(null);
@@ -105,10 +111,60 @@ const useInvitationModal = () => {
     }
   };
 
+  const handleBulkSubmit = async (
+    selectedCreators,
+    onInviteSent,
+    onClose,
+    collaborationType
+  ) => {
+    if (!selectedCreators || selectedCreators.length === 0) return;
+
+    // Validate based on collaboration type
+    if (collaborationType === COLLABORATION_TYPE.MULTI_CREATOR && !selectedCampaign) {
+      return;
+    }
+    if (collaborationType === COLLABORATION_TYPE.INDIVIDUAL_CREATOR && !customMessage.trim()) {
+      return;
+    }
+
+    const bulkInvitationData = {
+      creator_ids: selectedCreators.map((creator) => creator.id),
+      collaboration_type: collaborationType,
+      campaign_id:
+        collaborationType === COLLABORATION_TYPE.MULTI_CREATOR ? selectedCampaign.id : null,
+      custom_message: customMessage.trim() || null,
+    };
+
+    try {
+      const result = await dispatch(sendBulkInvitations(bulkInvitationData)).unwrap();
+
+      if (result?.success) {
+        // Call success callback if exists (for bulk invite from shortlist)
+        if (window.__bulkInviteSuccessCallback) {
+          window.__bulkInviteSuccessCallback();
+          delete window.__bulkInviteSuccessCallback;
+        }
+
+        if (onInviteSent) {
+          // Pass first creator and campaign for compatibility
+          onInviteSent(selectedCreators[0], selectedCampaign);
+        }
+
+        resetForm();
+        if (onClose) {
+          onClose();
+        }
+      }
+    } catch (error) {
+      console.error("Error sending bulk invitations:", error);
+      // Don't close modal on error - let user retry
+    }
+  };
+
   return {
     customMessage,
     setCustomMessage,
-    isSending,
+    isSending: isSending || isBulkSending,
     selectedCampaign,
     setSelectedCampaign,
     handleCampaignSelect,
@@ -116,6 +172,7 @@ const useInvitationModal = () => {
     resetForm,
     handleClose,
     handleSubmit,
+    handleBulkSubmit,
     formatCompensation,
   };
 };

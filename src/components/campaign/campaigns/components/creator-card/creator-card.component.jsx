@@ -1,12 +1,15 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import useGetplatform from "@/common/hooks/use-social-platform.hook";
-import { Bookmark, Star, User } from "lucide-react";
+import { Bookmark, Star, User, CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const CreatorCard = ({
   creator,
   isShortlist = false,
+  isBulkMode = false,
+  isSelected = false,
   onCreatorPreview,
+  onCreatorToggle,
   onSaveToShortlist,
   onRemoveFromShortlist,
   onInviteClick,
@@ -58,13 +61,48 @@ const CreatorCard = ({
     return followers;
   };
 
+  const handleCardClick = () => {
+    if (isBulkMode && onCreatorToggle) {
+      onCreatorToggle(creator.id);
+    } else {
+      onCreatorPreview(creator);
+    }
+  };
+
   return (
     <div
       className={`relative flex-shrink-0 snap-start ${
         isShortlist ? "w-full" : "w-64"
-      } rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer bg-white border border-gray-200 overflow-hidden`}
-      onClick={() => onCreatorPreview(creator)}
+      } rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer bg-white border-2 overflow-hidden ${
+        isBulkMode && isSelected
+          ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+          : "border-gray-200"
+      }`}
+      onClick={handleCardClick}
     >
+      {/* Selection Indicator - Top Right */}
+      {isBulkMode && (
+        <div className="absolute top-2 right-2 z-10">
+          <div
+            className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+              isSelected
+                ? "bg-primary border-2 border-primary"
+                : "bg-white border-2 border-gray-300"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onCreatorToggle) {
+                onCreatorToggle(creator.id);
+              }
+            }}
+          >
+            {isSelected && (
+              <CheckCircle2 className="w-4 h-4 text-white fill-current" />
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Cover Images Section */}
       <div className="relative h-32 bg-gray-100 overflow-hidden">
         {creator.portfolioImages && creator.portfolioImages.length >= 3 ? (

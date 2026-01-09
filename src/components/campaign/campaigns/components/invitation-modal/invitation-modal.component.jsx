@@ -11,10 +11,12 @@ const InvitationModal = ({
   isOpen,
   onClose,
   selectedCreator,
+  selectedCreators = null, // Array for bulk invites
   userCampaigns = [],
   onInviteSent,
 }) => {
   const [invitationType, setInvitationType] = useState(COLLABORATION_TYPE.MULTI_CREATOR);
+  const isBulkInvite = Array.isArray(selectedCreators) && selectedCreators.length > 0;
 
   const {
     customMessage,
@@ -24,6 +26,7 @@ const InvitationModal = ({
     handleCampaignSelect,
     handleClose,
     handleSubmit,
+    handleBulkSubmit,
     formatCompensation,
     resetForm,
   } = useInvitationModal();
@@ -58,29 +61,48 @@ const InvitationModal = ({
     <Modal show={isOpen} title="Invite to Apply" onClose={handleModalClose} size="md">
       <div className="space-y-4">
         {/* Creator Info */}
-        <div className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg">
-          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
-            {selectedCreator?.profileImage ? (
-              <img
-                src={selectedCreator.profileImage}
-                alt="Creator"
-                className="w-full h-full object-cover"
-              />
-            ) : (
+        {!isBulkInvite && selectedCreator && (
+          <div className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+              {selectedCreator?.profileImage ? (
+                <img
+                  src={selectedCreator.profileImage}
+                  alt="Creator"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-5 h-5 text-white" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-medium text-gray-900 text-sm">
+                {selectedCreator?.first_name && selectedCreator?.last_name
+                  ? `${selectedCreator.first_name} ${selectedCreator.last_name}`
+                  : selectedCreator?.name || "Creator"}
+              </h3>
+              <p className="text-xs text-gray-500">
+                {selectedCreator?.niches?.map((niche) => niche).join(", ") || "N/A"}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Bulk Invite Info */}
+        {isBulkInvite && (
+          <div className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
               <User className="w-5 h-5 text-white" />
-            )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-medium text-gray-900 text-sm">
+                {selectedCreators.length} Creator{selectedCreators.length !== 1 ? "s" : ""} Selected
+              </h3>
+              <p className="text-xs text-gray-500">
+                Send invitation to all selected creators
+              </p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-gray-900 text-sm">
-              {selectedCreator?.first_name && selectedCreator?.last_name
-                ? `${selectedCreator.first_name} ${selectedCreator.last_name}`
-                : selectedCreator?.name || "Creator"}
-            </h3>
-            <p className="text-xs text-gray-500">
-              {selectedCreator?.niches?.map((niche) => niche).join(", ") || "N/A"}
-            </p>
-          </div>
-        </div>
+        )}
 
         {/* Invitation Type Selection */}
         <div>
@@ -245,10 +267,25 @@ const InvitationModal = ({
             disabled={isSending}
           />
           <CustomButton
-            text={isSending ? "Sending..." : "Send Invitation"}
+            text={
+              isSending
+                ? "Sending..."
+                : isBulkInvite
+                  ? `Send Invitations (${selectedCreators.length})`
+                  : "Send Invitation"
+            }
             className="btn-primary"
             onClick={async () => {
-              await handleSubmit(selectedCreator, onInviteSent, handleModalClose, invitationType);
+              if (isBulkInvite) {
+                await handleBulkSubmit(
+                  selectedCreators,
+                  onInviteSent,
+                  handleModalClose,
+                  invitationType
+                );
+              } else {
+                await handleSubmit(selectedCreator, onInviteSent, handleModalClose, invitationType);
+              }
             }}
             disabled={isSending || !canSubmit()}
             startIcon={

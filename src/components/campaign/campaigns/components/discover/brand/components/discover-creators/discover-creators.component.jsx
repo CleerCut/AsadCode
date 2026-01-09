@@ -35,6 +35,7 @@ function DiscoverCreators({
     showInviteModal,
     setShowInviteModal,
     selectedCreator,
+    setSelectedCreator,
     showFilterModal,
     setShowFilterModal,
     filterType,
@@ -80,6 +81,18 @@ function DiscoverCreators({
           onSaveToShortlist={handleSaveToShortlist}
           onRemoveFromShortlist={handleRemoveFromShortlist}
           onInviteClick={handleInviteClick}
+          onBulkInvite={(selectedCreators, onSuccess) => {
+            // Set selectedCreator as array for bulk invite
+            if (Array.isArray(selectedCreators)) {
+              setSelectedCreator(selectedCreators);
+              setShowInviteModal(true);
+              // Store callback for after invite is sent
+              if (onSuccess) {
+                window.__bulkInviteSuccessCallback = onSuccess;
+              }
+            }
+          }}
+          userCampaigns={userCampaigns}
         />
       )}
 
@@ -153,8 +166,15 @@ function DiscoverCreators({
 
       <InvitationModal
         isOpen={showInviteModal}
-        onClose={() => setShowInviteModal(false)}
-        selectedCreator={selectedCreator}
+        onClose={() => {
+          setShowInviteModal(false);
+          // Clear bulk invite callback
+          if (window.__bulkInviteSuccessCallback) {
+            delete window.__bulkInviteSuccessCallback;
+          }
+        }}
+        selectedCreator={Array.isArray(selectedCreator) ? null : selectedCreator}
+        selectedCreators={Array.isArray(selectedCreator) ? selectedCreator : null}
         userCampaigns={userCampaigns}
         onInviteSent={handleInviteToApply}
       />
