@@ -1,26 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  X,
-  Send,
-  Phone,
-  Video,
-  MoreHorizontal,
-  Paperclip,
-  Smile,
-  Search,
-  FileText,
-  Image as ImageIcon,
-} from "lucide-react";
-import EmojiPicker from "emoji-picker-react";
-import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
-import DoneAllIcon from "@mui/icons-material/DoneAll";
+import Loader from "@/common/components/loader/loader.component";
+import { getUser } from "@/common/utils/users.util";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import SendIcon from "@mui/icons-material/Send";
 import { IconButton } from "@mui/material";
-import CustomInput from "@/common/components/custom-input/custom-input.component";
-import Loader from "@/common/components/loader/loader.component";
-import { getUser } from "@/common/utils/users.util";
+import EmojiPicker from "emoji-picker-react";
+import {
+  FileText,
+  Image as ImageIcon,
+  MoreHorizontal,
+  Phone,
+  Search,
+  Video,
+  X,
+  Files,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import MessageTemplatesModal from "../message-templates-modal/message-templates-modal.component";
 
 const MessageThreadModal = ({
   isOpen,
@@ -54,6 +52,9 @@ const MessageThreadModal = ({
   const [localShowEmojiPicker, setLocalShowEmojiPicker] = useState(false);
   const actualShowEmojiPicker =
     showEmojiPicker !== undefined ? showEmojiPicker : localShowEmojiPicker;
+
+  // Template modal state
+  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
 
   // Refs for click outside
   const emojiPickerRef = useRef(null);
@@ -111,6 +112,17 @@ const MessageThreadModal = ({
       e.preventDefault();
       sendMessage();
     }
+  };
+
+  const handleTemplateSelect = (templateText) => {
+    // Replace {{creator_name}} with actual creator name
+    const creatorDisplayName = creator?.name || creator?.first_name || "there";
+    const finalMessage = templateText.replace(/\{\{creator_name\}\}/g, creatorDisplayName);
+
+    if (typeof setNewMessage === "function") {
+      setNewMessage(finalMessage);
+    }
+    setShowTemplatesModal(false);
   };
 
   const formatMessageTime = (timestamp) => {
@@ -449,12 +461,21 @@ const MessageThreadModal = ({
                 className="text-gray-500 hover:text-primary"
                 onClick={openFilePicker}
                 disabled={isUploading}
+                title="Attach file"
               >
                 {isUploading ? (
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <AttachFileIcon fontSize="small" />
                 )}
+              </IconButton>
+              <IconButton
+                size="small"
+                className="text-gray-500 hover:text-primary"
+                onClick={() => setShowTemplatesModal(true)}
+                title="Templates"
+              >
+                <Files className="w-4 h-4" />
               </IconButton>
               <IconButton
                 ref={emojiButtonRef}
@@ -467,6 +488,7 @@ const MessageThreadModal = ({
                     setLocalShowEmojiPicker((prev) => !prev);
                   }
                 }}
+                title="Emoji"
               >
                 <EmojiEmotionsIcon fontSize="small" />
               </IconButton>
@@ -500,6 +522,14 @@ const MessageThreadModal = ({
           </div>
         </div>
       </div>
+
+      {/* Message Templates Modal */}
+      <MessageTemplatesModal
+        isOpen={showTemplatesModal}
+        onClose={() => setShowTemplatesModal(false)}
+        onSelectTemplate={handleTemplateSelect}
+        creatorName={creator?.name || creator?.first_name || null}
+      />
     </div>
   );
 };
