@@ -16,6 +16,7 @@ const CreatorCard = ({
   onReinstateClick,
   onViewNotesClick,
   isReinstateLoading = false,
+  isInvited = false,
 }) => {
   const router = useRouter();
   const { getPlatformIcon } = useGetplatform();
@@ -128,12 +129,19 @@ const CreatorCard = ({
         </div>
 
         {/* Applied Date (Applications tab) */}
-        {tab === "applications" && appliedDate && (
+        {tab === "applications" && (
           <div className="flex flex-col justify-center items-center text-center gap-1.5">
-            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-medium">
-              <div className="w-1.5 h-1.5 bg-gray-600 rounded-full"></div>
-              Applied on {appliedDate}
-            </span>
+            {isInvited && (
+              <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-green-100 text-green-700 text-xs font-medium">
+                Invited
+              </span>
+            )}
+            {appliedDate && (
+              <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-medium">
+                <div className="w-1.5 h-1.5 bg-gray-600 rounded-full"></div>
+                Applied on {appliedDate}
+              </span>
+            )}
           </div>
         )}
 

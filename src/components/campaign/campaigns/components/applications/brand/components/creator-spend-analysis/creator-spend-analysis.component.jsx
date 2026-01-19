@@ -21,6 +21,8 @@ const CreatorSpendAnalysis = ({
   onFilterChange,
   onClearFilters,
   fetchIndividualCollaborations: fetchFromHook,
+  onSwitchToRejected,
+  sortedCreators,
 }) => {
   const {
     open,
@@ -157,48 +159,110 @@ const CreatorSpendAnalysis = ({
                   />
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
-                  {individualCollaborations.map((invitation) => {
-                    const mapped = mapCreatorForCard(invitation);
-                    return (
-                      <div key={invitation.id} onClick={() => handleCreatorPreview(invitation)}>
-                        <CreatorCard
-                          creator={mapped}
-                          tab="applications"
-                          appliedDate={mapped.appliedDate}
-                          onCreatorPreview={handleCreatorPreview}
-                          onSaveToShortlist={handleSaveToShortlist}
-                          onRemoveFromShortlist={() => {}}
-                          onInviteClick={() => {}}
-                        />
-                      </div>
-                    );
-                  })}
+                <div className="space-y-6 mb-8">
+                  <div>
+                    <div className="text-xs font-medium text-gray-500 mb-3 px-1">
+                      Invited by you
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {individualCollaborations.map((invitation) => {
+                        const mapped = mapCreatorForCard(invitation);
+                        return (
+                          <div key={invitation.id} onClick={() => handleCreatorPreview(invitation)}>
+                            <CreatorCard
+                              creator={mapped}
+                              tab="applications"
+                              appliedDate={mapped.appliedDate}
+                              isInvited={true}
+                              onCreatorPreview={handleCreatorPreview}
+                              onSaveToShortlist={handleSaveToShortlist}
+                              onRemoveFromShortlist={() => {}}
+                              onInviteClick={() => {}}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               )
             ) : (
               <>
                 {appliedCreatorsLoading ? (
                   <Loading />
-                ) : Array.isArray(appliedCreatorsData?.data) &&
-                  appliedCreatorsData.data.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
-                    {appliedCreatorsData.data.map((creator) => {
-                      const mapped = mapCreatorForCard(creator);
+                ) : Array.isArray(sortedCreators) && sortedCreators.length > 0 ? (
+                  <div className="space-y-6 mb-8">
+                    {/* Separate invited and non-invited creators */}
+                    {(() => {
+                      const invitedCreators = sortedCreators.filter((c) => c.isInvited);
+                      const organicCreators = sortedCreators.filter((c) => !c.isInvited);
+
                       return (
-                        <div key={creator.id} onClick={() => handleCreatorPreview(creator)}>
-                          <CreatorCard
-                            creator={mapped}
-                            tab="applications"
-                            appliedDate={mapped.appliedDate}
-                            onCreatorPreview={handleCreatorPreview}
-                            onSaveToShortlist={handleSaveToShortlist}
-                            onRemoveFromShortlist={() => {}}
-                            onInviteClick={() => {}}
-                          />
-                        </div>
+                        <>
+                          {invitedCreators.length > 0 && (
+                            <div>
+                              <div className="text-xs font-medium text-gray-500 mb-3 px-1">
+                                Invited by you
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                                {invitedCreators.map((creator) => {
+                                  const mapped = mapCreatorForCard(creator);
+                                  return (
+                                    <div
+                                      key={creator.id}
+                                      onClick={() => handleCreatorPreview(creator)}
+                                    >
+                                      <CreatorCard
+                                        creator={mapped}
+                                        tab="applications"
+                                        appliedDate={mapped.appliedDate}
+                                        isInvited={true}
+                                        onCreatorPreview={handleCreatorPreview}
+                                        onSaveToShortlist={handleSaveToShortlist}
+                                        onRemoveFromShortlist={() => {}}
+                                        onInviteClick={() => {}}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {organicCreators.length > 0 && (
+                            <div>
+                              {invitedCreators.length > 0 && (
+                                <div className="text-xs font-medium text-gray-500 mb-3 px-1 mt-6">
+                                  Organic Applications
+                                </div>
+                              )}
+                              <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                                {organicCreators.map((creator) => {
+                                  const mapped = mapCreatorForCard(creator);
+                                  return (
+                                    <div
+                                      key={creator.id}
+                                      onClick={() => handleCreatorPreview(creator)}
+                                    >
+                                      <CreatorCard
+                                        creator={mapped}
+                                        tab="applications"
+                                        appliedDate={mapped.appliedDate}
+                                        isInvited={false}
+                                        onCreatorPreview={handleCreatorPreview}
+                                        onSaveToShortlist={handleSaveToShortlist}
+                                        onRemoveFromShortlist={() => {}}
+                                        onInviteClick={() => {}}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </>
                       );
-                    })}
+                    })()}
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-20">

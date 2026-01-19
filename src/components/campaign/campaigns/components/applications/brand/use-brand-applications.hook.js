@@ -405,6 +405,19 @@ function useBrandApplications() {
 
   const creators = Array.isArray(appliedCreatorsData?.data) ? appliedCreatorsData.data : [];
 
+  // Sort creators: invited first, then by existing sort logic
+  const sortedCreators = [...creators].sort((a, b) => {
+    const aIsInvited = a.isInvited || false;
+    const bIsInvited = b.isInvited || false;
+
+    // Invited creators come first
+    if (aIsInvited && !bIsInvited) return -1;
+    if (!aIsInvited && bIsInvited) return 1;
+
+    // If both have same invitation status, maintain existing order (by applied_at or other criteria)
+    return 0;
+  });
+
   const individualCreators = individualCollaborations.map((invitation) => ({
     ...invitation,
     creator: invitation.creator,
@@ -412,12 +425,13 @@ function useBrandApplications() {
     campaign: invitation.campaign,
     applied_at: invitation.created_at,
     status: invitation.status || "PENDING",
+    isInvited: true, // Individual collaborations are always invited
   }));
 
   const displayCreators =
     selectedCampaign?.collaboration_type === COLLABORATION_TYPE.INDIVIDUAL_CREATOR
       ? individualCreators
-      : creators;
+      : sortedCreators;
 
   useEffect(() => {
     if (
@@ -555,6 +569,7 @@ function useBrandApplications() {
     sendContractError,
     filters,
     creators: displayCreators,
+    sortedCreators: sortedCreators,
     creator,
     messageThreadHook,
     rightPaneState,

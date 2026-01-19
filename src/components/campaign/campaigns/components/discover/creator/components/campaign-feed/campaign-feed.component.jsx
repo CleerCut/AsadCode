@@ -251,19 +251,21 @@ function CampaignFeed() {
             </h4>
             <p className="text-sm text-gray-600">{applicationCampaign?.title}</p>
           </div>
-          <div className="space-y-2">
-            <h5 className="text-xs font-semibold text-gray-900 mb-2">Questions</h5>
-            <div className="flex flex-col gap-1 text-xs">
-              {applicationCampaign?.questions.map((question) => (
-                <span
-                  key={question}
-                  className="px-2 py-1 rounded-md bg-gray-100 text-gray-600 text-xs"
-                >
-                  {question}
-                </span>
-              ))}
+          {applicationCampaign?.questions.length > 0 && (
+            <div className="space-y-2">
+              <h5 className="text-xs font-semibold text-gray-900 mb-2">Questions</h5>
+              <div className="flex flex-col gap-1 text-xs">
+                {applicationCampaign?.questions.map((question) => (
+                  <span
+                    key={question}
+                    className="px-2 py-1 rounded-md bg-gray-100 text-gray-600 text-xs"
+                  >
+                    {question}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           <TextArea
             label="Your Pitch (Optional)"
             placeholder="Write your pitch here or use a saved template..."

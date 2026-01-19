@@ -1,6 +1,7 @@
 import ViewHeader from "../headers/view-header.component";
 import CreatorGrid from "../grid/creator-grid.component";
 import NotFound from "@/common/components/not-found/not-found.component";
+import PredictedPerformancePanel from "../../../shortlist-view/predicted-performance-panel.component";
 
 const ShortlistView = ({
   selectedShortlist,
@@ -12,6 +13,7 @@ const ShortlistView = ({
   onInviteClick,
 }) => {
   const sortedCreators = getSortedCreators();
+  const shortlistUsers = selectedShortlist?.users || [];
 
   return (
     <div className="space-y-4">
@@ -21,6 +23,12 @@ const ShortlistView = ({
         showBackButton={true}
         onBackClick={onBackClick}
       />
+      
+      {/* Predicted Performance Panel */}
+      {shortlistUsers.length > 0 && (
+        <PredictedPerformancePanel shortlistUsers={shortlistUsers} />
+      )}
+
       {sortedCreators.length === 0 ? (
         <NotFound
           title="No Creators Found"

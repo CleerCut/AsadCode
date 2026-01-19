@@ -40,6 +40,7 @@ function BrandApplications() {
     clearFilters,
     handleMessageClick,
     fetchIndividualCollaborations,
+    sortedCreators,
   } = useBrandApplications();
 
   const renderRightPane = () => {
@@ -84,6 +85,7 @@ function BrandApplications() {
         onFilterChange={handleFilterChange}
         onClearFilters={clearFilters}
         fetchIndividualCollaborations={fetchIndividualCollaborations}
+        sortedCreators={sortedCreators}
       />
 
       {renderRightPane()}
