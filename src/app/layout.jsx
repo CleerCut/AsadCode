@@ -1,6 +1,7 @@
 "use client";
 
 import FullPageLoader from "@/common/components/full-page-loader/full-page-loader.component";
+import ErrorBoundary from "@/common/components/error-boundary/error-boundary.component";
 import "@/common/styles/dashboard/dashboard.style.css";
 import "@/common/styles/globals.style.css";
 import "@/common/styles/home.style.scss";
@@ -81,25 +82,27 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <StyledEngineProvider injectFirst>
-          <SnackbarProvider
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            autoHideDuration={8000}
-            maxSnack={3}
-            Components={{
-              success: StyledMaterialDesignContent,
-              error: StyledMaterialDesignContent,
-            }}
-          >
-            <Provider store={store}>
-              <PersistGate loading={null} persistor={persistor}>
-                <ChatProvider>
-                  <LayoutWrapper>{children}</LayoutWrapper>
-                </ChatProvider>
-              </PersistGate>
-            </Provider>
-          </SnackbarProvider>
-        </StyledEngineProvider>
+        <ErrorBoundary>
+          <StyledEngineProvider injectFirst>
+            <SnackbarProvider
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              autoHideDuration={8000}
+              maxSnack={3}
+              Components={{
+                success: StyledMaterialDesignContent,
+                error: StyledMaterialDesignContent,
+              }}
+            >
+              <Provider store={store}>
+                <PersistGate loading={null} persistor={persistor}>
+                  <ChatProvider>
+                    <LayoutWrapper>{children}</LayoutWrapper>
+                  </ChatProvider>
+                </PersistGate>
+              </Provider>
+            </SnackbarProvider>
+          </StyledEngineProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

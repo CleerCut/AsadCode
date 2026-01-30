@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import * as Sentry from "@sentry/nextjs";
 import { enqueueSnackbar } from "notistack";
 import { getAccessToken } from "./access-token.util";
 import { delay } from "./generic.util";
@@ -49,20 +50,53 @@ const api = (headers = null) => {
       // Network issues
       if (error.message === "Network Error") {
         enqueueSnackbar(error.message, { variant: "error" });
+        
+        // Send to Sentry if enabled
+        const sentryEnabled = process.env.NEXT_PUBLIC_SENTRY_ENABLED === "true";
+        if (sentryEnabled) {
+          Sentry.captureException(error, {
+            tags: {
+              errorType: "network_error",
+            },
+            extra: {
+              url: error.config?.url,
+              method: error.config?.method,
+            },
+          });
+        }
+        
         throw error;
       }
 
       const message = error.response?.data?.message || error.message || error.toString();
+      const statusCode = error.response?.status;
 
       const responseURL = error.request?.responseURL;
 
-      if (responseURL.includes("onboarding")) return null;
+      if (responseURL?.includes("onboarding")) return null;
 
       // Handle unauthorized
-      if (error.response?.status === 401) {
+      if (statusCode === 401) {
         removeUser();
         window.location.href = "/login";
         return;
+      }
+
+      // Send to Sentry if enabled (only for server errors 500+)
+      const sentryEnabled = process.env.NEXT_PUBLIC_SENTRY_ENABLED === "true";
+      if (sentryEnabled && statusCode >= 500) {
+        Sentry.captureException(error, {
+          tags: {
+            errorType: "api_error",
+            statusCode,
+          },
+          extra: {
+            url: error.config?.url,
+            method: error.config?.method,
+            message,
+            responseData: error.response?.data,
+          },
+        });
       }
 
       // Handle message display
