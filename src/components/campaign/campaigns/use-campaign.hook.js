@@ -8,7 +8,8 @@ function useCampaign() {
   const [activeTab, setActiveTab] = useState(tab || 1);
 
   const mainTabs = useMemo(() => {
-    const brandTabs = [
+    // Campaign tabs
+    const tabs = [
       { id: 1, label: "Discover+" },
       { id: 2, label: "Applications" },
       { id: 3, label: "Active" },
@@ -22,7 +23,7 @@ function useCampaign() {
       { id: 4, label: "Applications" },
     ];
 
-    return isCreatorMode() ? creatorTabs : brandTabs;
+    return isCreatorMode() ? creatorTabs : tabs;
   }, []);
 
   useEffect(() => {
