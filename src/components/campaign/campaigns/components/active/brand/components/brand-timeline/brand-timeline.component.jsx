@@ -6,7 +6,13 @@ import { AlertCircle, CheckCircle, Circle, Lock, MessageSquare } from "lucide-re
 import React from "react";
 import useBrandTimeline from "./use-brand-timeline.hook";
 
-const BrandTimelineSteps = ({ campaignId, creatorId }) => {
+const BrandTimelineSteps = ({
+  campaignId,
+  creatorId,
+  onMarkCompleteClick = null,
+  isMarkCompleteDisabled = false,
+  isMarkingComplete = false,
+}) => {
   const {
     timelineSteps,
     timelineLoading,
@@ -189,10 +195,18 @@ const BrandTimelineSteps = ({ campaignId, creatorId }) => {
                   </a>
                 )}
                 <CustomButton
-                  text={completeLoading ? "Completing..." : "Complete"}
-                  onClick={handleMarkAsComplete}
+                  text={
+                    completeLoading || isMarkingComplete
+                      ? "Completing..."
+                      : "Complete"
+                  }
+                  onClick={() => {
+                    handleMarkAsComplete();
+                    if (onMarkCompleteClick) onMarkCompleteClick();
+                  }}
                   className="btn-success w-full !h-7 text-xs"
-                  disabled={completeLoading}
+                  disabled={completeLoading || isMarkingComplete}
+                  title={isMarkCompleteDisabled ? "Final content must be published before completion" : ""}
                 />
               </div>
             )}

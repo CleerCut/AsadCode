@@ -158,13 +158,6 @@ const DeliverablesProgress = ({
       <h4 className="text-sm font-semibold text-gray-800 mb-2">Quick Actions</h4>
       <div className="flex gap-2">
         <CustomButton text="Message" className="btn-primary w-full" onClick={handleMessageClick} />
-        <CustomButton
-          text="Mark Complete"
-          onClick={handleMarkCompleteClick}
-          className={isMarkCompleteDisabled ? "btn-disabled w-full" : "btn-primary w-full"}
-          disabled={isMarkCompleteDisabled}
-          title={isMarkCompleteDisabled ? "Final content must be published before completion" : ""}
-        />
       </div>
     </div>
   );
@@ -292,7 +285,13 @@ const DeliverablesProgress = ({
     return (
       <div className="bg-white rounded border p-3">
         <h4 className="text-sm font-semibold text-gray-800 mb-2">Timeline</h4>
-        <BrandTimelineSteps campaignId={campaignId} creatorId={creatorUserId} />
+        <BrandTimelineSteps
+          campaignId={campaignId}
+          creatorId={creatorUserId}
+          onMarkCompleteClick={handleMarkCompleteClick}
+          isMarkCompleteDisabled={isMarkCompleteDisabled}
+          isMarkingComplete={isMarkingComplete}
+        />
       </div>
     );
   };
