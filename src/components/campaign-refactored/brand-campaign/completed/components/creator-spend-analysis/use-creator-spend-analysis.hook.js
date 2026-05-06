@@ -1,4 +1,5 @@
 import { CAMPAIGN_TYPE } from "@/common/constants/campaign.constant";
+import useCSVExport from "@/common/hooks/use-csv-export.hook";
 import { formatFollowers } from "@/common/utils/format.utils";
 import { buildCreatorPublishedMetricsMap } from "@/common/utils/published-campaign-metrics.util";
 import { fetchCampaignPerformanceMetrics } from "@/provider/features/phyllo/phyllo.slice";
@@ -39,6 +40,7 @@ export const useCreatorSpendAnalysisCompleted = ({
 }) => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const { exportCompletedCreators } = useCSVExport();
   const hookData = useCreatorSpendAnalysis(
     selectedCampaign,
     isCompleted,
@@ -247,6 +249,24 @@ export const useCreatorSpendAnalysisCompleted = ({
     return String(value);
   };
 
+  const hasCompletedCreators =
+    Boolean(selectedCampaign?.id) &&
+    Array.isArray(hookData.creators) &&
+    hookData.creators.length > 0;
+
+  const handleExportCSV = useCallback(() => {
+    if (!selectedCampaign || !hasCompletedCreators) return;
+    exportCompletedCreators(hookData.creators, selectedCampaign, {
+      getCreatorMetrics,
+    });
+  }, [
+    exportCompletedCreators,
+    getCreatorMetrics,
+    hasCompletedCreators,
+    hookData.creators,
+    selectedCampaign,
+  ]);
+
   return {
     ...hookData,
     open,
@@ -258,5 +278,7 @@ export const useCreatorSpendAnalysisCompleted = ({
     getCreatorComparisons,
     campaignAverages,
     formatMetricValue,
+    hasCompletedCreators,
+    handleExportCSV,
   };
 };

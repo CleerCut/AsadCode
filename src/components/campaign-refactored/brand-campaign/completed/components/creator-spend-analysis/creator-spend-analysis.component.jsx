@@ -4,10 +4,8 @@ import { Skeleton } from "@/common/components/loader/skeleton-loader.component";
 import NotFound from "@/common/components/not-found/not-found.component";
 import { sortOptions } from "@/common/constants/auth.constant";
 import { CAMPAIGN_TYPE } from "@/common/constants/campaign.constant";
-import CalendarModal from "@/components/campaign-refactored/brand-campaign/active/components/calendar-modal/calendar-modal.component";
-import TaskManagerModal from "@/components/campaign-refactored/brand-campaign/active/components/task-manager/task-manager.component";
 import CampaignCreationWizard from "@/components/campaign-refactored/shared/create-campaign/create-campaign.component";
-import { ExternalLink, MapPin, Star } from "lucide-react";
+import { Download, ExternalLink, MapPin, Star } from "lucide-react";
 import { useCreatorSpendAnalysisCompleted } from "./use-creator-spend-analysis.hook";
 
 const CreatorSpendAnalysisCompleted = ({
@@ -29,10 +27,8 @@ const CreatorSpendAnalysisCompleted = ({
     getSuccessRateColor,
     handleOpenModal,
     handleCloseModal,
-    showBrandCalendar,
-    setShowBrandCalendar,
-    showTaskManager,
-    setShowTaskManager,
+    hasCompletedCreators,
+    handleExportCSV,
     isUgc,
     getCreatorMetrics,
     getCreatorComparisons,
@@ -51,18 +47,31 @@ const CreatorSpendAnalysisCompleted = ({
     <div className="flex min-h-0 flex-1 flex-col bg-gradient-to-b from-gray-100 to-gray-50/80">
       <div className="sticky top-0 z-10 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm">
         <div className="p-2.5 sm:p-4">
-          <div className="mb-2 sm:mb-3">
-            <h1 className="text-sm font-semibold text-gray-900 sm:text-lg md:text-xl">
-              Creator Analysis
-            </h1>
-            <p className="text-[10px] leading-snug text-gray-500 sm:text-xs md:text-sm">
-              Review campaign results and individual performance.
-            </p>
+          <div
+            className={`mb-2 sm:mb-3 ${!isMultiCreator ? "flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3" : ""}`}
+          >
+            <div className="min-w-0 flex-1">
+              <h1 className="text-sm font-semibold text-gray-900 sm:text-lg md:text-xl">
+                Creator Analysis
+              </h1>
+              <p className="text-[10px] leading-snug text-gray-500 sm:text-xs md:text-sm">
+                Review campaign results and individual performance.
+              </p>
+            </div>
+            {!isMultiCreator && (
+              <div className="flex shrink-0 justify-end sm:items-start sm:pt-0.5">
+                <CustomButton
+                  text="Start a new campaign"
+                  className="btn-primary w-full sm:w-auto sm:min-w-0"
+                  onClick={handleOpenModal}
+                />
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-            <div className="min-w-0 flex-1 sm:max-w-xs md:max-w-sm">
-              {isMultiCreator && (
+          {isMultiCreator && (
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+              <div className="min-w-0 flex-1 sm:max-w-xs md:max-w-sm">
                 <SimpleSelect
                   placeHolder="Select an option"
                   options={sortOptions}
@@ -77,26 +86,23 @@ const CreatorSpendAnalysisCompleted = ({
                   onChange={handleSortChange}
                   className="w-full"
                 />
-              )}
+              </div>
+              <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
+                <CustomButton
+                  text="Export as CSV"
+                  className="btn-outline flex-1 sm:flex-none sm:w-auto"
+                  onClick={handleExportCSV}
+                  disabled={!selectedCampaign || !hasCompletedCreators}
+                  startIcon={<Download className="h-4 w-4" />}
+                />
+                <CustomButton
+                  text="Start a new campaign"
+                  className="btn-primary w-full sm:w-auto sm:min-w-0"
+                  onClick={handleOpenModal}
+                />
+              </div>
             </div>
-            <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
-              <CustomButton
-                text="Calendar"
-                className="btn-primary flex-1 sm:flex-none sm:w-auto"
-                onClick={() => setShowBrandCalendar(true)}
-              />
-              <CustomButton
-                text="Task Manager"
-                className="btn-outline flex-1 sm:flex-none sm:w-auto"
-                onClick={() => setShowTaskManager(true)}
-              />
-              <CustomButton
-                text="Start a new campaign"
-                className="btn-primary w-full sm:w-auto"
-                onClick={handleOpenModal}
-              />
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -573,16 +579,6 @@ const CreatorSpendAnalysisCompleted = ({
       </div>
 
       <CampaignCreationWizard open={open} close={handleCloseModal} />
-      <CalendarModal
-        show={showBrandCalendar}
-        onClose={() => setShowBrandCalendar(false)}
-        selectedCampaign={selectedCampaign}
-      />
-      <TaskManagerModal
-        show={showTaskManager}
-        onClose={() => setShowTaskManager(false)}
-        isMultiCreator={isMultiCreator}
-      />
     </div>
   );
 };
