@@ -128,6 +128,8 @@ export default function useDiscoverCreators() {
   const [open, setOpen] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedCreator, setSelectedCreator] = useState(null);
+  const [selectedCreatorsForBulkInvite, setSelectedCreatorsForBulkInvite] = useState([]);
+  const [bulkInviteSuccessHandler, setBulkInviteSuccessHandler] = useState(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [filterType, setFilterType] = useState("creator");
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -382,7 +384,18 @@ export default function useDiscoverCreators() {
 
   const handleInviteClick = useCallback((creator, e) => {
     e.stopPropagation();
+    setSelectedCreatorsForBulkInvite([]);
+    setBulkInviteSuccessHandler(null);
     setSelectedCreator(creator);
+    setShowInviteModal(true);
+  }, []);
+
+  const handleBulkInviteClick = useCallback((creators = [], onSuccess) => {
+    const validCreators = Array.isArray(creators) ? creators.filter(Boolean) : [];
+    if (validCreators.length === 0) return;
+    setSelectedCreator(validCreators[0]);
+    setSelectedCreatorsForBulkInvite(validCreators);
+    setBulkInviteSuccessHandler(() => (typeof onSuccess === "function" ? onSuccess : null));
     setShowInviteModal(true);
   }, []);
 
@@ -494,6 +507,10 @@ export default function useDiscoverCreators() {
     showInviteModal,
     setShowInviteModal,
     selectedCreator,
+    selectedCreatorsForBulkInvite,
+    setSelectedCreatorsForBulkInvite,
+    bulkInviteSuccessHandler,
+    setBulkInviteSuccessHandler,
     showFilterModal,
     setShowFilterModal,
     filterType,
@@ -512,6 +529,7 @@ export default function useDiscoverCreators() {
     handleBackToDiscover,
     clearAllFilters,
     handleInviteClick,
+    handleBulkInviteClick,
     handleSearchChange,
     handleApplyFilters,
     handleLoadMore,

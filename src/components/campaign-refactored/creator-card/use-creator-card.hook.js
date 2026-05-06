@@ -10,10 +10,16 @@ export const useCreatorCard = ({
   onInviteClick,
   onReinstateClick,
   onViewNotesClick,
+  isSelectionMode = false,
+  onSelectionToggle,
 }) => {
   const { getPlatformIcon } = useGetplatform();
 
   const handleCardClick = () => {
+    if (isSelectionMode) {
+      onSelectionToggle?.(creator);
+      return;
+    }
     onCreatorPreview(creator);
   };
 

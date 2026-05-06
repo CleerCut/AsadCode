@@ -13,6 +13,7 @@ function DiscoverCreators({
   handleSaveToShortlist,
   getSortedCreators,
   handleRemoveFromShortlist,
+  handleRemoveManyFromShortlist,
   handleInviteToApply,
   onRefreshCampaigns,
   isCampaignsLoading = false,
@@ -40,6 +41,10 @@ function DiscoverCreators({
     showInviteModal,
     setShowInviteModal,
     selectedCreator,
+    selectedCreatorsForBulkInvite,
+    setSelectedCreatorsForBulkInvite,
+    bulkInviteSuccessHandler,
+    setBulkInviteSuccessHandler,
     showFilterModal,
     setShowFilterModal,
     filterType,
@@ -59,6 +64,7 @@ function DiscoverCreators({
     handleBackToDiscover,
     clearAllFilters,
     handleInviteClick,
+    handleBulkInviteClick,
     handleSearchChange,
     handleApplyFilters,
     handleLoadMore,
@@ -79,6 +85,8 @@ function DiscoverCreators({
           onSaveToShortlist={handleSaveToShortlist}
           onRemoveFromShortlist={handleRemoveFromShortlist}
           onInviteClick={handleInviteClick}
+          onBulkInviteClick={handleBulkInviteClick}
+          onRemoveManyFromShortlist={handleRemoveManyFromShortlist}
         />
       )}
 
@@ -158,12 +166,23 @@ function DiscoverCreators({
 
       <InvitationModal
         isOpen={showInviteModal}
-        onClose={() => setShowInviteModal(false)}
+        onClose={() => {
+          setShowInviteModal(false);
+          setSelectedCreatorsForBulkInvite([]);
+          setBulkInviteSuccessHandler(null);
+        }}
         selectedCreator={selectedCreator}
+        selectedCreators={selectedCreatorsForBulkInvite}
         userCampaigns={userCampaigns}
         onRefreshCampaigns={onRefreshCampaigns}
         isCampaignsLoading={isCampaignsLoading}
-        onInviteSent={handleInviteToApply}
+        onInviteSent={(inviteTarget, campaign, response) => {
+          handleInviteToApply?.(inviteTarget, campaign, response);
+          if (Array.isArray(inviteTarget) && inviteTarget.length > 1) {
+            bulkInviteSuccessHandler?.();
+            setBulkInviteSuccessHandler(null);
+          }
+        }}
       />
 
       <CampaignCreationWizard open={open} close={() => setOpen(false)} />

@@ -7,7 +7,11 @@ const CreatorGrid = ({
   onSaveToShortlist,
   onRemoveFromShortlist,
   onInviteClick,
+  isBulkMode = false,
+  selectedCreatorIds = [],
+  onCreatorSelectionToggle,
 }) => {
+  const selectedIdSet = new Set(selectedCreatorIds);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 3xl:grid-cols-5 items-stretch gap-4">
       {creators.map((creator) => (
@@ -21,6 +25,9 @@ const CreatorGrid = ({
             onRemoveFromShortlist={onRemoveFromShortlist}
             onInviteClick={onInviteClick}
             tab="discover"
+            isSelectionMode={isBulkMode}
+            isSelected={selectedIdSet.has(creator.id)}
+            onSelectionToggle={onCreatorSelectionToggle}
           />
         </div>
       ))}

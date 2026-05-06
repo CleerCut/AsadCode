@@ -153,6 +153,40 @@ function useDiscover() {
     }
   };
 
+  const handleRemoveManyFromShortlist = useCallback(
+    async (creatorIds = []) => {
+      if (!selectedShortlist || !Array.isArray(creatorIds) || creatorIds.length === 0) return 0;
+
+      const shortlistId = selectedShortlist.id;
+      const uniqueCreatorIds = Array.from(new Set(creatorIds.filter(Boolean)));
+      const results = await Promise.all(
+        uniqueCreatorIds.map((creatorId) =>
+          dispatch(
+            removeUserFromShortlist({
+              shortlistId,
+              userId: creatorId,
+            })
+          )
+        )
+      );
+
+      const successCount = results.filter(
+        (result) => result.type === removeUserFromShortlist.fulfilled.type
+      ).length;
+
+      if (successCount > 0) {
+        const refetchResult = await dispatch(getAllShortlists());
+        if (refetchResult.type === getAllShortlists.fulfilled.type && refetchResult.payload) {
+          const updatedShortlist = refetchResult.payload.find((s) => s.id === shortlistId);
+          setSelectedShortlist(updatedShortlist || null);
+        }
+      }
+
+      return successCount;
+    },
+    [dispatch, selectedShortlist]
+  );
+
   // Handle editing shortlist name
   const handleEditShortlist = (shortlistId, newName) => {
     dispatch(
@@ -301,6 +335,7 @@ function useDiscover() {
     confirmSaveToShortlist,
     getSortedCreators,
     handleRemoveFromShortlist,
+    handleRemoveManyFromShortlist,
     handleEditShortlist,
     handleDeleteShortlist,
     handleInviteToApply,

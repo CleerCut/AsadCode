@@ -31,6 +31,7 @@ export default function BrandDiscover() {
     confirmSaveToShortlist,
     getSortedCreators,
     handleRemoveFromShortlist,
+    handleRemoveManyFromShortlist,
     handleEditShortlist,
     handleDeleteShortlist,
     handleInviteToApply,
@@ -102,6 +103,7 @@ export default function BrandDiscover() {
           handleSaveToShortlist={handleSaveToShortlist}
           getSortedCreators={getSortedCreators}
           handleRemoveFromShortlist={handleRemoveFromShortlist}
+          handleRemoveManyFromShortlist={handleRemoveManyFromShortlist}
           handleInviteToApply={handleInviteToApply}
           onRefreshCampaigns={handleRefreshCampaigns}
           isCampaignsLoading={isCampaignsLoading}

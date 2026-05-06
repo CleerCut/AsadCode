@@ -7,6 +7,7 @@ const ViewHeader = ({
   count,
   showBackButton = false,
   showControls = false,
+  rightAction = null,
   onBackClick,
   searchKeyword,
   onSearchChange,
@@ -16,7 +17,7 @@ const ViewHeader = ({
   onNewCampaignClick,
 }) => {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center border-b border-primary pb-4">
       <div className="flex items-center gap-2">
         {showBackButton && (
           <button
@@ -33,16 +34,17 @@ const ViewHeader = ({
           )}
         </h3>
       </div>
-      {showControls && (
-        <SearchAndSortControls
-          searchKeyword={searchKeyword}
-          onSearchChange={onSearchChange}
-          selectedSort={selectedSort}
-          onSortChange={onSortChange}
-          onFilterClick={onFilterClick}
-          onNewCampaignClick={onNewCampaignClick}
-        />
-      )}
+      {rightAction ||
+        (showControls && (
+          <SearchAndSortControls
+            searchKeyword={searchKeyword}
+            onSearchChange={onSearchChange}
+            selectedSort={selectedSort}
+            onSortChange={onSortChange}
+            onFilterClick={onFilterClick}
+            onNewCampaignClick={onNewCampaignClick}
+          />
+        ))}
     </div>
   );
 };

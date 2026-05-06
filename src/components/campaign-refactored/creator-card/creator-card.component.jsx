@@ -1,7 +1,7 @@
 import React from "react";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import { getCreatorTagMeta } from "@/common/constants/creator-tag.constant";
-import { Bookmark, Star, User } from "lucide-react";
+import { Bookmark, Check, Star, User } from "lucide-react";
 import { useCreatorCard } from "./use-creator-card.hook";
 
 const CreatorCard = ({
@@ -17,6 +17,9 @@ const CreatorCard = ({
   isReinstateLoading = false,
   hideActions = false,
   creatorType = creator?.creator_profile?.creator_type,
+  isSelectionMode = false,
+  isSelected = false,
+  onSelectionToggle,
 }) => {
   const type = creatorType || creator?.creator_profile?.creator_type;
   const tagMeta = type ? getCreatorTagMeta(type) : null;
@@ -54,6 +57,8 @@ const CreatorCard = ({
     onInviteClick,
     onReinstateClick,
     onViewNotesClick,
+    isSelectionMode,
+    onSelectionToggle,
   });
 
   return (
@@ -61,10 +66,12 @@ const CreatorCard = ({
       className={`relative flex h-full min-h-0 flex-shrink-0 flex-col self-stretch snap-start ${
         isShortlist ? "w-full" : "w-[18rem]"
       } rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ${
-        onCreatorPreview ? "cursor-pointer" : "cursor-default"
-      } bg-white border border-gray-200 overflow-hidden`}
+        onCreatorPreview || isSelectionMode ? "cursor-pointer" : "cursor-default"
+      } bg-white border overflow-hidden ${
+        isSelectionMode && isSelected ? "border-primary ring-1 ring-primary/30" : "border-gray-200"
+      }`}
       onClick={() => {
-        if (onCreatorPreview) handleCardClick();
+        if (onCreatorPreview || isSelectionMode) handleCardClick();
       }}
     >
       {/* Cover */}
@@ -99,6 +106,23 @@ const CreatorCard = ({
           >
             {tagMeta.label}
           </div>
+        ) : null}
+        {isSelectionMode ? (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onSelectionToggle?.(creator);
+            }}
+            className={`absolute left-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border transition-colors ${
+              isSelected
+                ? "border-primary bg-primary text-white"
+                : "border-white/90 bg-white text-transparent"
+            }`}
+            aria-label={isSelected ? "Deselect creator" : "Select creator"}
+          >
+            <Check className="h-3.5 w-3.5" />
+          </button>
         ) : null}
       </div>
 
