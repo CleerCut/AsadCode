@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
+import { filterActiveCreatorsForBulk } from "@/common/utils/bulk-message-creators.util";
 import { getAge } from "@/common/utils/date.utils";
 import {
   buildPlatformsFromPhylloAccounts,
@@ -322,6 +323,11 @@ export const useCreatorSpendAnalysis = (
 
   const displayCreators = isIndividualMode ? individualCreators : creators;
 
+  const activeCreatorsForBulk = useMemo(
+    () => filterActiveCreatorsForBulk(displayCreators, isIndividualMode),
+    [displayCreators, isIndividualMode]
+  );
+
   const awaitingAppliedCreators =
     !!selectedCampaign?.id &&
     !isIndividualMode &&
@@ -397,6 +403,7 @@ export const useCreatorSpendAnalysis = (
 
   return {
     creators: displayCreators,
+    activeCreatorsForBulk,
     creatorsLoading: displayLoading,
     creatorsSuccess: displaySuccess,
     creatorsError: displayError,

@@ -47,7 +47,7 @@ export default function TextArea({
             errors && errors[name] && "error-field"
           } ${className} ${!disabled || "disabled-input"} `}
           {...(!register && defaultValue && { defaultValue })}
-          {...(!register && value && { value })}
+          {...(!register && value != null && { value })}
           {...(!register && onChange && { onChange })}
           onKeyDown={onKeyDown} // Add this line to handle key events
           readOnly={readOnly}

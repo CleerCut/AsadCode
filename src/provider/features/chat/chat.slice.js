@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import ROLES from "@/common/constants/role.constant";
+import { getUser } from "@/common/utils/users.util";
 import chatService from "./chat.service";
 
 // Helper function to extract serializable error information
@@ -21,6 +23,7 @@ const initialState = {
   getConversationById: { ...generalState },
   deleteConversation: { ...generalState },
   sendMessage: { ...generalState },
+  bulkCampaignMessages: { ...generalState },
   getConversationMessages: { ...generalState },
   markMessageAsDelivered: { ...generalState },
   markMessageAsSeen: { ...generalState },
@@ -103,6 +106,61 @@ export const sendMessage = createAsyncThunk("chat/sendMessage", async (messageDa
     return thunkAPI.rejectWithValue(getSerializableError(error, "Failed to send message"));
   }
 });
+
+export const sendBulkCampaignMessages = createAsyncThunk(
+  "chat/sendBulkCampaignMessages",
+  async ({ campaignId, creatorUserIds, content }, thunkAPI) => {
+    const user = getUser();
+    if (!user?.id || user.role !== ROLES.BRAND) {
+      return thunkAPI.rejectWithValue({ message: "Only brand accounts can send bulk messages." });
+    }
+    const text = String(content ?? "").trim();
+    if (text.length < 5) {
+      return thunkAPI.rejectWithValue({ message: "Please enter a message before sending." });
+    }
+    if (!campaignId || !Array.isArray(creatorUserIds) || creatorUserIds.length === 0) {
+      return thunkAPI.rejectWithValue({
+        message: "Select at least one creator to send a bulk message.",
+      });
+    }
+    const uniqueIds = [...new Set(creatorUserIds)];
+    const failedCreatorIds = [];
+    let sent = 0;
+    for (const creatorUserId of uniqueIds) {
+      try {
+        const convRes = await chatService.createOrGetConversation({
+          brand_id: user.id,
+          creator_id: creatorUserId,
+          campaign_id: campaignId,
+        });
+        const conversationId = convRes?.data?.id;
+        if (!convRes?.success || !conversationId) {
+          failedCreatorIds.push(creatorUserId);
+          continue;
+        }
+        const msgRes = await chatService.sendMessage({
+          conversation_id: conversationId,
+          receiver_id: creatorUserId,
+          content: text.slice(0, 2000),
+          message_type: "TEXT",
+        });
+        if (!msgRes?.success) {
+          failedCreatorIds.push(creatorUserId);
+          continue;
+        }
+        sent += 1;
+      } catch {
+        failedCreatorIds.push(creatorUserId);
+      }
+    }
+    return {
+      sent,
+      failed: failedCreatorIds.length,
+      failedCreatorIds,
+      total: uniqueIds.length,
+    };
+  }
+);
 
 export const getConversationMessages = createAsyncThunk(
   "chat/getConversationMessages",
@@ -431,6 +489,26 @@ const chatSlice = createSlice({
         state.sendMessage.isLoading = false;
         state.sendMessage.isError = true;
         state.sendMessage.message = action.payload?.message;
+      });
+
+    builder
+      .addCase(sendBulkCampaignMessages.pending, (state) => {
+        state.bulkCampaignMessages.isLoading = true;
+        state.bulkCampaignMessages.isError = false;
+        state.bulkCampaignMessages.isSuccess = false;
+        state.bulkCampaignMessages.message = "";
+      })
+      .addCase(sendBulkCampaignMessages.fulfilled, (state, action) => {
+        state.bulkCampaignMessages.isLoading = false;
+        state.bulkCampaignMessages.isSuccess = true;
+        state.bulkCampaignMessages.data = action.payload;
+        state.bulkCampaignMessages.message = "";
+      })
+      .addCase(sendBulkCampaignMessages.rejected, (state, action) => {
+        state.bulkCampaignMessages.isLoading = false;
+        state.bulkCampaignMessages.isError = true;
+        state.bulkCampaignMessages.message =
+          action.payload?.message || "Could not send bulk message.";
       });
 
     // Delete conversation

@@ -4,9 +4,12 @@ import { Skeleton } from "@/common/components/loader/skeleton-loader.component";
 import NotFound from "@/common/components/not-found/not-found.component";
 import { sortOptions } from "@/common/constants/auth.constant";
 import { CAMPAIGN_TYPE } from "@/common/constants/campaign.constant";
+import BulkMessageModal from "@/components/campaign-refactored/brand-campaign/active/components/bulk-message-modal/bulk-message-modal.component";
 import CalendarModal from "@/components/campaign-refactored/brand-campaign/active/components/calendar-modal/calendar-modal.component";
 import TaskManagerModal from "@/components/campaign-refactored/brand-campaign/active/components/task-manager/task-manager.component";
 import { MapPin, Star } from "lucide-react";
+import { useState } from "react";
+import { useBulkMessageModal } from "@/components/campaign-refactored/brand-campaign/active/components/bulk-message-modal/use-bulk-message-modal.hook";
 import { useCreatorSpendAnalysis } from "./use-creator-spend-analysis.hook";
 
 const CreatorSpendAnalysis = ({
@@ -18,8 +21,11 @@ const CreatorSpendAnalysis = ({
   currentSort = "newest",
   isCompleted = false,
 }) => {
+  const [showBulkMessageModal, setShowBulkMessageModal] = useState(false);
+
   const {
     creators,
+    activeCreatorsForBulk,
     creatorsLoading,
     creatorsSuccess,
     creatorsError,
@@ -48,6 +54,20 @@ const CreatorSpendAnalysis = ({
     onCreatorSelect,
     onSortChange
   );
+
+  const bulkMessageModalProps = useBulkMessageModal({
+    show: showBulkMessageModal,
+    onClose: () => setShowBulkMessageModal(false),
+    campaignId: selectedCampaign?.id ?? null,
+    activeCreators: activeCreatorsForBulk,
+    getPlatformIcon,
+    getPlatformColor,
+  });
+
+  const canBulkMessage =
+    Boolean(selectedCampaign?.id) &&
+    activeCreatorsForBulk.length > 0 &&
+    !creatorsLoading;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-gradient-to-b from-gray-100 to-gray-50/80">
@@ -82,6 +102,12 @@ const CreatorSpendAnalysis = ({
               )}
             </div>
             <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
+              <CustomButton
+                text="Bulk Message"
+                className="btn-primary flex-1 sm:flex-none sm:w-auto"
+                onClick={() => setShowBulkMessageModal(true)}
+                disabled={!canBulkMessage}
+              />
               <CustomButton
                 text="Calendar"
                 className="btn-primary flex-1 sm:flex-none sm:w-auto"
@@ -405,6 +431,11 @@ const CreatorSpendAnalysis = ({
         onClose={closeTaskManagerModal}
         selectedCampaignId={selectedCampaign?.id || null}
         isMultiCreator={isMultiCreator}
+      />
+      <BulkMessageModal
+        show={showBulkMessageModal}
+        onClose={() => setShowBulkMessageModal(false)}
+        {...bulkMessageModalProps}
       />
     </div>
   );
