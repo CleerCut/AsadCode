@@ -83,6 +83,11 @@ const brandNavItems = [
     icon: CreditCard,
     children: [
       {
+        label: "Billing & Payment History",
+        href: "/settings/payments/billing-payment-history",
+        icon: Receipt,
+      },
+      {
         label: "Payment Methods",
         href: "/settings/payments/payment-methods",
         icon: CreditCard,

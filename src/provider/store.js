@@ -30,7 +30,6 @@ import collaborationPaymentReducer from "./features/collaboration-payment/collab
 import phylloReducer from "./features/phyllo/phyllo.slice";
 import galleryReducer from "./features/gallery/gallery.slice";
 import dashboardReducer from "./features/dashboard/dashboard.slice";
-
 const defaultAdminDashboardSummary = {
   data: null,
   isLoading: false,
