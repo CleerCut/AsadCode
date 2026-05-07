@@ -1,6 +1,7 @@
 import ViewHeader from "../view-header/view-header.component";
 import CreatorGrid from "../creator-grid/creator-grid.component";
 import NotFound from "@/common/components/not-found/not-found.component";
+import PredictedShortlistPanel from "../predicted-shortlist-panel/predicted-shortlist-panel.component";
 
 const ShortlistView = ({
   selectedShortlist,
@@ -21,6 +22,9 @@ const ShortlistView = ({
         showBackButton={true}
         onBackClick={onBackClick}
       />
+
+      <PredictedShortlistPanel creators={sortedCreators} />
+
       {sortedCreators.length === 0 ? (
         <NotFound
           title="No Creators Found"

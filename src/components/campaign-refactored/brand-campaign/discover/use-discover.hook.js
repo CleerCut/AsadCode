@@ -246,7 +246,7 @@ function useDiscover() {
       rating: 4.5,
       reviewCount: 0,
       followers: totalFollowers || 0,
-      engagementRate: 3.2,
+      engagementRate: null,
       tagline: creatorProfile.bio || "Creating authentic content that resonates with audiences",
       niches: creatorProfile.categories || [],
       platforms,

@@ -127,6 +127,11 @@ const CreatorCard = ({
               <h4 className="text-sm font-semibold leading-snug text-gray-900 m-0">
                 {creator.name}
               </h4>
+              {tab === "applications" && creator.isInvited ? (
+                <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-800 sm:text-xs">
+                  Invited
+                </span>
+              ) : null}
               <div className="inline-flex items-center gap-1 text-sm leading-none">
                 <Star className="h-4 w-4 shrink-0 text-yellow-400 fill-current" />
                 <span className="text-gray-500 mt-1 ml-0.5">{ratingValue}</span>

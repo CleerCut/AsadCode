@@ -297,6 +297,10 @@ function useCreatorSpendAnalysis({
 
     const followers = totalFromAccounts > 0 ? totalFromAccounts : profile?.total_followers || 0;
 
+    const isInvited =
+      Boolean(data.is_invited) ||
+      data.collaboration_type === COLLABORATION_TYPE.INDIVIDUAL_CREATOR;
+
     return {
       id: creatorData?.id,
       name: `${creatorData?.first_name || ""} ${creatorData?.last_name || ""}`.trim(),
@@ -318,6 +322,7 @@ function useCreatorSpendAnalysis({
       niches: profile?.categories || [],
       tagline: data.custom_message || data.pitch || profile?.bio || "",
       appliedDate: appliedDate ? new Date(appliedDate).toLocaleDateString() : "",
+      isInvited,
     };
   };
 
@@ -458,6 +463,23 @@ function useCreatorSpendAnalysis({
     setShowFilterModal(false);
   };
 
+  const sortedAppliedMultiCreatorRows = useMemo(() => {
+    const list = appliedCreatorsData?.data;
+    if (!Array.isArray(list)) return [];
+    const invited = [];
+    const organic = [];
+    list.forEach((row) => {
+      if (row.is_invited) invited.push(row);
+      else organic.push(row);
+    });
+    return [...invited, ...organic];
+  }, [appliedCreatorsData?.data]);
+
+  const showInvitedApplicationsSectionLabel =
+    selectedCampaign?.collaboration_type === COLLABORATION_TYPE.MULTI_CREATOR &&
+    sortedAppliedMultiCreatorRows.some((r) => r.is_invited) &&
+    sortedAppliedMultiCreatorRows.some((r) => !r.is_invited);
+
   return {
     open,
     handleOpenModal,
@@ -499,6 +521,8 @@ function useCreatorSpendAnalysis({
     handleAudienceFiltersChange,
     handleClearAllFilters,
     handleApplyFilters,
+    sortedAppliedMultiCreatorRows,
+    showInvitedApplicationsSectionLabel,
   };
 }
 

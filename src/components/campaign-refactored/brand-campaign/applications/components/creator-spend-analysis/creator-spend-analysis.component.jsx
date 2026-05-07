@@ -66,6 +66,8 @@ const CreatorSpendAnalysis = ({
     handleAudienceFiltersChange,
     handleClearAllFilters,
     handleApplyFilters,
+    sortedAppliedMultiCreatorRows,
+    showInvitedApplicationsSectionLabel,
   } = useCreatorSpendAnalysis({
     selectedCampaign,
     appliedCreatorsData,
@@ -192,24 +194,31 @@ const CreatorSpendAnalysis = ({
                   })}
                 </div>
               )
-            ) : Array.isArray(appliedCreatorsData?.data) && appliedCreatorsData.data.length > 0 ? (
-              <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-3">
-                {appliedCreatorsData.data.map((creator) => {
-                  const mapped = mapCreatorForCard(creator);
-                  return (
-                    <div key={creator.id} onClick={() => handleCreatorPreview(creator)}>
-                      <CreatorCard
-                        creator={mapped}
-                        tab="applications"
-                        appliedDate={mapped.appliedDate}
-                        onCreatorPreview={handleCreatorPreview}
-                        onSaveToShortlist={handleSaveToShortlist}
-                        onRemoveFromShortlist={() => {}}
-                        onInviteClick={() => {}}
-                      />
-                    </div>
-                  );
-                })}
+            ) : sortedAppliedMultiCreatorRows.length > 0 ? (
+              <div className="mb-8">
+                {showInvitedApplicationsSectionLabel ? (
+                  <p className="mb-2 text-left text-[10px] font-semibold text-gray-600 sm:text-xs">
+                    Invited by you
+                  </p>
+                ) : null}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-3">
+                  {sortedAppliedMultiCreatorRows.map((creator) => {
+                    const mapped = mapCreatorForCard(creator);
+                    return (
+                      <div key={creator.id} onClick={() => handleCreatorPreview(creator)}>
+                        <CreatorCard
+                          creator={mapped}
+                          tab="applications"
+                          appliedDate={mapped.appliedDate}
+                          onCreatorPreview={handleCreatorPreview}
+                          onSaveToShortlist={handleSaveToShortlist}
+                          onRemoveFromShortlist={() => {}}
+                          onInviteClick={() => {}}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-20">
