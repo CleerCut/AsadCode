@@ -8,7 +8,7 @@ import {
   removeUserFromShortlist,
   updateShortlist,
 } from "@/provider/features/shortlist/shortlist.slice";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { mapUserToCreator } from "@/common/utils/discover-creators.util";
 
@@ -17,6 +17,7 @@ function useDiscover() {
   const shortlistState = useSelector((state) => state.shortlist);
   const campaignsState = useSelector((state) => state.campaigns?.getAllBrandCampaigns);
   const isCampaignsLoading = Boolean(campaignsState?.isLoading);
+  const hasRequestedBrandCampaignsRef = useRef(false);
 
   const [selectedShortlist, setSelectedShortlist] = useState(null);
   const [isNewShortlistDialogOpen, setIsNewShortlistDialogOpen] = useState(false);
@@ -31,8 +32,25 @@ function useDiscover() {
 
   useEffect(() => {
     dispatch(getAllShortlists());
-    dispatch(getAllBrandCampaigns());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      campaignsState?.isLoading ||
+      campaignsState?.isSuccess ||
+      campaignsState?.isError ||
+      hasRequestedBrandCampaignsRef.current
+    ) {
+      return;
+    }
+    hasRequestedBrandCampaignsRef.current = true;
+    dispatch(getAllBrandCampaigns());
+  }, [
+    dispatch,
+    campaignsState?.isLoading,
+    campaignsState?.isSuccess,
+    campaignsState?.isError,
+  ]);
 
   useEffect(() => {
     if (campaignsState?.data?.data && Array.isArray(campaignsState.data.data)) {

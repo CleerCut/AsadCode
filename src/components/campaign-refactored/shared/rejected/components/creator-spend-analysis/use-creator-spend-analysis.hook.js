@@ -30,6 +30,7 @@ function useCreatorSpendAnalysis({
   const hasRestoredFromContext = useRef(false);
   const lastRestoredCampaignIdRef = useRef(null);
   const awaitingReinstateConfirmRef = useRef(false);
+  const hasRequestedBrandCampaignsRef = useRef(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -46,9 +47,12 @@ function useCreatorSpendAnalysis({
     (state) => state.invitation.reinstateInvitation || {}
   );
 
-  const { data: allCampaignsData, isLoading: campaignsLoading } = useSelector(
-    (state) => state.campaigns.getAllBrandCampaigns
-  );
+  const {
+    data: allCampaignsData,
+    isLoading: campaignsLoading,
+    isSuccess: campaignsSuccess,
+    isError: campaignsError,
+  } = useSelector((state) => state.campaigns.getAllBrandCampaigns || {});
 
   // Filter out completed campaigns on frontend
   const campaignsData = useMemo(() => {
@@ -64,8 +68,17 @@ function useCreatorSpendAnalysis({
   );
 
   useEffect(() => {
+    if (
+      campaignsLoading ||
+      campaignsSuccess ||
+      campaignsError ||
+      hasRequestedBrandCampaignsRef.current
+    ) {
+      return;
+    }
+    hasRequestedBrandCampaignsRef.current = true;
     dispatch(getAllBrandCampaigns());
-  }, [dispatch]);
+  }, [dispatch, campaignsLoading, campaignsSuccess, campaignsError]);
 
   useEffect(() => {
     dispatch(getAllShortlists());

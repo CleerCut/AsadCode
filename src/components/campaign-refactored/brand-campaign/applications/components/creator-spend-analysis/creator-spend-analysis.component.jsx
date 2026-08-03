@@ -14,7 +14,7 @@ import ApplicationsSubtabToggle from "../applications-subtab-toggle/applications
 import AppliedCreatorsSection from "../applied-creators-section/applied-creators-section.component";
 import PinnedInvitedSection from "../pinned-invited-section/pinned-invited-section.component";
 import { Menu, MenuItem } from "@mui/material";
-import { EllipsisVertical, Filter, LayoutGrid, List, Search } from "lucide-react";
+import { EllipsisVertical, Filter, LayoutGrid, List } from "lucide-react";
 import useCreatorSpendAnalysis from "./use-creator-spend-analysis.hook";
 import { formatDateOrNA, getTodayHtmlDateInputValue } from "@/common/utils/date.utils";
 
@@ -69,8 +69,6 @@ const CreatorSpendAnalysis = ({
     handleSortChange,
     sortValue,
     sortOptions,
-    creatorNameSearch,
-    handleCreatorNameSearchChange,
     handleNicheToggle,
     handlePlatformToggle,
     handleFollowerSelect,
@@ -164,13 +162,28 @@ const CreatorSpendAnalysis = ({
                 parentDivClassName="justify-between"
               />
             </div>
-            {onSwitchToRejected && (
+            <div className="flex w-full flex-col gap-2 sm:ml-auto sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2">
               <CustomButton
-                text="Rejected"
-                onClick={onSwitchToRejected}
-                className="btn-outline w-full shrink-0 sm:w-auto"
+                text="Applicant Summary"
+                onClick={() => {
+                  if (!selectedCampaign?.id) return;
+                  window.open(
+                    `/campaign/applicant-summary?campaignId=${selectedCampaign.id}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
+                }}
+                disabled={!selectedCampaign?.id}
+                className="btn-primary w-full shrink-0 sm:w-auto"
               />
-            )}
+              {onSwitchToRejected ? (
+                <CustomButton
+                  text="Rejected"
+                  onClick={onSwitchToRejected}
+                  className="btn-outline w-full shrink-0 sm:w-auto"
+                />
+              ) : null}
+            </div>
           </div>
 
           <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-3">
@@ -217,17 +230,6 @@ const CreatorSpendAnalysis = ({
             ) : null}
 
             <div className="flex w-full flex-col gap-2 sm:ml-auto sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2 lg:ml-0 lg:flex-1 lg:justify-end">
-              <div className="min-w-0 w-full sm:w-44 md:w-[200px] md:max-w-[240px]">
-                <CustomInput
-                  type="text"
-                  name="creatorNameSearch"
-                  placeholder="Search creators"
-                  value={creatorNameSearch}
-                  onChange={handleCreatorNameSearchChange}
-                  startIcon={<Search className="h-3.5 w-3.5 text-gray-400" aria-hidden />}
-                  className="h-8 min-h-8 text-xs"
-                />
-              </div>
               <div className="min-w-0 w-full sm:w-44 md:w-[180px] md:max-w-[230px]">
                 <SimpleSelect
                   placeHolder="Sort by"
@@ -288,14 +290,6 @@ const CreatorSpendAnalysis = ({
                     description="No individual collaborations found at this time. Invite creators to start collaborating."
                   />
                 </div>
-              ) : pinnedIndividualCreators.length === 0 &&
-                unpinnedIndividualCreators.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20">
-                  <NotFound
-                    title="No Creators Found"
-                    description="No creators match your search. Try a different name."
-                  />
-                </div>
               ) : (
                 <>
                   <PinnedInvitedSection
@@ -312,28 +306,19 @@ const CreatorSpendAnalysis = ({
                 </>
               )
             ) : sortedAppliedCreators.length > 0 ? (
-              pinnedAppliedCreators.length === 0 && unpinnedAppliedCreators.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20">
-                  <NotFound
-                    title="No Creators Found"
-                    description="No creators match your search. Try a different name."
-                  />
-                </div>
-              ) : (
-                <>
-                  <PinnedInvitedSection
-                    pinnedCreators={pinnedAppliedCreators}
-                    renderCreatorCard={renderCreatorCard}
-                    gridClass={GRID_CLASS}
-                  />
-                  <AppliedCreatorsSection
-                    pinnedCreators={pinnedAppliedCreators}
-                    unpinnedCreators={unpinnedAppliedCreators}
-                    renderCreatorCard={renderCreatorCard}
-                    gridClass={GRID_CLASS}
-                  />
-                </>
-              )
+              <>
+                <PinnedInvitedSection
+                  pinnedCreators={pinnedAppliedCreators}
+                  renderCreatorCard={renderCreatorCard}
+                  gridClass={GRID_CLASS}
+                />
+                <AppliedCreatorsSection
+                  pinnedCreators={pinnedAppliedCreators}
+                  unpinnedCreators={unpinnedAppliedCreators}
+                  renderCreatorCard={renderCreatorCard}
+                  gridClass={GRID_CLASS}
+                />
+              </>
             ) : (
               <div className="flex flex-col items-center justify-center py-20">
                 <NotFound

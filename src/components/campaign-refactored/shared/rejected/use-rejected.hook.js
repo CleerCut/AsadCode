@@ -25,12 +25,14 @@ function useRejected() {
   const dispatch = useDispatch();
   const hasRestoredFromContext = useRef(false);
   const lastRestoredCampaignIdRef = useRef(null);
+  const hasRequestedBrandCampaignsRef = useRef(false);
 
   const { selectedCampaignId } = useSelector((state) => state.campaignContext || {});
   const {
     data: campaignsData,
     isLoading: campaignsLoading,
     isSuccess: campaignsSuccess,
+    isError: campaignsError,
   } = useSelector((state) => state.campaigns.getAllBrandCampaigns || {});
 
   const {
@@ -65,8 +67,17 @@ function useRejected() {
 
   // Fetch campaigns on mount
   useEffect(() => {
+    if (
+      campaignsLoading ||
+      campaignsSuccess ||
+      campaignsError ||
+      hasRequestedBrandCampaignsRef.current
+    ) {
+      return;
+    }
+    hasRequestedBrandCampaignsRef.current = true;
     dispatch(getAllBrandCampaigns());
-  }, [dispatch]);
+  }, [dispatch, campaignsLoading, campaignsSuccess, campaignsError]);
 
   // Restore campaign from Redux context
   useEffect(() => {

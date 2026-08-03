@@ -162,35 +162,29 @@ const DeliverablesProgress = ({
             ) : (
               <div className="grid grid-cols-2 gap-2">
                 <div className="border rounded p-2">
+                  <p className="text-[11px] text-gray-500">Typical Views</p>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {performanceMetrics?.typical_views ?? "N/A"}
+                  </p>
+                </div>
+                <div className="border rounded p-2">
                   <p className="text-[11px] text-gray-500">Engagement Rate</p>
                   <p className="text-sm font-semibold text-gray-900">
-                    {performanceMetrics?.engagement_rate ??
-                      creatorData?.profile?.engagement_rate ??
-                      "N/A"}
+                    {performanceMetrics?.engagement_rate ?? "N/A"}
                   </p>
                 </div>
                 <div className="border rounded p-2">
-                  <p className="text-[11px] text-gray-500">Average Reach</p>
+                  <p className="text-[11px] text-gray-500">
+                    {performanceMetrics?.reach_view_efficiency_label || "Reach/View Efficiency"}
+                  </p>
                   <p className="text-sm font-semibold text-gray-900">
-                    {performanceMetrics?.average_reach ??
-                      creatorData?.profile?.average_reach ??
-                      "N/A"}
+                    {performanceMetrics?.reach_view_efficiency ?? "N/A"}
                   </p>
                 </div>
                 <div className="border rounded p-2">
-                  <p className="text-[11px] text-gray-500">Average Views</p>
+                  <p className="text-[11px] text-gray-500">Performance Consistency</p>
                   <p className="text-sm font-semibold text-gray-900">
-                    {performanceMetrics?.average_views ??
-                      creatorData?.profile?.average_views ??
-                      "N/A"}
-                  </p>
-                </div>
-                <div className="border rounded p-2">
-                  <p className="text-[11px] text-gray-500">Posting Frequency</p>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {performanceMetrics?.posting_frequency ??
-                      creatorData?.profile?.posting_frequency ??
-                      "N/A"}
+                    {performanceMetrics?.performance_consistency ?? "N/A"}
                   </p>
                 </div>
               </div>

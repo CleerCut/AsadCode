@@ -21,6 +21,7 @@ function BrandApplicationsContent({ onSwitchToRejected }) {
     appliedCreatorsData,
     appliedCreatorsLoading,
     isLoading,
+    campaignsError,
     selectedCampaign,
     selectedCreator,
     hireModalOpen,
@@ -125,7 +126,7 @@ function BrandApplicationsContent({ onSwitchToRejected }) {
     handleCloseBoard,
   ]);
 
-  if (isLoading && !selectedCampaign) {
+  if (isLoading && !selectedCampaign && !campaignsError) {
     return (
       <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row md:items-stretch">
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden md:h-full md:max-w-none md:flex-[0_1_73%] lg:max-w-none">

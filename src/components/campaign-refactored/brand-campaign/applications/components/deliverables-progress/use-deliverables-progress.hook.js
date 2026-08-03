@@ -128,20 +128,24 @@ const useDeliverablesProgress = (selectedCreator, isIndividualCreator) => {
   const performanceMetrics = useMemo(() => {
     if (!metricsPayload?.metrics) return null;
     const m = metricsPayload.metrics;
-    const meta = metricsPayload.metadata ?? {};
     return {
+      typical_views:
+        m.averageViews?.value != null
+          ? Number(m.averageViews.value).toLocaleString()
+          : null,
       engagement_rate:
-        m.engagementRate?.value != null ? `${Number(m.engagementRate.value).toFixed(1)}%` : null,
-      average_reach:
-        meta.medianReach != null
-          ? Number(meta.medianReach).toLocaleString()
-          : m.reachEfficiency?.value != null
-            ? `${Number(m.reachEfficiency.value).toFixed(1)}%`
-            : null,
-      average_views:
-        m.averageViews?.value != null ? Number(m.averageViews.value).toLocaleString() : null,
-      posting_frequency:
-        meta.postsPerMonth != null ? `${Number(meta.postsPerMonth).toFixed(1)}/mo` : null,
+        m.engagementRate?.value != null
+          ? `${Number(m.engagementRate.value).toFixed(1)}%`
+          : null,
+      reach_view_efficiency:
+        m.reachEfficiency?.value != null
+          ? `${Number(m.reachEfficiency.value).toFixed(1)}%`
+          : null,
+      reach_view_efficiency_label: m.reachEfficiency?.label || "Reach/View Efficiency",
+      performance_consistency:
+        m.performanceConsistency?.value != null
+          ? `${Number(m.performanceConsistency.value).toFixed(0)}`
+          : null,
     };
   }, [metricsPayload]);
 
