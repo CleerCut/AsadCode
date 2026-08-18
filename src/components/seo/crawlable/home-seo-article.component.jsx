@@ -7,7 +7,7 @@ export default function HomeSeoArticle() {
         creators, generate contracts in seconds, protect your budget with escrow, and manage
         campaigns from outreach to deliverables — all in one streamlined workspace.
       </p>
-      <p>Try 3 Campaigns Free. No Fees. No Setup Calls. No Credit Card Required.</p>
+      <p>Try 30 days free. Unlimited commission-free campaigns. No setup calls. No credit card required.</p>
       <h2>Features</h2>
       <ul>
         <li>Creator discovery and verified profiles</li>
@@ -18,8 +18,9 @@ export default function HomeSeoArticle() {
       </ul>
       <h2>Pricing</h2>
       <p>
-        Free tier: 3 campaigns. Pay-As-You-Go: 9.9% commission. Starter: $399/month. Growth:
-        $525/month. Enterprise: $699/month.
+        30-day trial: unlimited commission-free campaigns. Pay-As-You-Go: 9.9% commission. Unlimited
+        Gifting Add-On: $99/month. Starter: from $359/mo. Growth: from $629/mo. Pro: from $899/mo.
+        Enterprise: custom.
       </p>
       <p>
         CleerCut is an influencer collaboration platform for brands and creators. Brands discover

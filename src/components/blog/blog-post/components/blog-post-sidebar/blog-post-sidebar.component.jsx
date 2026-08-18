@@ -34,7 +34,7 @@ const BlogPostSidebar = ({ tocEntries }) => (
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white p-4">
         <h3 className="text-sm font-bold text-gray-900 sm:text-base">Try Verified Discovery</h3>
         <p className="mt-2 text-[10px] leading-snug text-gray-600 sm:text-xs">
-          Get your first 3 campaigns at zero commission.
+          Try 30 days of unlimited, commission-free campaigns.
         </p>
         <Link href="/" className="mt-4 block">
           <CustomButton text="Join the Waitlist" className="btn-outline w-full" />

@@ -4,24 +4,24 @@ import { CheckCircle, XCircleIcon } from "lucide-react";
 export default function WhyChooseCleercut({ isCreatorMode }) {
   const brandFeatures = [
     {
-      name: "3 Commission-Free Collaborations",
+      name: "30-Day Commission-Free Trial",
       cleercut: true,
       competitor: false,
-      cleerCutNote: "Try before committing",
-      competitorNote: "No commission free options",
+      cleerCutNote: "Unlimited campaigns, no credit card required",
+      competitorNote: "No commission-free trial",
     },
     {
       name: "Transparent Pricing",
       cleercut: true,
       competitor: false,
-      cleerCutNote: "9.9%(<5k) / 7.9%(<10k) / 5.9%(>10k) service fee by spend tier",
+      cleerCutNote: "9.9% Pay-As-You-Go, or $0 commission up to your plan cap",
       competitorNote: "15–30% commission or inflated subscription fees",
     },
     {
       name: "Flat Monthly Plans (no service fee)",
       cleercut: true,
       competitor: false,
-      cleerCutNote: "$525/month (up to $10K spend) $699/month (up to $20K spend)",
+      cleerCutNote: "Starter $359/mo · Growth $629/mo · Pro $899/mo (quarterly)",
       competitorNote: "$2,000–$5,000+/month (annual contracts required)",
     },
     {

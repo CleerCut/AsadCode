@@ -25,7 +25,7 @@ export const FAQ_DATA = [
       {
         question: "Is CleerCut free to use?",
         answer:
-          "CleerCut is free to get started. Brands can try 3 campaigns with no service fees (8.5% service fee deducted per campaign thereafter). Creators can apply to as many campaigns as they like. Creators can try 3 campaigns with no service fees (4.5% service fee deducted per campaign thereafter).",
+          "CleerCut is free to get started. Brands can try 30 days of unlimited commission-free campaigns with no credit card required, then continue on Pay-As-You-Go (9.9% commission) or a zero-commission plan. Creators can apply to as many campaigns as they like and pay only the standard 3.2% payment processing fee — no platform commission.",
       },
     ],
   },
@@ -115,7 +115,7 @@ export const FAQ_DATA = [
       {
         question: "Are there any fees for using CleerCut's payment system?",
         answer:
-          "Creators keep 95.5% of their rate after the creator service fee is deducted. Brands pay a 8.5% service fee per campaign after the initial free-trial period.",
+          "Creators pay no platform commission — only the standard 3.2% payment processing fee. Brands pay 9.9% commission on Pay-As-You-Go after the 30-day trial, or $0 commission up to their plan's monthly spend limit on Starter, Growth, and Pro.",
       },
     ],
   },

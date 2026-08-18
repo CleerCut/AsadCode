@@ -9,7 +9,7 @@ import CrawlableContent from "@/components/seo/crawlable-content.component";
 export const metadata = {
   title: `Pricing | ${SITE_NAME}`,
   description:
-    "CleerCut pricing — free tier with 3 campaigns, Pay-As-You-Go at 9.9% commission, and plans from $399/month.",
+    "CleerCut pricing — 30-day free trial, Pay-As-You-Go at 9.9% commission, Unlimited Gifting at $99/mo, and zero-commission plans from $359/mo.",
   alternates: { canonical: `${SITE_URL}/pricing` },
 };
 
@@ -20,17 +20,19 @@ export default function Page() {
         data={buildWebPageSchema({
           name: `${SITE_NAME} Pricing`,
           description:
-            "Flexible influencer marketing pricing with a free tier and plans from $399/month.",
+            "Flexible influencer marketing pricing with a 30-day trial, Pay-As-You-Go, and zero-commission plans from $359/mo.",
           url: `${SITE_URL}/pricing`,
         })}
       />
       <CrawlableContent>
         <h1>CleerCut Pricing</h1>
-        <p>Free tier: 3 campaigns, no credit card required.</p>
-        <p>Pay-As-You-Go: 9.9% commission per creator payment.</p>
-        <p>Starter: $399/month, zero commission up to $5,000/month.</p>
-        <p>Growth: $525/month, zero commission up to $10,000/month.</p>
-        <p>Enterprise: $699/month, zero commission up to $20,000/month.</p>
+        <p>30-day trial: unlimited commission-free campaigns, no credit card required.</p>
+        <p>Pay-As-You-Go: 9.9% commission, 3 gifted collaborations per month.</p>
+        <p>Unlimited Gifting Add-On: $99/month.</p>
+        <p>Starter: from $359/mo (quarterly), zero commission up to $5,000/month.</p>
+        <p>Growth: from $629/mo (quarterly), zero commission up to $12,500/month.</p>
+        <p>Pro: from $899/mo (quarterly), zero commission up to $30,000/month.</p>
+        <p>Enterprise: custom pricing for limits above $30,000/month.</p>
       </CrawlableContent>
       <Auth component={<PricingPage />} type={AUTH.PUBLIC} />
     </>

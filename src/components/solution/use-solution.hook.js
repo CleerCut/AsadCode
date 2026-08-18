@@ -32,8 +32,8 @@ function useSolution() {
       description:
         "Most platforms charge $2,000–$5,000+/month. Agencies take 15–30% of your campaign budget. CleerCut gives you flexible pricing that scales with your needs:",
       points: [
-        "9.9% / 7.9% / 5.9% commission tiers",
-        "Or flat monthly plans: $525/month (up to $10K spend) or $699/month (up to $20K spend)",
+        "Pay-As-You-Go at 9.9% commission, or $0/mo with 3 gifted collaborations included",
+        "Zero-commission plans from $359/mo (Starter up to $5K) through Pro (up to $30K) and custom Enterprise",
         "No long-term contracts. No inflated retainers. Just control.",
       ],
       icon: <DollarSign className="text-indigo-600" size={24} />,

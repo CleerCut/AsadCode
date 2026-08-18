@@ -1,167 +1,253 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import {
+  BRIDGING_LINE_COPY,
+  FOOTER_NOTE_COPY,
+  ROW_ONE_PLANS,
+  TIER_FEATURE_ROW_KEYS,
+  TRIAL_BANNER_COPY,
+} from "../../pricing.config";
+import usePricingOptionsHook from "./use-pricing-options.hook";
 
-const payAsYouGoFeatures = [
-  { title: "9.9% commission per creator payment" },
-  { title: "3 free gifted or affiliate collaborations per month" },
-];
-
-const unlimitedPlanFeatures = [
-  { title: "Run unlimited gifting and affiliate campaigns" },
-  { title: "Zero commission on gifting or affiliate campaigns" },
-  { title: "Sponsored and UGC campaigns available at standard pay-as-you-go rates" },
-];
-
-const flatRatePlans = [
-  {
-    name: "Zero Commission Starter Plan – $399/month",
-    features: [
-      "$0 commission on creator payments up to $5,000 per month",
-      "Save up to 20% vs pay-as-you-go rates",
-      "Unlimited gifted and affiliate campaigns",
-      "Best for brands with a predictable budget",
-    ],
-  },
-  {
-    name: "Zero Commission Growth Plan – $525/month",
-    features: [
-      "$0 commission on creator payments up to $10,000 per month",
-      "Save up to 47% vs pay-as-you-go rates",
-      "Unlimited gifted and affiliate campaigns",
-    ],
-  },
-  {
-    name: "Zero Commission Enterprise Plan – $699/month",
-    features: [
-      "$0 commission on creator payments up to $20,000 per month",
-      "Save up to 65% vs pay-as-you-go rates",
-      "Unlimited gifted and affiliate campaigns",
-      "Ideal for high-volume teams seeking predictable costs",
-    ],
-  },
-];
-
-export default function PricingOptions() {
-  const [hoverCard, setHoverCard] = useState();
+function PricingCardRowOne({ plan }) {
+  const isHighlighted = plan.highlighted;
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="max-w-5xl w-full mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8 mt-4 md:mt-0">
-          <h1 className="text-3xl font-bold text-primary mb-2 tracking-tight">
-            <span className="relative inline-block">
-              <span className="relative z-10">Pricing Options</span>
-            </span>
-          </h1>
-          <p className="text-xs md:text-sm sm:text-lg xl:text-xl text-primary max-w-2xl mx-auto">
-            Choose the plan that works best for your business needs
-          </p>
-        </div>
+    <div
+      className={`flex h-full flex-col rounded-2xl border p-5 sm:p-6 ${
+        isHighlighted
+          ? "border-primary bg-primary text-white shadow-lg"
+          : "border-gray-200 bg-white shadow-md"
+      }`}
+    >
+      <h2
+        className={`text-base font-bold sm:text-lg ${isHighlighted ? "text-white" : "text-gray-900"}`}
+      >
+        {plan.name}
+      </h2>
 
-        {/* Pricing Cards */}
-        <div className="grid sm:grid-cols-2 gap-8">
-          {/* Pay-As-You-Go Card */}
-          <div
-            className={`relative overflow-hidden rounded-2xl shadow-xl transition-all duration-500 ${
-              hoverCard === "pay" ? "transform scale-105 shadow-2xl" : ""
-            }`}
-            onMouseEnter={() => setHoverCard("pay")}
-            onMouseLeave={() => setHoverCard(null)}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-indigo-700 opacity-10" />
-            <div className="bg-white p-5 h-full relative z-10 flex flex-col">
-              <h2 className="text-lg xl:text-xl font-bold text-primary mb-4">Pay-As-You-Go</h2>
-
-              <div className="text-xs md:text-sm space-y-3 mb-4 flex-grow">
-                {payAsYouGoFeatures.map((item, i) => (
-                  <div key={i} className="flex items-start">
-                    <Check className="h-5 w-5 text-primary mt-1" />
-                    <p className="ml-3 text-gray-600">{item.title}</p>
-                  </div>
-                ))}
-              </div>
-
-              <h3 className="text-[16px] font-bold text-gray-600 mb-2">
-                Unlimited Gifting & Affiliate Add On – $69.99/month
-              </h3>
-
-              <div className="text-xs md:text-sm space-y-3 mb-8">
-                {unlimitedPlanFeatures.map((item, i) => (
-                  <div key={i} className="flex items-start">
-                    <Check className="h-5 w-5 text-primary mt-1" />
-                    <p className="ml-3 text-gray-600">{item.title}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="py-4 px-5 bg-indigo-50 rounded-lg text-xs md:text-sm">
-                <p className="text-primary font-medium">
-                  Best for brands focused on gifting or affiliate campaigns, or those looking for
-                  flexibility without a fixed monthly budget.
-                </p>
-              </div>
-
-              <div className="mt-8">
-                <CustomButton text="Get Started" />
-              </div>
-            </div>
-          </div>
-
-          {/* Flat-Rate Card */}
-          <div
-            className={`relative overflow-hidden rounded-2xl shadow-xl transition-all duration-500 ${
-              hoverCard === "flat" ? "transform scale-105 shadow-2xl" : ""
-            }`}
-            onMouseEnter={() => setHoverCard("flat")}
-            onMouseLeave={() => setHoverCard(null)}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-700 opacity-10" />
-            <div className="bg-white p-5 h-full relative z-10 flex flex-col">
-              <h2 className="text-lg xl:text-xl font-bold text-primary mb-4">Flat-Rate Plans</h2>
-
-              <div className="text-xs md:text-sm space-y-4 mb-8 flex-grow">
-                {flatRatePlans.map((plan, i) => (
-                  <div key={i}>
-                    <h3 className="text-[16px] font-bold text-gray-600 mb-2">{plan.name}</h3>
-                    <div className="ml-2 space-y-1">
-                      {plan.features.map((feature, j) => (
-                        <div key={j} className="flex items-start">
-                          <Check className="h-5 w-5 text-primary mt-1" />
-                          <p className="ml-3 text-gray-600">{feature}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="py-4 px-5 bg-indigo-50 rounded-lg text-xs md:text-sm">
-                <p className="text-primary font-medium">
-                  5% commission applies to campaign spend exceeding plan limits.
-                </p>
-              </div>
-
-              <div className="w-full mt-8">
-                <CustomButton text="Choose Plan" />
-              </div>
-            </div>
-
-            {/* Floating animations */}
-            <div
-              className={`absolute -top-20 -right-20 w-40 h-40 bg-purple-600 rounded-full opacity-10 transition-all duration-700 ${
-                hoverCard === "flat" ? "scale-150" : "scale-100"
-              }`}
-            />
-            <div
-              className={`absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-500 rounded-full opacity-10 transition-all duration-700 ${
-                hoverCard === "flat" ? "scale-150" : "scale-100"
-              }`}
-            />
-          </div>
-        </div>
+      <div className="mt-3 flex items-baseline gap-1">
+        <span className="text-3xl font-bold tabular-nums sm:text-4xl">{plan.price}</span>
+        <span className={`text-sm ${isHighlighted ? "text-indigo-100" : "text-gray-500"}`}>
+          {plan.priceSuffix}
+        </span>
       </div>
+
+      <div
+        className={`my-4 border-t ${isHighlighted ? "border-indigo-400/50" : "border-gray-200"}`}
+      />
+
+      <ul className="mb-6 flex flex-1 flex-col gap-3">
+        {plan.features.map((feature) => (
+          <li key={feature} className="flex items-start gap-2.5 text-left">
+            <Check
+              className={`mt-0.5 h-4 w-4 shrink-0 sm:h-5 sm:w-5 ${
+                isHighlighted ? "text-white" : "text-primary"
+              }`}
+            />
+            <span
+              className={`text-[11px] leading-snug sm:text-xs md:text-sm ${
+                isHighlighted ? "text-indigo-50" : "text-gray-600"
+              }`}
+            >
+              {feature}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <CustomButton
+        text="Get Started"
+        href="/onboarding"
+        className={`w-full ${
+          isHighlighted
+            ? "bg-white text-primary hover:bg-indigo-50"
+            : "btn-primary"
+        }`}
+      />
+    </div>
+  );
+}
+
+function BillingToggle({ billingCycle, billingCycleOptions, onBillingCycleChange }) {
+  return (
+    <div className="flex justify-center">
+      <div className="inline-flex flex-wrap items-center justify-center gap-1 rounded-full border border-gray-200 bg-gray-100 p-1">
+        {billingCycleOptions.map((option) => {
+          const isActive = billingCycle === option.id;
+
+          return (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => onBillingCycleChange(option.id)}
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-colors sm:px-4 sm:text-xs ${
+                isActive
+                  ? "bg-white text-primary shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              <span>{option.label}</span>
+              {option.saveBadge && (
+                <span
+                  className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold sm:text-[11px] ${
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "bg-primary/10 text-primary"
+                  }`}
+                >
+                  {option.saveBadge}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function TierFeatureRows({ plan, isHighlighted }) {
+  return (
+    <ul className="flex flex-1 flex-col">
+      {TIER_FEATURE_ROW_KEYS.map((rowKey) => {
+        const featureText = plan.featureRows[rowKey];
+
+        return (
+          <li
+            key={rowKey}
+            className="flex min-h-[2.75rem] items-start gap-2.5 border-b border-transparent py-2 sm:min-h-[3rem]"
+          >
+            {featureText ? (
+              <>
+                <Check
+                  className={`mt-0.5 h-4 w-4 shrink-0 sm:h-5 sm:w-5 ${
+                    isHighlighted ? "text-white" : "text-primary"
+                  }`}
+                />
+                <span
+                  className={`text-[11px] leading-snug sm:text-xs md:text-sm ${
+                    isHighlighted ? "text-indigo-50" : "text-gray-600"
+                  }`}
+                >
+                  {featureText}
+                </span>
+              </>
+            ) : (
+              <span className="invisible select-none text-[11px] sm:text-xs" aria-hidden="true">
+                —
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function PricingCardRowTwo({ plan }) {
+  const isHighlighted = plan.popular;
+
+  return (
+    <div
+      className={`relative flex h-full flex-col rounded-2xl border p-5 sm:p-6 ${
+        isHighlighted
+          ? "border-primary bg-primary text-white shadow-lg"
+          : "border-gray-200 bg-white shadow-md"
+      }`}
+    >
+      {isHighlighted && (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-2.5 py-0.5 text-[10px] font-semibold text-primary shadow sm:text-xs">
+          ★ Most Popular
+        </span>
+      )}
+
+      <h2
+        className={`text-base font-bold sm:text-lg ${isHighlighted ? "text-white" : "text-gray-900"}`}
+      >
+        {plan.name}
+      </h2>
+
+      <div className="mt-3">
+        <div className="flex items-baseline gap-1">
+          <span className="text-3xl font-bold tabular-nums sm:text-4xl">
+            {plan.displayPrice}
+          </span>
+          {!plan.isCustom && (
+            <span className={`text-sm ${isHighlighted ? "text-indigo-100" : "text-gray-500"}`}>
+              /mo
+            </span>
+          )}
+        </div>
+        {plan.displayBilled && (
+          <p
+            className={`mt-1 text-[10px] sm:text-xs ${
+              isHighlighted ? "text-indigo-100" : "text-gray-500"
+            }`}
+          >
+            {plan.displayBilled}
+          </p>
+        )}
+      </div>
+
+      <div
+        className={`my-4 border-t ${isHighlighted ? "border-indigo-400/50" : "border-gray-200"}`}
+      />
+
+      <TierFeatureRows plan={plan} isHighlighted={isHighlighted} />
+
+      <CustomButton
+        text={plan.isCustom ? "Contact Sales" : "Choose Plan"}
+        href="/onboarding"
+        className={`mt-4 w-full ${
+          isHighlighted
+            ? "bg-white text-primary hover:bg-indigo-50"
+            : "btn-primary"
+        }`}
+      />
+    </div>
+  );
+}
+
+export default function PricingOptions() {
+  const {
+    billingCycle,
+    billingCycleOptions,
+    tierPlansWithPricing,
+    handleBillingCycleChange,
+  } = usePricingOptionsHook();
+
+  return (
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-1 sm:gap-10">
+      <div className="rounded-xl bg-primary px-4 py-4 text-left text-white sm:px-6 sm:py-5 sm:text-center">
+        <p className="text-xs leading-snug sm:text-sm md:text-base">{TRIAL_BANNER_COPY}</p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 md:gap-8">
+        {ROW_ONE_PLANS.map((plan) => (
+          <PricingCardRowOne key={plan.id} plan={plan} />
+        ))}
+      </div>
+
+      <p className="text-center text-sm font-medium text-gray-700 sm:text-base md:text-lg">
+        {BRIDGING_LINE_COPY}
+      </p>
+
+      <BillingToggle
+        billingCycle={billingCycle}
+        billingCycleOptions={billingCycleOptions}
+        onBillingCycleChange={handleBillingCycleChange}
+      />
+
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        {tierPlansWithPricing.map((plan) => (
+          <PricingCardRowTwo key={plan.id} plan={plan} />
+        ))}
+      </div>
+
+      <p className="text-center text-[11px] leading-snug text-gray-500 sm:text-xs md:text-sm">
+        {FOOTER_NOTE_COPY}
+      </p>
     </div>
   );
 }

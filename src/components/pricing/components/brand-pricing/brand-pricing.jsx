@@ -4,9 +4,9 @@ export default function BrandPricing() {
   const brandData = [
     {
       platform: "CleerCut",
-      price: "$525–$699",
+      price: "$359–$999",
       contract: "No",
-      details: "Flexible monthly plans or pay-as-you-go service fees.",
+      details: "Pay-as-you-go at 9.9% or zero-commission plans from $359/mo (quarterly).",
       isBest: true,
     },
     {
