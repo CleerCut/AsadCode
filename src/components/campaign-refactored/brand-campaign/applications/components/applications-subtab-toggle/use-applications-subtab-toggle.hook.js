@@ -6,8 +6,8 @@ function useApplicationsSubtabToggle({ activeSubTab, onSubTabChange, counts }) {
 
   const segments = useMemo(
     () => [
-      { id: "applications", label: `Applications (${applicationsCount})` },
-      { id: "negotiations", label: `Negotiations (${negotiationsCount})` },
+      { id: "applications", label: "Applications", count: applicationsCount },
+      { id: "negotiations", label: "Negotiations", count: negotiationsCount },
     ],
     [applicationsCount, negotiationsCount]
   );

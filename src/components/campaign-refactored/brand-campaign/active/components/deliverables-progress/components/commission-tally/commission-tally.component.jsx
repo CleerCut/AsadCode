@@ -1,4 +1,3 @@
-import { Skeleton } from "@/common/components/loader/skeleton-loader.component";
 import useCommissionTally from "./use-commission-tally.hook";
 
 export default function CommissionTally({
@@ -14,12 +13,7 @@ export default function CommissionTally({
   if (!isAffiliate) return null;
 
   if (isLoading && !tally) {
-    return (
-      <div className="rounded border border-gray-200 bg-white p-3">
-        <Skeleton className="mb-2 h-4 w-32" />
-        <Skeleton className="h-8 w-full" />
-      </div>
-    );
+    return null;
   }
 
   return (

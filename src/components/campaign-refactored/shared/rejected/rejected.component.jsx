@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
-import { useCampaignTabBarMobileSlot } from "@/components/campaign-refactored/campaign-tab-bar-mobile-slot.context";
+import { useCampaignTabBarSlotRegistration } from "@/components/campaign-refactored/campaign-tab-bar-mobile-slot.context";
 import CreatorSpendAnalysis from "./components/creator-spend-analysis/creator-spend-analysis.component";
 import DeliverablesProgress from "./components/deliverables-progress/deliverables-progress.component.jsx";
 import RightPaneSkeleton from "../right-pane-skeleton/right-pane-skeleton.component";
@@ -31,9 +31,25 @@ function Rejected({ onSwitchToApplications }) {
     backToRejectedList,
   } = useRejected();
 
-  const tabBarMobileSlot = useCampaignTabBarMobileSlot();
-  const registerMobileSlot = tabBarMobileSlot?.registerMobileSlot;
-  const clearMobileSlot = tabBarMobileSlot?.clearMobileSlot;
+  const tabBarSlots = useCampaignTabBarSlotRegistration();
+  const registerMobileSlot = tabBarSlots?.registerMobileSlot;
+  const clearMobileSlot = tabBarSlots?.clearMobileSlot;
+  const registerRightSlot = tabBarSlots?.registerRightSlot;
+  const clearRightSlot = tabBarSlots?.clearRightSlot;
+
+  useEffect(() => {
+    if (!registerRightSlot || !clearRightSlot || !onSwitchToApplications) return undefined;
+    registerRightSlot(
+      <button
+        type="button"
+        onClick={onSwitchToApplications}
+        className="flex h-9 w-full items-center justify-center overflow-hidden rounded-md border border-gray-300 bg-white px-1.5 text-[11px] font-semibold leading-none text-gray-700 transition-colors hover:bg-gray-50 sm:h-10 sm:px-2.5 sm:text-sm md:h-9 md:w-auto md:flex-none md:px-4 md:text-sm"
+      >
+        <span className="truncate">Applications</span>
+      </button>
+    );
+    return () => clearRightSlot();
+  }, [registerRightSlot, clearRightSlot, onSwitchToApplications]);
 
   useEffect(() => {
     if (!registerMobileSlot || !clearMobileSlot) return;
@@ -103,7 +119,6 @@ function Rejected({ onSwitchToApplications }) {
             sortBy={sortBy}
             onSortChange={handleSortChange}
             onSaveToShortlist={handleSaveToShortlist}
-            onSwitchToApplications={onSwitchToApplications}
           />
         </div>
 

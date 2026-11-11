@@ -1,6 +1,5 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import Loading from "@/common/components/loader/loading.component";
-import { Skeleton } from "@/common/components/loader/skeleton-loader.component";
 import Modal from "@/common/components/modal/modal.component";
 import NotFound from "@/common/components/not-found/not-found.component";
 import TextArea from "@/common/components/text-area/text-area.component";
@@ -13,6 +12,7 @@ import { HIDE_CREATOR_RATING_UI } from "@/common/utils/campaign.utils";
 import ContractPreviewModal from "../../../applications/components/contract-preview-modal/contract-preview-modal.component";
 import MessageThreadModal from "@/components/campaign-refactored/shared/message-thread-modal/message-thread-modal.component";
 import { pickMessageThreadModalProps } from "@/components/campaign-refactored/shared/message-thread-modal/use-message-thread.hook";
+import RightPaneSkeleton from "@/components/campaign-refactored/shared/right-pane-skeleton/right-pane-skeleton.component";
 import BrandTimelineSteps from "../brand-timeline/brand-timeline.component";
 import DiscountCodeTracking from "./components/discount-code-tracking/discount-code-tracking.component";
 import FulfilmentSection from "./components/fulfilment-section/fulfilment-section.component";
@@ -159,20 +159,6 @@ const DeliverablesProgress = ({
   );
 
   const renderContractDetails = () => {
-    if (isContractsLoading) {
-      return (
-        <div className="bg-white rounded border p-3">
-          <Skeleton className="h-4 w-36 mb-2" />
-          <div className="space-y-2 py-2">
-            <Skeleton className="h-3 w-full" />
-            <Skeleton className="h-3 w-4/5" />
-            <Skeleton className="h-3 w-3/4" />
-            <Skeleton className="h-3 w-full" />
-          </div>
-        </div>
-      );
-    }
-
     if (!selectedContract) {
       return (
         <div className="bg-white rounded border p-3">
@@ -295,14 +281,7 @@ const DeliverablesProgress = ({
   const renderNotes = () => (
     <div className="bg-white rounded border p-3">
       <h4 className="text-sm font-semibold text-gray-800 mb-2">Campaign Notes</h4>
-      {isNotesLoading ? (
-        <div className="space-y-2 py-2">
-          <Skeleton className="h-3 w-full" />
-          <Skeleton className="h-3 w-4/5" />
-          <Skeleton className="h-3 w-3/4" />
-        </div>
-      ) : (
-        <div className="space-y-2 text-xs text-gray-700 mb-3">
+      <div className="space-y-2 text-xs text-gray-700 mb-3">
           {privateNotes && privateNotes.length > 0 ? (
             privateNotes.map((note, index) => (
               <div key={note.id || index} className="border-l-2 border-indigo-500 pl-3 py-1 group">
@@ -340,8 +319,7 @@ const DeliverablesProgress = ({
           ) : (
             <p className="text-xs text-gray-500">No notes yet.</p>
           )}
-        </div>
-      )}
+      </div>
       <React.Fragment>
         <TextArea
           key={`note-textarea-${editingNote || "new"}-${textareaKey}`}
@@ -391,6 +369,10 @@ const DeliverablesProgress = ({
         {renderNoCreatorFound()}
       </div>
     );
+  }
+
+  if (isContractsLoading || isNotesLoading) {
+    return <RightPaneSkeleton layout="fluid" embedded />;
   }
 
   return (

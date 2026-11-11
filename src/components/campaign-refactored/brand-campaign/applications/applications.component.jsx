@@ -3,7 +3,7 @@ import MiddlePaneSkeleton from "@/common/components/brand-campaign-panes-skeleto
 import NotFound from "@/common/components/not-found/not-found.component";
 import { isDemoCampaign } from "@/common/utils/demo-campaign.util";
 import { isCreatorMode } from "@/common/utils/users.util";
-import { useCampaignTabBarMobileSlot } from "@/components/campaign-refactored/campaign-tab-bar-mobile-slot.context";
+import { useCampaignTabBarSlotRegistration } from "@/components/campaign-refactored/campaign-tab-bar-mobile-slot.context";
 import MessageThreadModal from "@/components/campaign-refactored/shared/message-thread-modal/message-thread-modal.component";
 import { pickMessageThreadModalProps } from "@/components/campaign-refactored/shared/message-thread-modal/use-message-thread.hook";
 import Rejected from "@/components/campaign-refactored/shared/rejected/rejected.component";
@@ -11,7 +11,7 @@ import RightPaneSkeleton from "@/components/campaign-refactored/shared/right-pan
 import CampaignBoard from "@/components/campaign-refactored/brand-campaign/active/components/campaign-board/campaign-board.component";
 import { ChevronLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CreatorSpendAnalysis from "./components/creator-spend-analysis/creator-spend-analysis.component";
 import DeliverablesProgress from "./components/deliverables-progress/deliverables-progress.component.jsx";
 import HireCreatorModal from "./components/hire-creator-modal/hire-creator-modal.component";
@@ -67,9 +67,25 @@ function BrandApplicationsContent({ onSwitchToRejected }) {
     pipelineRefreshToken,
   } = useBrandApplications();
 
-  const tabBarMobileSlot = useCampaignTabBarMobileSlot();
-  const registerMobileSlot = tabBarMobileSlot?.registerMobileSlot;
-  const clearMobileSlot = tabBarMobileSlot?.clearMobileSlot;
+  const tabBarSlots = useCampaignTabBarSlotRegistration();
+  const registerMobileSlot = tabBarSlots?.registerMobileSlot;
+  const clearMobileSlot = tabBarSlots?.clearMobileSlot;
+  const registerRightSlot = tabBarSlots?.registerRightSlot;
+  const clearRightSlot = tabBarSlots?.clearRightSlot;
+
+  useEffect(() => {
+    if (!registerRightSlot || !clearRightSlot || !onSwitchToRejected) return undefined;
+    registerRightSlot(
+      <button
+        type="button"
+        onClick={onSwitchToRejected}
+        className="flex h-9 w-full items-center justify-center overflow-hidden rounded-md border border-red-600 bg-red-600 px-1.5 text-[11px] font-semibold leading-none text-white transition-colors hover:border-red-700 hover:bg-red-700 sm:h-10 sm:px-2.5 sm:text-sm md:h-9 md:w-auto md:flex-none md:px-4 md:text-sm"
+      >
+        <span className="truncate">Rejected</span>
+      </button>
+    );
+    return () => clearRightSlot();
+  }, [registerRightSlot, clearRightSlot, onSwitchToRejected]);
 
   useEffect(() => {
     if (!registerMobileSlot || !clearMobileSlot) return;
@@ -269,7 +285,6 @@ function BrandApplicationsContent({ onSwitchToRejected }) {
           onFiltersReplace={handleFiltersReplace}
           onClearFilters={clearFilters}
           fetchIndividualCollaborations={fetchIndividualCollaborations}
-          onSwitchToRejected={onSwitchToRejected}
           applicationsSubTab={applicationsSubTab}
           onApplicationsSubTabChange={handleApplicationsSubTabChange}
           subTabCounts={subTabCounts}
@@ -297,21 +312,26 @@ function BrandApplications() {
   const searchParams = useSearchParams();
   const view = Number(searchParams.get("view")) || 1;
   const [activeView, setActiveView] = useState(1);
+  const isCreator = isCreatorMode();
 
-  if (isCreatorMode()) {
-    return null;
-  }
+  const switchToRejected = useCallback(() => setActiveView(2), []);
+  const switchToApplications = useCallback(() => setActiveView(1), []);
 
   useEffect(() => {
+    if (isCreator) return;
     setActiveView(view || 1);
-  }, [view]);
+  }, [view, isCreator]);
+
+  if (isCreator) {
+    return null;
+  }
 
   return (
     <>
       {activeView === 1 ? (
-        <BrandApplicationsContent onSwitchToRejected={() => setActiveView(2)} />
+        <BrandApplicationsContent onSwitchToRejected={switchToRejected} />
       ) : (
-        <Rejected onSwitchToApplications={() => setActiveView(1)} />
+        <Rejected onSwitchToApplications={switchToApplications} />
       )}
     </>
   );

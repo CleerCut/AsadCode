@@ -199,7 +199,7 @@ export default function BrandCompleted() {
   return (
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-gradient-to-b from-slate-50/80 to-white md:flex-row md:items-stretch md:bg-transparent">
       <div
-        className={`${PANE_COLUMN_CLASS} border-b border-indigo-100/30 bg-white shadow-[0_4px_24px_-12px_rgba(79,70,229,0.15)] transition-[opacity,transform] duration-200 ease-out md:h-full md:w-[300px] md:max-w-[320px] md:shrink-0 md:grow-0 md:basis-[340px] md:border-b-0 md:border-r md:border-gray-200 md:shadow-none lg:w-[380px] lg:max-w-[380px] lg:basis-[380px] ${overviewVisible} md:flex`}
+        className={`${PANE_COLUMN_CLASS} border-b border-indigo-100/30 bg-white shadow-[0_4px_24px_-12px_rgba(79,70,229,0.15)] transition-[opacity,transform] duration-200 ease-out md:h-full md:w-[240px] md:max-w-[28%] md:shrink-0 md:grow-0 md:basis-[28%] md:border-b-0 md:border-r md:border-gray-200 md:shadow-none lg:w-[300px] lg:max-w-[300px] lg:basis-[300px] xl:w-[340px] xl:max-w-[340px] xl:basis-[340px] ${overviewVisible} md:flex`}
       >
         <CompletedPaneContent
           awaiting={overviewAwaiting}

@@ -920,16 +920,23 @@ export function creatorBelongsToApplicationsSubTab(creator, subTab) {
   return column === "applications";
 }
 
-export function buildCreateCampaignPath({ returnTab = 1, returnView } = {}) {
+export function buildCreateCampaignPath({ returnTab = 1, returnView, returnTo } = {}) {
   const params = new URLSearchParams();
-  params.set("returnTab", String(returnTab));
+  if (returnTo) {
+    params.set("returnTo", String(returnTo));
+  } else {
+    params.set("returnTab", String(returnTab));
+  }
   if (returnView != null && returnView !== "") {
     params.set("returnView", String(returnView));
   }
   return `/campaign/create?${params.toString()}`;
 }
 
-export function buildCampaignReturnPath({ returnTab = 1, returnView } = {}) {
+export function buildCampaignReturnPath({ returnTab = 1, returnView, returnTo } = {}) {
+  if (returnTo && typeof returnTo === "string" && returnTo.startsWith("/")) {
+    return returnTo;
+  }
   const params = new URLSearchParams();
   params.set("tab", String(returnTab || 1));
   if (returnView != null && returnView !== "") {

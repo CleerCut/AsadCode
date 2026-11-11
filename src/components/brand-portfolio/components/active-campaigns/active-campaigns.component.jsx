@@ -225,7 +225,7 @@ const ActiveCampaigns = ({ refreshKey }) => {
                   <CustomButton
                     text="View Brief"
                     className="btn-outline w-full"
-                    href={`/campaign?tab=active&campaignId=${campaign.id}`}
+                    href={`/campaign?tab=3&campaignId=${campaign.id}`}
                   />
                 </div>
               </div>

@@ -6,7 +6,6 @@ import NotFound from "@/common/components/not-found/not-found.component";
 import CreatorCard from "@/components/campaign-refactored/creator-card/creator-card.component";
 import Modal from "@/common/components/modal/modal.component";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
-import CustomSwitch from "@/common/components/custom-switch/custom-switch.component";
 import useCreatorSpendAnalysis from "./use-creator-spend-analysis.hook";
 import { useSelector } from "react-redux";
 import { COLLABORATION_TYPE } from "@/common/constants/campaign.constant";
@@ -24,7 +23,6 @@ const CreatorSpendAnalysis = ({
   sortBy,
   onSortChange,
   onSaveToShortlist,
-  onSwitchToApplications,
 }) => {
   const individualCollaborationsState = useSelector(
     (state) => state.invitation.getBrandRejectedIndividualCollaborations || {}
@@ -33,11 +31,7 @@ const CreatorSpendAnalysis = ({
 
   const {
     showReinstateConfirmation,
-    campaignsData,
     campaignsLoading,
-    filteredCampaignOptions,
-    selectedCampaignValue,
-    handleToggleChange,
     handleSortChange,
     handleReinstateClick,
     handleConfirmReinstate,
@@ -211,65 +205,27 @@ const CreatorSpendAnalysis = ({
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-gray-100">
       <div className="shrink-0 z-10 border-b border-gray-200 bg-white shadow-sm">
         <div className="p-3 sm:p-4">
-          <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="w-full min-w-0 sm:w-[280px] bg-gray-100 rounded-lg p-3">
-              <CustomSwitch
-                label="Campaign Type"
-                checked={isMultiCreator}
-                onChange={(event) => handleToggleChange(event.target.checked)}
-                rightLabelText={isMultiCreator ? "Multi-Creator" : "Individual Creator"}
-                parentDivClassName="justify-between"
+          <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+            <div className="min-w-0 w-full max-w-full sm:w-44 md:max-w-[230px] [&_.relative>div:first-child]:!box-border [&_.relative>div:first-child]:!flex [&_.relative>div:first-child]:!h-9 [&_.relative>div:first-child]:!min-h-9 [&_.relative>div:first-child]:!items-center [&_.relative>div:first-child]:!py-0">
+              <SimpleSelect
+                placeHolder="Sort by"
+                options={sortOptions}
+                value={
+                  sortBy
+                    ? {
+                        value: sortBy,
+                        label: sortOptions.find((opt) => opt.value === sortBy)?.label,
+                      }
+                    : null
+                }
+                onChange={handleSortChange}
               />
             </div>
-            {onSwitchToApplications && (
-              <CustomButton
-                text="Applications"
-                onClick={onSwitchToApplications}
-                className="btn-outline w-full shrink-0 !h-9 sm:w-auto"
-              />
-            )}
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            {isMultiCreator && (
-              <div className="min-w-0 w-full sm:max-w-[min(100%,280px)] sm:flex-1">
-                <SimpleSelect
-                  placeHolder="Select a campaign"
-                  options={filteredCampaignOptions}
-                  isSearchable={true}
-                  isMulti={false}
-                  isLoading={campaignsLoading}
-                  value={selectedCampaignValue}
-                  onChange={(opt) => {
-                    const id = opt?.value;
-                    const campaign = campaignsData?.data?.find((c) => c.id === id);
-                    if (onCampaignSelect && campaign) onCampaignSelect(campaign);
-                  }}
-                />
-              </div>
-            )}
-            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2">
-              <div className="min-w-0 w-full sm:w-44 md:max-w-[230px]">
-                <SimpleSelect
-                  placeHolder="Sort by"
-                  options={sortOptions}
-                  value={
-                    sortBy
-                      ? {
-                          value: sortBy,
-                          label: sortOptions.find((opt) => opt.value === sortBy)?.label,
-                        }
-                      : null
-                  }
-                  onChange={handleSortChange}
-                />
-              </div>
-              <CustomButton
-                text="Start a new campaign"
-                onClick={handleNewCampaignClick}
-                className="btn-primary w-full !h-9 !text-xs sm:!h-10 sm:w-auto sm:!text-sm md:max-w-[200px]"
-              />
-            </div>
+            <CustomButton
+              text="Start a new campaign"
+              onClick={handleNewCampaignClick}
+              className="btn-primary !h-9 !min-h-9 min-w-0 flex-1 !text-xs sm:flex-none sm:!h-9 sm:!min-h-9 sm:!text-sm md:max-w-[200px]"
+            />
           </div>
         </div>
       </div>

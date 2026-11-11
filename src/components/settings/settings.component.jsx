@@ -2,11 +2,12 @@
 
 import SettingSidebar from "./setting-sidebar/setting-sidebar.component";
 import AppSidebar from "@/components/app-sidebar/app-sidebar.component";
+import { AppShellNavProvider } from "@/components/app-sidebar/app-shell-nav.context";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import useSettingsLayout from "./use-settings-layout.hook";
 
-export default function SettingsLayout({ children }) {
+function SettingsLayoutInner({ children }) {
   const {
     mobileMenuOpen,
     sidebarCollapsed,
@@ -20,12 +21,12 @@ export default function SettingsLayout({ children }) {
 
   const contentOffset = isDesktop
     ? sidebarCollapsed
-      ? "ml-16 lg:ml-36"
-      : "ml-16 lg:ml-[22rem]"
-    : "ml-16";
+      ? "md:ml-16 lg:ml-36"
+      : "md:ml-16 lg:ml-[22rem]"
+    : "ml-0";
 
   return (
-    <div className="min-h-screen flex">
+    <div className="flex min-h-screen">
       <AppSidebar />
       <SettingSidebar
         isOpen={mobileMenuOpen}
@@ -38,7 +39,7 @@ export default function SettingsLayout({ children }) {
       />
 
       <div
-        className={`flex min-w-0 flex-1 flex-col transition-[margin] duration-300 ease-in-out ${contentOffset}`}
+        className={`flex min-w-0 flex-1 flex-col pb-[calc(3rem+env(safe-area-inset-bottom))] transition-[margin] duration-300 ease-in-out sm:pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0 ${contentOffset}`}
       >
         {!isDesktop ? (
           <div className="sticky top-0 z-30 flex h-12 items-center gap-2 border-b border-gray-200 bg-white px-3">
@@ -81,5 +82,13 @@ export default function SettingsLayout({ children }) {
         </footer>
       </div>
     </div>
+  );
+}
+
+export default function SettingsLayout({ children }) {
+  return (
+    <AppShellNavProvider>
+      <SettingsLayoutInner>{children}</SettingsLayoutInner>
+    </AppShellNavProvider>
   );
 }

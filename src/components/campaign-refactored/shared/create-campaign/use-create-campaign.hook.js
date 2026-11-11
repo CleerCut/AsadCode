@@ -33,6 +33,7 @@ export default function useCreateCampaign() {
 
   const returnTab = searchParams.get("returnTab") || "1";
   const returnView = searchParams.get("returnView");
+  const returnTo = searchParams.get("returnTo");
 
   const [currentStep, setCurrentStep] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
@@ -120,9 +121,10 @@ export default function useCreateCampaign() {
       buildCampaignReturnPath({
         returnTab,
         returnView: returnView || undefined,
+        returnTo: returnTo || undefined,
       })
     );
-  }, [router, returnTab, returnView]);
+  }, [router, returnTab, returnView, returnTo]);
 
   useEffect(() => {
     dispatch(checkHasPaymentMethod());

@@ -76,10 +76,12 @@ export const COLLABORATION_TYPE = Object.freeze({
 });
 
 export const BRAND_CAMPAIGN_TAB = Object.freeze({
-  DISCOVER: 1,
+  HOME: 1,
   APPLICATIONS: 2,
   ACTIVE: 3,
   COMPLETED: 4,
+  /** @deprecated Discover+ is now `/discover`; kept for legacy returnTab redirects */
+  DISCOVER: 1,
 });
 
 export const REQUIREMENT_LEVEL = Object.freeze({

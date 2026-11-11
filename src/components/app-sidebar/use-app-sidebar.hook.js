@@ -4,27 +4,24 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   BarChart3,
-  Bell,
+  Compass,
   DollarSign,
   FolderOpen,
-  HelpCircle,
   LayoutGrid,
   LogOut,
   Settings,
-  Shield,
-  User,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 
 import ROLES from "@/common/constants/role.constant";
 import { getUser, isCreatorMode, logout } from "@/common/utils/users.util";
 import { resetOnboardingSession } from "@/provider/features/onboarding/onboarding.slice";
-
 const RAIL_BG = "#4552DF";
 const PAYOUTS_HREF = "/settings/payments/payment-history";
 const SETTINGS_HREF = "/settings/account-settings/personal-information";
 const CONTENT_LIBRARY_HREF = "/content-library";
 const REPORTS_HREF = "/reports";
+const DISCOVER_HREF = "/discover";
 
 const FALLBACK_USER = {
   first_name: "CleerCut",
@@ -46,6 +43,10 @@ function isCampaignsPath(pathname) {
   return pathname === "/campaign" || pathname?.startsWith("/campaign/");
 }
 
+function isDiscoverPath(pathname) {
+  return pathname === DISCOVER_HREF || pathname?.startsWith(`${DISCOVER_HREF}/`);
+}
+
 function isPortfolioPath(pathname, isCreator) {
   if (isCreator) {
     return (
@@ -53,10 +54,6 @@ function isPortfolioPath(pathname, isCreator) {
     );
   }
   return pathname?.includes("/brand-portfolio");
-}
-
-function isNotificationsPath(pathname) {
-  return pathname === "/notifications" || pathname?.startsWith("/notifications/");
 }
 
 function isContentLibraryPath(pathname) {
@@ -72,7 +69,7 @@ const useAppSidebar = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [currentUser, setCurrentUser] = useState(FALLBACK_USER);
   const [isCreator, setIsCreator] = useState(false);
 
@@ -82,51 +79,78 @@ const useAppSidebar = () => {
     setIsCreator(isCreatorMode());
   }, []);
 
-  const portfolioHref = isCreator ? "/creator-portfolio" : "/brand-portfolio";
-  const portfolioLabel = isCreator ? "Portfolio" : "Profile";
-
   const topLinks = useMemo(() => {
-    const links = [
-      { href: "/campaign", label: "Campaigns", icon: LayoutGrid, id: "campaigns" },
-      { href: PAYOUTS_HREF, label: "Payouts", icon: DollarSign, id: "payouts" },
-    ];
-
-    if (!isCreator) {
-      links.push(
+    if (isCreator) {
+      return [
         {
-          href: CONTENT_LIBRARY_HREF,
-          label: "Content Library",
-          icon: FolderOpen,
-          id: "content-library",
+          href: "/campaign",
+          label: "Campaigns",
+          shortLabel: "Campaigns",
+          icon: LayoutGrid,
+          id: "campaigns",
         },
-        { href: REPORTS_HREF, label: "Reports", icon: BarChart3, id: "reports" }
-      );
+        {
+          href: PAYOUTS_HREF,
+          label: "Payouts",
+          shortLabel: "Payouts",
+          icon: DollarSign,
+          id: "payouts",
+        },
+      ];
     }
 
-    return links;
+    return [
+      {
+        href: "/campaign",
+        label: "Campaigns",
+        shortLabel: "Campaigns",
+        icon: LayoutGrid,
+        id: "campaigns",
+      },
+      {
+        href: DISCOVER_HREF,
+        label: "Discover+",
+        shortLabel: "Discover+",
+        icon: Compass,
+        id: "discover",
+      },
+      {
+        href: PAYOUTS_HREF,
+        label: "Payouts",
+        shortLabel: "Payouts",
+        icon: DollarSign,
+        id: "payouts",
+      },
+      {
+        href: CONTENT_LIBRARY_HREF,
+        label: "Content Library",
+        shortLabel: "Content",
+        icon: FolderOpen,
+        id: "content-library",
+      },
+      {
+        href: REPORTS_HREF,
+        label: "Reports",
+        shortLabel: "Reports",
+        icon: BarChart3,
+        id: "reports",
+      },
+    ];
   }, [isCreator]);
-
-  const bottomLinks = useMemo(
-    () => [
-      { href: "/notifications", label: "Notifications", icon: Bell, id: "notifications" },
-      { href: SETTINGS_HREF, label: "Settings", icon: Settings, id: "settings" },
-    ],
-    []
-  );
 
   const isNavLinkActive = useCallback(
     (id) => {
       switch (id) {
         case "campaigns":
           return isCampaignsPath(pathname);
+        case "discover":
+          return isDiscoverPath(pathname);
         case "payouts":
           return isPayoutsPath(pathname);
         case "content-library":
           return isContentLibraryPath(pathname);
         case "reports":
           return isReportsPath(pathname);
-        case "notifications":
-          return isNotificationsPath(pathname);
         case "settings":
           return isSettingsPath(pathname);
         case "profile":
@@ -138,42 +162,35 @@ const useAppSidebar = () => {
     [pathname, isCreator]
   );
 
-  const profileMenuItems = useMemo(
+  const brandName = useMemo(() => {
+    return (
+      currentUser?.brand_profile?.brand_name ||
+      `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() ||
+      "CleerCut"
+    );
+  }, [currentUser]);
+
+  const planLabel = useMemo(() => {
+    return (
+      currentUser?.brand_profile?.plan_name ||
+      currentUser?.subscription_plan ||
+      currentUser?.plan ||
+      null
+    );
+  }, [currentUser]);
+
+  const accountMenuItems = useMemo(
     () => [
       {
-        icon: <User size={16} />,
-        label: isCreator ? "View Portfolio" : "View Profile",
-        action: () => {
-          router.push(portfolioHref);
-        },
-      },
-      {
-        icon: <User size={16} />,
-        label: "My Profile",
-        action: () => {
-          router.push("/settings/account-settings/personal-information");
-        },
-      },
-      {
         icon: <Settings size={16} />,
-        label: "Account Settings",
+        label: "Settings",
         action: () => {
-          router.push("/settings/account-settings/security-settings");
+          router.push(SETTINGS_HREF);
         },
-      },
-      {
-        icon: <Shield size={16} />,
-        label: "Privacy & Security",
-        action: () => {},
-      },
-      {
-        icon: <HelpCircle size={16} />,
-        label: "Help & Support",
-        action: () => {},
       },
       {
         icon: <LogOut size={16} />,
-        label: "Sign Out",
+        label: "Log out",
         action: () => {
           dispatch(resetOnboardingSession());
           logout();
@@ -181,7 +198,7 @@ const useAppSidebar = () => {
         className: "text-red-600 hover:text-red-700 hover:bg-red-50",
       },
     ],
-    [dispatch, router, isCreator, portfolioHref]
+    [dispatch, router]
   );
 
   const getUserInitials = useCallback((name = "") => {
@@ -204,17 +221,17 @@ const useAppSidebar = () => {
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    if (!showProfileDropdown) {
+    if (!showAccountMenu) {
       setIsExpanded(false);
     }
-  }, [showProfileDropdown]);
+  }, [showAccountMenu]);
 
-  const toggleProfileDropdown = useCallback(() => {
-    setShowProfileDropdown((prev) => !prev);
+  const toggleAccountMenu = useCallback(() => {
+    setShowAccountMenu((prev) => !prev);
   }, []);
 
-  const closeProfileDropdown = useCallback(() => {
-    setShowProfileDropdown(false);
+  const closeAccountMenu = useCallback(() => {
+    setShowAccountMenu(false);
     setIsExpanded(false);
   }, []);
 
@@ -222,16 +239,15 @@ const useAppSidebar = () => {
     railBg: RAIL_BG,
     isExpanded,
     topLinks,
-    bottomLinks,
-    portfolioHref,
-    portfolioLabel,
     isNavLinkActive,
     currentUser,
+    brandName,
+    planLabel,
     avatarUrl,
-    profileMenuItems,
-    showProfileDropdown,
-    toggleProfileDropdown,
-    closeProfileDropdown,
+    accountMenuItems,
+    showAccountMenu,
+    toggleAccountMenu,
+    closeAccountMenu,
     getUserInitials,
     handleMouseEnter,
     handleMouseLeave,

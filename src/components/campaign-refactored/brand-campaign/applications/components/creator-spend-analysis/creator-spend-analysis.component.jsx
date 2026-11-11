@@ -1,7 +1,6 @@
 import ConfirmationModal from "@/common/components/confirmation-modal/confirmation-modal.component";
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import CustomInput from "@/common/components/custom-input/custom-input.component";
-import CustomSwitch from "@/common/components/custom-switch/custom-switch.component";
 import SimpleSelect from "@/common/components/dropdowns/simple-select/simple-select";
 import { SkeletonCardGrid } from "@/common/components/loader/skeleton-loader.component";
 import Modal from "@/common/components/modal/modal.component";
@@ -33,7 +32,6 @@ const CreatorSpendAnalysis = ({
   onFiltersReplace,
   onClearFilters,
   fetchIndividualCollaborations: fetchFromHook,
-  onSwitchToRejected,
   applicationsSubTab,
   onApplicationsSubTabChange,
   subTabCounts,
@@ -54,11 +52,7 @@ const CreatorSpendAnalysis = ({
     pinnedIndividualCreators,
     unpinnedIndividualCreators,
     individualCollaborationsLoading,
-    campaignsData,
     campaignsLoading,
-    filteredCampaignOptions,
-    selectedCampaignValue,
-    handleToggleChange,
     handleCreatorPreview,
     handleSaveToShortlist,
     confirmSaveToShortlist,
@@ -67,7 +61,6 @@ const CreatorSpendAnalysis = ({
     setShowSaveToShortlistModal,
     shortlists,
     mapCreatorForCard,
-    handleCampaignChange,
     handleSortChange,
     sortValue,
     sortOptions,
@@ -153,121 +146,74 @@ const CreatorSpendAnalysis = ({
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-gray-100">
-      <div className="relative z-30 shrink-0 border-b border-gray-200 bg-white shadow-sm">
-        <div className="p-2.5 sm:p-4">
-          <div className="mb-2 flex flex-col gap-2 sm:mb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-            <div className="w-full min-w-0 sm:w-[280px] rounded-lg bg-gray-100 p-3">
-              <CustomSwitch
-                label="Campaign Type"
-                checked={isMultiCreator}
-                onChange={(event) => handleToggleChange(event.target.checked)}
-                rightLabelText={isMultiCreator ? "Multi-Creator" : "Individual Creator"}
-                parentDivClassName="justify-between"
+      <div className="relative z-30 shrink-0 border-b border-gray-200 bg-white">
+        <div className="flex flex-col gap-1.5 px-2 py-1.5 sm:gap-2 sm:px-3 sm:py-2 md:flex-row md:items-center md:justify-between md:gap-2">
+          {isMultiCreator && onApplicationsSubTabChange ? (
+            <div className="flex h-9 min-w-0 w-full items-center gap-1.5 overflow-hidden sm:gap-2 md:w-auto md:flex-none">
+              <ApplicationsSubtabToggle
+                activeSubTab={applicationsSubTab}
+                onSubTabChange={onApplicationsSubTabChange}
+                counts={subTabCounts}
               />
-            </div>
-            <div className="flex w-full flex-col gap-2 sm:ml-auto sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2">
-              <CustomButton
-                text="Applicant Summary"
-                onClick={() => {
-                  if (!selectedCampaign?.id) return;
-                  window.open(
-                    `/campaign/applicant-summary?campaignId=${selectedCampaign.id}`,
-                    "_blank",
-                    "noopener,noreferrer",
-                  );
-                }}
-                disabled={!selectedCampaign?.id}
-                className="btn-primary w-full shrink-0 sm:w-auto"
-              />
-              {onSwitchToRejected ? (
-                <CustomButton
-                  text="Rejected"
-                  onClick={onSwitchToRejected}
-                  className="btn-outline w-full shrink-0 sm:w-auto"
-                />
+              {showCloseListingMenu && selectedCampaign ? (
+                <>
+                  {!isSelectedCampaignListingOpen ? (
+                    <span className="inline-flex h-9 shrink-0 items-center rounded-md bg-gray-200 px-2 text-[10px] font-semibold leading-none text-gray-600 sm:text-xs">
+                      Listing closed
+                    </span>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={handleMenuOpen}
+                    disabled={isClosingListing || isExtendingDeadline}
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    aria-label="Campaign options"
+                  >
+                    <EllipsisVertical className="h-4 w-4" />
+                  </button>
+                </>
               ) : null}
             </div>
-          </div>
+          ) : null}
 
-          <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-3">
-            {isMultiCreator ? (
-              <div className="flex w-full min-w-0 items-center gap-2 sm:max-w-[min(100%,320px)] lg:flex-1 lg:gap-3">
-                <div className="min-w-0 flex-1">
-                  <SimpleSelect
-                    placeHolder="Select a campaign"
-                    options={filteredCampaignOptions}
-                    isLoading={campaignsLoading}
-                    value={selectedCampaignValue}
-                    onChange={handleCampaignChange}
-                  />
-                </div>
-                {showCloseListingMenu && selectedCampaign ? (
-                  <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-                    {!isSelectedCampaignListingOpen ? (
-                      <span className="rounded-md bg-gray-200 px-1.5 py-1.5 text-[10px] font-semibold text-gray-600 sm:px-2 sm:py-1.5 sm:text-xs">
-                        Listing closed
-                      </span>
-                    ) : null}
-                    <button
-                      type="button"
-                      onClick={handleMenuOpen}
-                      disabled={isClosingListing || isExtendingDeadline}
-                      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
-                      aria-label="Campaign options"
-                    >
-                      <EllipsisVertical className="h-4 w-4" />
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
-
-            {isMultiCreator && onApplicationsSubTabChange ? (
-              <div className="flex w-full justify-center lg:w-auto lg:shrink-0">
-                <ApplicationsSubtabToggle
-                  activeSubTab={applicationsSubTab}
-                  onSubTabChange={onApplicationsSubTabChange}
-                  counts={subTabCounts}
-                />
-              </div>
-            ) : null}
-
-            <div className="flex w-full flex-col gap-2 sm:ml-auto sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2 lg:ml-0 lg:flex-1 lg:justify-end">
-              <div className="min-w-0 w-full sm:w-44 md:w-[180px] md:max-w-[230px]">
-                <SimpleSelect
-                  placeHolder="Sort by"
-                  options={sortOptions}
-                  value={sortValue}
-                  onChange={handleSortChange}
-                />
-              </div>
-              <div className="flex w-full flex-nowrap items-center gap-2 sm:w-auto">
-                <CustomButton
-                  text="Filters"
-                  onClick={() => setShowFilterModal(true)}
-                  startIcon={<Filter className="h-4 w-4 sm:h-[18px] sm:w-[18px]" aria-hidden />}
-                  className="btn-outline min-w-0 flex-1 sm:flex-none md:min-w-[106px]"
-                />
-                {onOpenBoard ? (
-                  <>
-                    <CustomButton
-                      text="Board"
-                      title="Campaign Board"
-                      className="btn-outline min-w-0 shrink-0 px-2 sm:hidden"
-                      startIcon={<LayoutGrid className="h-3.5 w-3.5 shrink-0" />}
-                      onClick={onOpenBoard}
-                    />
-                    <CustomButton
-                      text="Campaign Board"
-                      title="Campaign Board"
-                      className="btn-outline hidden shrink-0 whitespace-nowrap sm:inline-flex sm:w-auto md:min-w-[148px]"
-                      startIcon={<LayoutGrid className="h-4 w-4 shrink-0" />}
-                      onClick={onOpenBoard}
-                    />
-                  </>
-                ) : null}
-              </div>
+          <div className="flex min-w-0 w-full flex-wrap items-center gap-1.5 sm:gap-2 md:ml-auto md:w-auto md:shrink-0 md:flex-nowrap">
+            <div className="hidden min-w-0 w-36 md:block [&_.relative>div:first-child]:!box-border [&_.relative>div:first-child]:!flex [&_.relative>div:first-child]:!h-9 [&_.relative>div:first-child]:!min-h-9 [&_.relative>div:first-child]:!items-center [&_.relative>div:first-child]:!py-0">
+              <SimpleSelect
+                placeHolder="Sort by"
+                options={sortOptions}
+                value={sortValue}
+                onChange={handleSortChange}
+              />
             </div>
+            <CustomButton
+              text="Filters"
+              onClick={() => setShowFilterModal(true)}
+              startIcon={<Filter className="h-4 w-4" aria-hidden />}
+              className="btn-outline !h-9 !min-h-9 !min-w-0 !flex-1 !leading-none !px-2 !text-[11px] sm:!text-sm md:!flex-none md:!px-2.5"
+            />
+            {onOpenBoard ? (
+              <CustomButton
+                text="Board"
+                title="Campaign Board"
+                className="btn-outline !h-9 !min-h-9 !min-w-0 !flex-1 !leading-none !px-2 !text-[11px] sm:!text-sm md:!flex-none md:!px-2.5"
+                startIcon={<LayoutGrid className="h-3.5 w-3.5 shrink-0" />}
+                onClick={onOpenBoard}
+              />
+            ) : null}
+            <CustomButton
+              text="Application Summary"
+              title="Application Summary"
+              onClick={() => {
+                if (!selectedCampaign?.id) return;
+                window.open(
+                  `/campaign/applicant-summary?campaignId=${selectedCampaign.id}`,
+                  "_blank",
+                  "noopener,noreferrer",
+                );
+              }}
+              disabled={!selectedCampaign?.id}
+              className="btn-primary !h-9 !min-h-9 !w-full !basis-full !leading-none !px-2 !text-[11px] sm:!text-sm md:!w-auto md:!basis-auto md:!flex-none md:!px-2.5"
+            />
           </div>
         </div>
       </div>
@@ -420,21 +366,46 @@ const CreatorSpendAnalysis = ({
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
-          elevation: 3,
-          sx: { minWidth: 220, borderRadius: 2, mt: 1 },
+          elevation: 2,
+          sx: {
+            minWidth: 220,
+            borderRadius: 1.5,
+            mt: 0.5,
+            p: 0.5,
+            bgcolor: "#FFFFFF",
+            "& .MuiList-root": { py: 0, display: "flex", flexDirection: "column", gap: 0.5 },
+          },
         }}
       >
         <MenuItem
           onClick={handleRequestExtendDeadline}
           disabled={isExtendingDeadline}
-          sx={{ fontSize: "0.8125rem", py: 1.25, px: 2, whiteSpace: "normal" }}
+          sx={{
+            fontSize: "0.8125rem",
+            py: 0.75,
+            px: 1.5,
+            minHeight: 0,
+            borderRadius: 1,
+            bgcolor: "#F3F4F6",
+            whiteSpace: "normal",
+            "&:hover": { bgcolor: "#E5E7EB" },
+          }}
         >
           Extend application deadline
         </MenuItem>
         <MenuItem
           onClick={handleRequestCloseListing}
           disabled={isClosingListing || !isSelectedCampaignListingOpen}
-          sx={{ fontSize: "0.8125rem", py: 1.25, px: 2, whiteSpace: "normal" }}
+          sx={{
+            fontSize: "0.8125rem",
+            py: 0.75,
+            px: 1.5,
+            minHeight: 0,
+            borderRadius: 1,
+            bgcolor: "#F3F4F6",
+            whiteSpace: "normal",
+            "&:hover": { bgcolor: "#E5E7EB" },
+          }}
         >
           Close listing to new applicants
         </MenuItem>

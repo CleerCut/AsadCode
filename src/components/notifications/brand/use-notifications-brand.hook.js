@@ -275,32 +275,31 @@ function useNotificationsBrand() {
         );
       }
 
-      // Navigate to Active tab (tab 3) and let the campaign be selected from Redux context
-      // Tab mapping: 1=Discover+, 2=Applications, 3=Active, 4=Completed
+      // Tab mapping: 1=Home, 2=Applications, 3=In Progress, 4=Done
       switch (notification.type) {
         case NOTIFICATION_TYPE.APPLICATION:
-          router.push(`/campaign?tab=2`); // Applications tab
+          router.push(`/campaign?tab=2`);
           break;
         case NOTIFICATION_TYPE.INVITATION_ACCEPTED:
-          router.push(`/campaign?tab=3`); // Active tab
+          router.push(`/campaign?tab=3`);
           break;
         case NOTIFICATION_TYPE.DELIVERABLE_SUBMITTED:
-          router.push(`/campaign?tab=3`); // Active tab
+          router.push(`/campaign?tab=3`);
           break;
         case NOTIFICATION_TYPE.DELIVERABLE_APPROVED:
-          router.push(`/campaign?tab=3`); // Active tab
+          router.push(`/campaign?tab=3`);
           break;
         case NOTIFICATION_TYPE.DELIVERABLE_REJECTED:
-          router.push(`/campaign?tab=3&view=2`); // Active tab
+          router.push(`/campaign?tab=3&view=2`);
           break;
         case NOTIFICATION_TYPE.CAMPAIGN_COMPLETE:
-          router.push(`/campaign?tab=4`); // Completed tab
+          router.push(`/campaign?tab=4`);
           break;
         case NOTIFICATION_TYPE.REJECTION:
-          router.push(`/campaign?tab=2&view=2`); // Applications tab, Rejected sub-tab
+          router.push(`/campaign?tab=2&view=2`);
           break;
         case NOTIFICATION_TYPE.HIRE:
-          router.push(`/campaign?tab=3`); // Active tab
+          router.push(`/campaign?tab=3`);
           break;
         case NOTIFICATION_TYPE.APPLICANT_WITHDREW:
           router.push(`/campaign?tab=2&view=1`);

@@ -1,7 +1,6 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import CustomInput from "@/common/components/custom-input/custom-input.component";
 import DeleteConfirmationModal from "@/common/components/delete-confirmation-modal/delete-confirmation-modal.component";
-import { Skeleton } from "@/common/components/loader/skeleton-loader.component";
 import Modal from "@/common/components/modal/modal.component";
 import { CircularProgress } from "@mui/material";
 import { Check, Copy, MoreVertical, RefreshCw } from "lucide-react";
@@ -67,6 +66,7 @@ export default function DiscountCodeTracking({
   });
 
   if (!isAffiliate) return null;
+  if (isLoading && !liveCode) return null;
 
   const trackingEndLabel = formatDisplayDate(trackingEndDate);
   const payoutLabel = formatDisplayDate(payoutDate);
@@ -105,18 +105,6 @@ export default function DiscountCodeTracking({
   );
 
   const renderLiveRow = () => {
-    if (isLoading && !liveCode) {
-      return (
-        <div className="flex flex-nowrap items-center justify-between gap-2">
-          <Skeleton className="h-4 w-28 sm:w-36" />
-          <div className="flex shrink-0 items-center gap-1">
-            <Skeleton className="h-8 w-8 rounded-md" />
-            {isManageEnabled ? <Skeleton className="h-8 w-8 rounded-md" /> : null}
-          </div>
-        </div>
-      );
-    }
-
     if (!liveCode) {
       return (
         <div className="flex items-center justify-between gap-2">

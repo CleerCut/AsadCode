@@ -2,12 +2,13 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isCreatorMode } from "@/common/utils/users.util";
 import { useSearchParams } from "next/navigation";
+import { BRAND_CAMPAIGN_TAB } from "@/common/constants/campaign.constant";
 import {
   selectCampaignActiveTab,
   setCampaignActiveTab,
 } from "@/provider/features/campaign-context/campaign-context.slice";
 
-import BrandDiscover from "./brand-campaign/discover/discover.component";
+import BrandCampaignHome from "./brand-campaign/home/home.component";
 import BrandApplications from "./brand-campaign/applications/applications.component";
 import BrandActive from "./brand-campaign/active/active.component";
 import BrandCompleted from "./brand-campaign/completed/completed.component";
@@ -20,16 +21,17 @@ import CreatorCompleted from "./creator-campaign/completed/completed.component";
 export default function useCampaign() {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
-  const tab = Number(searchParams.get("tab")) || 1;
-  const activeTab = useSelector(selectCampaignActiveTab) || 1;
+  const defaultTab = isCreatorMode() ? 1 : BRAND_CAMPAIGN_TAB.HOME;
+  const tab = Number(searchParams.get("tab")) || defaultTab;
+  const activeTab = useSelector(selectCampaignActiveTab) || defaultTab;
 
   const componentMap = useMemo(
     () => ({
       brand: {
-        1: BrandDiscover,
-        2: BrandApplications,
-        3: BrandActive,
-        4: BrandCompleted,
+        [BRAND_CAMPAIGN_TAB.HOME]: BrandCampaignHome,
+        [BRAND_CAMPAIGN_TAB.APPLICATIONS]: BrandApplications,
+        [BRAND_CAMPAIGN_TAB.ACTIVE]: BrandActive,
+        [BRAND_CAMPAIGN_TAB.COMPLETED]: BrandCompleted,
       },
       creator: {
         1: CreatorDiscover,
@@ -43,10 +45,10 @@ export default function useCampaign() {
 
   const mainTabs = useMemo(() => {
     const brandTabs = [
-      { id: 1, label: "Discover+" },
-      { id: 2, label: "Applications" },
-      { id: 3, label: "Active" },
-      { id: 4, label: "Completed" },
+      { id: BRAND_CAMPAIGN_TAB.HOME, label: "Home" },
+      { id: BRAND_CAMPAIGN_TAB.APPLICATIONS, label: "Applications" },
+      { id: BRAND_CAMPAIGN_TAB.ACTIVE, label: "In Progress" },
+      { id: BRAND_CAMPAIGN_TAB.COMPLETED, label: "Done" },
     ];
 
     const creatorTabs = [
@@ -70,13 +72,14 @@ export default function useCampaign() {
   );
 
   useEffect(() => {
-    dispatch(setCampaignActiveTab(tab || 1));
-  }, [tab, dispatch]);
+    dispatch(setCampaignActiveTab(tab || defaultTab));
+  }, [tab, dispatch, defaultTab]);
 
   return {
     activeTab,
     setActiveTab,
     mainTabs,
     ActiveComponent,
+    isBrand: !isCreatorMode(),
   };
 }

@@ -9,7 +9,7 @@ function ApplicationsSubtabToggle({ activeSubTab, onSubTabChange, counts }) {
 
   return (
     <div
-      className="inline-flex w-full max-w-[min(100%,25rem)] shrink-0 rounded-lg bg-gray-100 p-0.5 sm:w-auto border border-gray-200"
+      className="flex h-9 min-w-0 flex-1 items-center gap-1 sm:gap-1.5 md:w-auto md:flex-none"
       role="tablist"
       aria-label="Applications workflow"
     >
@@ -22,11 +22,20 @@ function ApplicationsSubtabToggle({ activeSubTab, onSubTabChange, counts }) {
             role="tab"
             aria-selected={isActive}
             onClick={() => handleSelect(segment.id)}
-            className={`min-h-[36px] flex-1 rounded-md px-2 py-1.5 text-[10px] font-semibold leading-tight transition-colors sm:min-w-[7.5rem] sm:px-3 sm:text-xs ${
-              isActive ? "bg-primary text-white" : "text-gray-600 hover:text-gray-900"
+            className={`inline-flex h-9 min-w-0 flex-1 items-center justify-center gap-1 overflow-hidden rounded-md border px-1.5 text-[11px] font-semibold leading-none transition-colors sm:gap-1.5 sm:px-3 sm:text-xs md:w-auto md:flex-none md:px-4 md:text-sm ${
+              isActive
+                ? "border-[#4552DF] bg-[#4552DF] text-white shadow-sm"
+                : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             }`}
           >
-            {segment.label}
+            <span className="truncate">{segment.label}</span>
+            <span
+              className={`inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded px-1 text-[10px] font-bold leading-none tabular-nums ${
+                isActive ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {segment.count}
+            </span>
           </button>
         );
       })}

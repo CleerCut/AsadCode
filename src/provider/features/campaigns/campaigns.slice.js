@@ -737,10 +737,12 @@ export const campaignsSlice = createSlice({
         state.getAllBrandCampaigns.isLoading = true;
         state.getAllBrandCampaigns.message = "";
         state.getAllBrandCampaigns.isError = false;
-        // Always clear so a previous account's campaigns never remain visible
-        // while the next brand's list is loading.
-        state.getAllBrandCampaigns.isSuccess = false;
-        state.getAllBrandCampaigns.data = null;
+        // Keep previous list while refreshing so the campaign-scope dropdown
+        // does not collapse to only "Individual hires". Account switch / logout
+        // resets this slice separately.
+        if (!state.getAllBrandCampaigns.data) {
+          state.getAllBrandCampaigns.isSuccess = false;
+        }
       })
       .addCase(getAllBrandCampaigns.fulfilled, (state, action) => {
         state.getAllBrandCampaigns.isLoading = false;

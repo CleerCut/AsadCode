@@ -1,6 +1,6 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import SimpleSelect from "@/common/components/dropdowns/simple-select/simple-select";
-import { Skeleton } from "@/common/components/loader/skeleton-loader.component";
+import MiddlePaneSkeleton from "@/common/components/brand-campaign-panes-skeleton/middle-pane-skeleton.component";
 import NotFound from "@/common/components/not-found/not-found.component";
 import UrgencyPill from "@/common/components/urgency-pill/urgency-pill.component";
 import { sortOptions } from "@/common/constants/auth.constant";
@@ -10,9 +10,9 @@ import { useCreatorSpendAnalysisCompleted } from "./use-creator-spend-analysis.h
 
 function PairedMetricBox({ label, primary, secondaryLabel, secondary }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
-      <p className="text-[10px] font-semibold text-gray-600 sm:text-xs">{label}</p>
-      <p className="text-sm font-bold tabular-nums text-gray-900 sm:text-base">{primary}</p>
+    <div className="min-w-0 rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
+      <p className="break-words text-[10px] font-semibold text-gray-600 sm:text-xs">{label}</p>
+      <p className="break-words text-sm font-bold tabular-nums text-gray-900 sm:text-base">{primary}</p>
       {secondaryLabel ? (
         <>
           <div className="my-1 border-t border-gray-300/80" />
@@ -28,37 +28,43 @@ function PairedMetricBox({ label, primary, secondaryLabel, secondary }) {
 
 function EngagementMetricBoxes({ creatorMetrics, formatMetricValue }) {
   return (
-    <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-5">
-      <div className="rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
-        <p className="text-[10px] font-semibold text-gray-600 sm:text-xs">Total Views</p>
-        <p className="text-sm font-bold tabular-nums text-gray-900 sm:text-base">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 xl:grid-cols-5">
+      <div className="min-w-0 rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
+        <p className="break-words text-[10px] font-semibold text-gray-600 sm:text-xs">Total Views</p>
+        <p className="break-words text-sm font-bold tabular-nums text-gray-900 sm:text-base">
           {formatMetricValue(creatorMetrics.views, "views")}
         </p>
       </div>
-      <div className="rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
-        <p className="text-[10px] font-semibold text-gray-600 sm:text-xs">Total Engagement</p>
-        <p className="text-sm font-bold tabular-nums text-gray-900 sm:text-base">
+      <div className="min-w-0 rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
+        <p className="break-words text-[10px] font-semibold text-gray-600 sm:text-xs">
+          Total Engagement
+        </p>
+        <p className="break-words text-sm font-bold tabular-nums text-gray-900 sm:text-base">
           {formatMetricValue(creatorMetrics.totalEngagement, "engagement")}
         </p>
       </div>
-      <div className="rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
-        <p className="text-[10px] font-semibold text-gray-600 sm:text-xs">Engagement Rate</p>
-        <p className="text-sm font-bold tabular-nums text-gray-900 sm:text-base">
+      <div className="min-w-0 rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
+        <p className="break-words text-[10px] font-semibold text-gray-600 sm:text-xs">
+          Engagement Rate
+        </p>
+        <p className="break-words text-sm font-bold tabular-nums text-gray-900 sm:text-base">
           {formatMetricValue(creatorMetrics.engagementRate, "rate")}
         </p>
       </div>
-      <div className="rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
-        <p className="text-[10px] font-semibold text-gray-600 sm:text-xs">Cost/View</p>
-        <p className="text-sm font-bold tabular-nums text-gray-900 sm:text-base">
+      <div className="min-w-0 rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
+        <p className="break-words text-[10px] font-semibold text-gray-600 sm:text-xs">Cost/View</p>
+        <p className="break-words text-sm font-bold tabular-nums text-gray-900 sm:text-base">
           {creatorMetrics.costPerView == null ||
           !Number.isFinite(Number(creatorMetrics.costPerView))
             ? "N/A"
             : formatMetricValue(creatorMetrics.costPerView, "currency")}
         </p>
       </div>
-      <div className="rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
-        <p className="text-[10px] font-semibold text-gray-600 sm:text-xs">Cost/Engagement</p>
-        <p className="text-sm font-bold tabular-nums text-gray-900 sm:text-base">
+      <div className="min-w-0 rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5">
+        <p className="break-words text-[10px] font-semibold text-gray-600 sm:text-xs">
+          Cost/Engagement
+        </p>
+        <p className="break-words text-sm font-bold tabular-nums text-gray-900 sm:text-base">
           {creatorMetrics.costPerEngagement == null ||
           !Number.isFinite(Number(creatorMetrics.costPerEngagement))
             ? "N/A"
@@ -79,7 +85,7 @@ function AffiliateSalesMetricBoxes({ creatorMetrics, formatMetricValue }) {
     : `${creatorMetrics.conversionValue ?? 0}%`;
 
   return (
-    <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 xl:grid-cols-5">
       <PairedMetricBox
         label="Revenue"
         primary={formatMetricValue(creatorMetrics.revenue, "currency")}
@@ -135,21 +141,7 @@ function AffiliateSalesMetricBoxes({ creatorMetrics, formatMetricValue }) {
 
 function CreatorMetricsSection({ creatorMetrics, formatMetricValue }) {
   if (!creatorMetrics) {
-    return (
-      <div className="w-full border-t border-gray-100 pt-3">
-        <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="animate-pulse rounded-lg border border-gray-200 bg-gray-100 px-2.5 py-2 sm:px-3 sm:py-2.5"
-            >
-              <div className="mb-1.5 h-3 w-20 rounded bg-gray-300" />
-              <div className="h-4 w-14 rounded bg-gray-300" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    return null;
   }
 
   if (creatorMetrics.metricsUnavailable && !creatorMetrics.isAffiliateSales) {
@@ -204,6 +196,10 @@ const CreatorSpendAnalysisCompleted = ({
     currentSort,
     isCompleted,
   });
+
+  if (creatorsLoading) {
+    return <MiddlePaneSkeleton embedded />;
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-gradient-to-b from-gray-100 to-gray-50/80">
@@ -279,29 +275,6 @@ const CreatorSpendAnalysisCompleted = ({
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2.5 sm:p-4">
         <div className="mx-auto max-w-5xl space-y-3 sm:space-y-4">
-          {creatorsLoading ? (
-            <div className="space-y-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i}>
-                  <div className="flex items-start gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-sm sm:gap-4 sm:p-4 md:hidden">
-                    <Skeleton className="h-24 w-16 shrink-0 rounded-lg sm:h-28 sm:w-20" />
-                    <div className="min-w-0 flex-1 space-y-2">
-                      <Skeleton className="h-5 w-48" />
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-4 w-24" />
-                    </div>
-                  </div>
-                  <div className="hidden items-start space-x-4 rounded-lg border border-gray-100 bg-white p-4 shadow-sm md:flex">
-                    <Skeleton circle className="h-20 w-20 flex-shrink-0" />
-                    <div className="min-w-0 flex-1 space-y-2">
-                      <Skeleton className="h-5 w-48" />
-                      <Skeleton className="h-4 w-32" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
             <>
               {!selectedCampaign && (
                 <div className="flex items-center justify-center py-16">
@@ -518,7 +491,6 @@ const CreatorSpendAnalysisCompleted = ({
                 </div>
               )}
             </>
-          )}
         </div>
       </div>
     </div>

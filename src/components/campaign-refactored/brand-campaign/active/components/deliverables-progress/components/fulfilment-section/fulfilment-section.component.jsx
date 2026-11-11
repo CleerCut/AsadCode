@@ -1,5 +1,4 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
-import { Skeleton } from "@/common/components/loader/skeleton-loader.component";
 import { AlertTriangle, Check, Copy, ExternalLink, MapPin, Package, Truck } from "lucide-react";
 import SendProductModal from "./components/send-product-modal/send-product-modal.component";
 import useFulfilmentSection from "./use-fulfilment-section.hook";
@@ -56,19 +55,7 @@ export default function FulfilmentSection({ selectedCampaign, selectedContract, 
   if (!isEligible) return null;
 
   if (isLoading && !fulfilment) {
-    return (
-      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:p-4">
-        <div className="mb-3 flex items-center gap-2">
-          <Skeleton className="h-4 w-4 rounded" />
-          <Skeleton className="h-4 w-24" />
-        </div>
-        <div className="space-y-1.5">
-          <Skeleton className="h-8 w-full" />
-          <Skeleton className="h-8 w-full" />
-          <Skeleton className="h-8 w-2/3" />
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const showActiveOrder = isConnected && fulfilment && fulfilment.status !== "failed";

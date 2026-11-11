@@ -1,7 +1,6 @@
 import { CheckCircle } from "lucide-react";
 import React from "react";
 import useBrandTimeline from "./use-brand-timeline.hook";
-import Loading from "@/common/components/loader/loader.component";
 import NotFound from "@/common/components/not-found/not-found.component";
 
 const BrandTimelineSteps = ({ campaignId, creatorId, enabled = true }) => {
@@ -11,8 +10,8 @@ const BrandTimelineSteps = ({ campaignId, creatorId, enabled = true }) => {
     enabled
   );
 
-  if (timelineLoading) {
-    return <Loading />;
+  if (timelineLoading && (!timelineSteps || timelineSteps.length === 0)) {
+    return null;
   }
 
   if (!timelineSteps || timelineSteps.length === 0) {

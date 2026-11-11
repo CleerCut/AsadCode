@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import {
   discoverCreators,
 } from "@/provider/features/users/users.slice";
-import { BRAND_CAMPAIGN_TAB } from "@/common/constants/campaign.constant";
 import {
   DISCOVER_MIN_SEARCH_LENGTH,
   DISCOVER_PAGE_LIMIT,
@@ -477,7 +476,7 @@ export default function useDiscoverCreators({ onInviteSent } = {}) {
   }, [creators, selectedCategory]);
 
   const handleNewCampaignClick = useCallback(() => {
-    router.push(buildCreateCampaignPath({ returnTab: BRAND_CAMPAIGN_TAB.DISCOVER }));
+    router.push(buildCreateCampaignPath({ returnTo: "/discover" }));
   }, [router]);
 
   return {

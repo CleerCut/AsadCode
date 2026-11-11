@@ -160,6 +160,18 @@ function useBrandApplications() {
   }, [selectedCampaignId]);
 
   useEffect(() => {
+    if (isMultiCreator) return;
+    if (
+      selectedCampaign &&
+      selectedCampaign.collaboration_type !== COLLABORATION_TYPE.INDIVIDUAL_CREATOR
+    ) {
+      setSelectedCampaign(null);
+      setSelectedCreator(null);
+      autoSelectedForCampaignRef.current = null;
+    }
+  }, [isMultiCreator, selectedCampaign?.id, selectedCampaign?.collaboration_type]);
+
+  useEffect(() => {
     if (
       campaignsSuccess &&
       campaignsData?.data &&

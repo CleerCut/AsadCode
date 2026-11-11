@@ -1,7 +1,7 @@
 import CustomButton from "@/common/components/custom-button/custom-button.component";
 import SimpleSelect from "@/common/components/dropdowns/simple-select/simple-select";
 import UrgencyPill from "@/common/components/urgency-pill/urgency-pill.component";
-import { Skeleton } from "@/common/components/loader/skeleton-loader.component";
+import MiddlePaneSkeleton from "@/common/components/brand-campaign-panes-skeleton/middle-pane-skeleton.component";
 import NotFound from "@/common/components/not-found/not-found.component";
 import { sortOptions } from "@/common/constants/auth.constant";
 import CalendarModal from "@/components/campaign-refactored/brand-campaign/active/components/calendar-modal/calendar-modal.component";
@@ -62,6 +62,10 @@ const CreatorSpendAnalysis = ({
     () => creators.some((creator) => creator.status === "HIRED"),
     [creators]
   );
+
+  if (creatorsLoading) {
+    return <MiddlePaneSkeleton embedded />;
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-gradient-to-b from-gray-100 to-gray-50/80">
@@ -149,41 +153,7 @@ const CreatorSpendAnalysis = ({
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
         <div className="mx-auto max-w-5xl space-y-3 sm:space-y-4">
-          {creatorsLoading ? (
-            <div className="space-y-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i}>
-                  <div className="flex items-start gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-sm sm:gap-4 sm:p-4 md:hidden">
-                    <Skeleton className="h-24 w-16 shrink-0 rounded-lg sm:h-28 sm:w-20" />
-                    <div className="min-w-0 flex-1 space-y-2">
-                      <Skeleton className="h-5 w-48" />
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-4 w-24" />
-                      <div className="flex gap-2 pt-2">
-                        <Skeleton className="h-8 w-24 rounded" />
-                        <Skeleton className="h-8 w-24 rounded" />
-                        <Skeleton className="h-8 w-24 rounded" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="hidden items-start space-x-4 rounded-lg border border-gray-100 bg-white p-4 shadow-sm md:flex">
-                    <Skeleton circle className="h-20 w-20 flex-shrink-0" />
-                    <div className="min-w-0 flex-1 space-y-2">
-                      <Skeleton className="h-5 w-48" />
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-4 w-24" />
-                      <div className="flex gap-2 pt-2">
-                        <Skeleton className="h-8 w-24 rounded" />
-                        <Skeleton className="h-8 w-24 rounded" />
-                        <Skeleton className="h-8 w-24 rounded" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <>
+          <>
               {!selectedCampaign && !isMultiCreator && creators.length === 0 && (
                 <div className="py-16">
                   <NotFound
@@ -471,8 +441,7 @@ const CreatorSpendAnalysis = ({
                     </div>
                   );
                 })}
-            </>
-          )}
+          </>
         </div>
       </div>
 
