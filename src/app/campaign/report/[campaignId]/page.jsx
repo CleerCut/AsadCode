@@ -2,12 +2,11 @@
 
 import Auth from "@/auth/auth.component";
 import AUTH from "@/common/constants/auth.constant";
-import CompletedCampaignReport from "@/components/campaign-refactored/brand-campaign/completed/components/completed-campaign-report/completed-campaign-report.component";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
-function CompletedCampaignReportGate() {
+function CompletedCampaignReportRedirect() {
   const params = useParams();
   const router = useRouter();
   const campaignId = params?.campaignId;
@@ -17,28 +16,22 @@ function CompletedCampaignReportGate() {
   useEffect(() => {
     if (role === "CREATOR") {
       router.replace("/campaign");
+      return;
     }
-  }, [role, router]);
+    if (!campaignId) {
+      router.replace("/reports");
+      return;
+    }
+    router.replace(`/reports?campaign=${campaignId}`);
+  }, [role, campaignId, router]);
 
-  if (role === "CREATOR") {
-    return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-gray-500">
-        Redirecting…
-      </div>
-    );
-  }
-
-  if (!campaignId) {
-    return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-gray-500">
-        Missing campaign
-      </div>
-    );
-  }
-
-  return <CompletedCampaignReport campaignId={campaignId} />;
+  return (
+    <div className="flex min-h-screen items-center justify-center text-sm text-gray-500">
+      Redirecting…
+    </div>
+  );
 }
 
 export default function Page() {
-  return <Auth component={<CompletedCampaignReportGate />} type={AUTH.PRIVATE} />;
+  return <Auth component={<CompletedCampaignReportRedirect />} type={AUTH.PRIVATE} />;
 }

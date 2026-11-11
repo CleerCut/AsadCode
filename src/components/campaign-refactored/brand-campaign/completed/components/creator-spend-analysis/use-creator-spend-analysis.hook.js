@@ -326,7 +326,7 @@ export const useCreatorSpendAnalysisCompleted = ({
 
   const handleViewReport = useCallback(() => {
     if (!selectedCampaign?.id) return;
-    window.open(`/campaign/report/${selectedCampaign.id}`, "_blank", "noopener,noreferrer");
+    window.open(`/reports?campaign=${selectedCampaign.id}`, "_blank", "noopener,noreferrer");
   }, [selectedCampaign?.id]);
 
   return {

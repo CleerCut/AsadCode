@@ -12,6 +12,12 @@ import {
   DEMO_MUTATION_MESSAGES,
   isDemoCampaign,
 } from "@/common/utils/demo-campaign.util";
+import { formatDate } from "@/common/utils/formate-date";
+import {
+  formatCurrency,
+  formatNumber,
+  formatPercent,
+} from "@/common/utils/format.utils";
 
 export default function useCompletedCampaignReport(campaignId) {
   const dispatch = useDispatch();
@@ -74,37 +80,6 @@ export default function useCompletedCampaignReport(campaignId) {
     }
     dispatch(downloadCompletedCampaignReportPdf(campaignId));
   }, [campaignId, dispatch, isPdfLoading, isDemo, data?.meta?.pdfExportAvailable]);
-
-  const formatCurrency = useCallback((value) => {
-    if (value == null || !Number.isFinite(Number(value))) return "N/A";
-    return `$${Number(value).toLocaleString(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    })}`;
-  }, []);
-
-  const formatNumber = useCallback((value) => {
-    if (value == null || !Number.isFinite(Number(value))) return "N/A";
-    return Number(value).toLocaleString();
-  }, []);
-
-  const formatPercent = useCallback((value) => {
-    if (value == null || !Number.isFinite(Number(value))) return "N/A";
-    return `${Number(value).toFixed(2)}%`;
-  }, []);
-
-  const formatDate = useCallback((iso) => {
-    if (!iso) return "-";
-    try {
-      return new Date(iso).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-    } catch {
-      return "-";
-    }
-  }, []);
 
   return {
     data,

@@ -1,4 +1,6 @@
 export const formatDate = (dateString) => {
+  if (dateString == null || dateString === "") return "—";
+
   const months = [
     "Jan",
     "Feb",
@@ -15,14 +17,11 @@ export const formatDate = (dateString) => {
   ];
 
   const dateObj = new Date(dateString);
-  const day = dateObj.getDate();
-  const monthIndex = dateObj.getMonth();
-  const month = months[monthIndex];
-  const year = dateObj.getFullYear();
-  const hours = dateObj.getHours().toString().padStart(2, "0");
-  const minutes = dateObj.getMinutes().toString().padStart(2, "0");
-  const seconds = dateObj.getSeconds().toString().padStart(2, "0");
+  if (Number.isNaN(dateObj.getTime())) return "—";
 
-  // return `${day} ${month} ${year}, ${hours}:${minutes}:${seconds}`;
+  const day = dateObj.getDate();
+  const month = months[dateObj.getMonth()];
+  const year = dateObj.getFullYear();
+
   return `${day} ${month} ${year}`;
 };
