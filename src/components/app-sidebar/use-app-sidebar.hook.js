@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 
+import { DISCOVER_HREF } from "@/common/constants/campaign.constant";
+import DiscoverCompassIcon from "@/common/icons/discover-compass.icon";
 import ROLES from "@/common/constants/role.constant";
 import { getUser, isCreatorMode, logout } from "@/common/utils/users.util";
 import { resetOnboardingSession } from "@/provider/features/onboarding/onboarding.slice";
@@ -44,6 +46,10 @@ function isSettingsPath(pathname) {
 
 function isCampaignsPath(pathname) {
   return pathname === "/campaign" || pathname?.startsWith("/campaign/");
+}
+
+function isDiscoverPath(pathname) {
+  return pathname === DISCOVER_HREF || pathname?.startsWith(`${DISCOVER_HREF}/`);
 }
 
 function isPortfolioPath(pathname, isCreator) {
@@ -88,8 +94,18 @@ const useAppSidebar = () => {
   const topLinks = useMemo(() => {
     const links = [
       { href: "/campaign", label: "Campaigns", icon: LayoutGrid, id: "campaigns" },
-      { href: PAYOUTS_HREF, label: "Payouts", icon: DollarSign, id: "payouts" },
     ];
+
+    if (!isCreator) {
+      links.push({
+        href: DISCOVER_HREF,
+        label: "Discover+",
+        icon: DiscoverCompassIcon,
+        id: "discover",
+      });
+    }
+
+    links.push({ href: PAYOUTS_HREF, label: "Payouts", icon: DollarSign, id: "payouts" });
 
     if (!isCreator) {
       links.push(
@@ -119,6 +135,8 @@ const useAppSidebar = () => {
       switch (id) {
         case "campaigns":
           return isCampaignsPath(pathname);
+        case "discover":
+          return isDiscoverPath(pathname);
         case "payouts":
           return isPayoutsPath(pathname);
         case "content-library":

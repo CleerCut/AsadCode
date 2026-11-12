@@ -68,9 +68,24 @@ export default function BrandDiscover() {
   }, [registerMobileSlot, clearMobileSlot, setShortlistMenuOpen]);
 
   const closeShortlistDrawer = () => setShortlistMenuOpen(false);
+  const showInlineShortlistTrigger = !registerMobileSlot;
 
   return (
     <div className="relative flex w-full flex-1 min-h-0 flex-col overflow-hidden bg-white md:flex-row">
+      {showInlineShortlistTrigger ? (
+        <div className="flex shrink-0 items-center border-b border-gray-200 bg-white px-3 py-2 md:hidden">
+          <button
+            type="button"
+            onClick={() => setShortlistMenuOpen(true)}
+            className="inline-flex min-h-8 items-center justify-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+            aria-label="Open shortlists"
+          >
+            <List className="h-4 w-4 text-primary" strokeWidth={2} aria-hidden />
+            Shortlists
+          </button>
+        </div>
+      ) : null}
+
       {shortlistMenuOpen ? (
         <div
           className="fixed inset-0 z-[100] bg-black/40 md:hidden"

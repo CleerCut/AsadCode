@@ -1,8 +1,15 @@
+function cleanLocationPart(value) {
+  if (value == null) return "";
+  const part = String(value).trim();
+  if (!part || part === "undefined" || part === "null") return "";
+  return part;
+}
+
 export function formatCreatorLocation({ city, country, state, stateShort } = {}) {
-  const cityPart = city ? String(city).trim() : "";
-  const countryPart = country ? String(country).trim() : "";
-  const statePart = state ? String(state).trim() : "";
-  const shortPart = stateShort ? String(stateShort).trim() : "";
+  const cityPart = cleanLocationPart(city);
+  const countryPart = cleanLocationPart(country);
+  const statePart = cleanLocationPart(state);
+  const shortPart = cleanLocationPart(stateShort);
   const regionPart = shortPart || statePart;
 
   if (cityPart && regionPart && countryPart) {

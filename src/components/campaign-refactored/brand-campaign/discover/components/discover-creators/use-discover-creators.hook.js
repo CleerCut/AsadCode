@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import {
   discoverCreators,
 } from "@/provider/features/users/users.slice";
-import { BRAND_CAMPAIGN_TAB } from "@/common/constants/campaign.constant";
+import { DISCOVER_HREF } from "@/common/constants/campaign.constant";
 import {
   DISCOVER_MIN_SEARCH_LENGTH,
   DISCOVER_PAGE_LIMIT,
@@ -19,6 +19,7 @@ import {
   mapDiscoverCardToCreator,
 } from "@/common/utils/discover-creators.util";
 import { buildCreateCampaignPath } from "@/common/utils/campaign.utils";
+import { DISCOVER_EVENTS, trackDiscoverEvent } from "@/common/utils/discover-analytics.util";
 
 export default function useDiscoverCreators({ onInviteSent } = {}) {
   const scrollRefs = useRef({});
@@ -376,6 +377,10 @@ export default function useDiscoverCreators({ onInviteSent } = {}) {
 
   const handleInviteClick = useCallback((creator, e) => {
     e?.stopPropagation?.();
+    trackDiscoverEvent(DISCOVER_EVENTS.INVITE_TO_APPLY_CLICKED, {
+      mode: "single",
+      creatorId: creator?.id || null,
+    });
     bulkInviteSuccessCallbackRef.current = null;
     setSelectedCreators(null);
     setSelectedCreator(creator);
@@ -384,6 +389,10 @@ export default function useDiscoverCreators({ onInviteSent } = {}) {
 
   const handleBulkInvite = useCallback((creators, onSuccess) => {
     if (!Array.isArray(creators) || creators.length === 0) return;
+    trackDiscoverEvent(DISCOVER_EVENTS.INVITE_TO_APPLY_CLICKED, {
+      mode: "bulk",
+      count: creators.length,
+    });
     bulkInviteSuccessCallbackRef.current = onSuccess || null;
     setSelectedCreator(null);
     setSelectedCreators(creators);
@@ -417,14 +426,17 @@ export default function useDiscoverCreators({ onInviteSent } = {}) {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       const trimmed = searchInput.trim();
-      setDebouncedSearchKeyword(
-        trimmed.length >= DISCOVER_MIN_SEARCH_LENGTH ? trimmed : ""
-      );
+      const nextKeyword = trimmed.length >= DISCOVER_MIN_SEARCH_LENGTH ? trimmed : "";
+      setDebouncedSearchKeyword(nextKeyword);
+      if (nextKeyword) {
+        trackDiscoverEvent(DISCOVER_EVENTS.SEARCH_PERFORMED, { keywordLength: nextKeyword.length });
+      }
     }, DISCOVER_SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(timeoutId);
   }, [searchInput]);
 
   const handleApplyFilters = useCallback(() => {
+    trackDiscoverEvent(DISCOVER_EVENTS.FILTER_APPLIED);
     setShowFilterModal(false);
   }, []);
 
@@ -477,7 +489,8 @@ export default function useDiscoverCreators({ onInviteSent } = {}) {
   }, [creators, selectedCategory]);
 
   const handleNewCampaignClick = useCallback(() => {
-    router.push(buildCreateCampaignPath({ returnTab: BRAND_CAMPAIGN_TAB.DISCOVER }));
+    trackDiscoverEvent(DISCOVER_EVENTS.START_NEW_CAMPAIGN_CLICKED);
+    router.push(buildCreateCampaignPath({ returnPath: DISCOVER_HREF }));
   }, [router]);
 
   return {

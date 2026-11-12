@@ -7,7 +7,7 @@ import {
   setCampaignActiveTab,
 } from "@/provider/features/campaign-context/campaign-context.slice";
 
-import BrandDiscover from "./brand-campaign/discover/discover.component";
+import BrandHome from "./brand-campaign/home/home.component";
 import BrandApplications from "./brand-campaign/applications/applications.component";
 import BrandActive from "./brand-campaign/active/active.component";
 import BrandCompleted from "./brand-campaign/completed/completed.component";
@@ -26,7 +26,7 @@ export default function useCampaign() {
   const componentMap = useMemo(
     () => ({
       brand: {
-        1: BrandDiscover,
+        1: BrandHome,
         2: BrandApplications,
         3: BrandActive,
         4: BrandCompleted,
@@ -43,10 +43,10 @@ export default function useCampaign() {
 
   const mainTabs = useMemo(() => {
     const brandTabs = [
-      { id: 1, label: "Discover+" },
+      { id: 1, label: "Home" },
       { id: 2, label: "Applications" },
-      { id: 3, label: "Active" },
-      { id: 4, label: "Completed" },
+      { id: 3, label: "In Progress" },
+      { id: 4, label: "Done" },
     ];
 
     const creatorTabs = [

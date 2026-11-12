@@ -13,6 +13,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { mapUserToCreator } from "@/common/utils/discover-creators.util";
+import { DISCOVER_EVENTS, trackDiscoverEvent } from "@/common/utils/discover-analytics.util";
 
 function useDiscover() {
   const dispatch = useDispatch();
@@ -192,6 +193,10 @@ function useDiscover() {
     }
 
     if (added.length > 0) {
+      trackDiscoverEvent(DISCOVER_EVENTS.CREATOR_SAVED_TO_SHORTLIST, {
+        shortlistId,
+        count: added.length,
+      });
       const refetchResult = await dispatch(getAllShortlists());
 
       if (selectedShortlist && selectedShortlist.id === shortlistId) {

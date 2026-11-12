@@ -76,11 +76,16 @@ export const COLLABORATION_TYPE = Object.freeze({
 });
 
 export const BRAND_CAMPAIGN_TAB = Object.freeze({
-  DISCOVER: 1,
+  HOME: 1,
   APPLICATIONS: 2,
+  IN_PROGRESS: 3,
+  DONE: 4,
   ACTIVE: 3,
   COMPLETED: 4,
 });
+
+export const DISCOVER_HREF = "/discover";
+
 
 export const REQUIREMENT_LEVEL = Object.freeze({
   NONE: "none",

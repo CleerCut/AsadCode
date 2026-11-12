@@ -5,7 +5,16 @@ import Link from "next/link";
 import capitalizeFirstLetter from "@/common/utils/capitalize-first-letter";
 import useAppSidebar from "./use-app-sidebar.hook";
 
-function NavItem({ href, label, icon: Icon, isActive, isExpanded }) {
+function NavItem({ href, label, icon: Icon, isActive, isExpanded, id }) {
+  const iconProps = {
+    className: "h-5 w-5 shrink-0 opacity-95",
+    strokeWidth: 1.5,
+    "aria-hidden": true,
+  };
+  if (id === "discover") {
+    iconProps.active = isActive;
+  }
+
   return (
     <Link
       href={href}
@@ -15,7 +24,7 @@ function NavItem({ href, label, icon: Icon, isActive, isExpanded }) {
         isActive ? "bg-white/[0.17]" : "hover:bg-white/10"
       } ${isExpanded ? "justify-start" : "justify-center px-0"}`}
     >
-      <Icon className="h-5 w-5 shrink-0 opacity-95" strokeWidth={1.5} aria-hidden />
+      <Icon {...iconProps} />
       {isExpanded ? <span className="truncate whitespace-nowrap">{label}</span> : null}
     </Link>
   );
@@ -86,6 +95,7 @@ export default function AppSidebar() {
           {topLinks.map((item) => (
             <NavItem
               key={item.id}
+              id={item.id}
               href={item.href}
               label={item.label}
               icon={item.icon}
@@ -100,6 +110,7 @@ export default function AppSidebar() {
           {bottomLinks.map((item) => (
             <NavItem
               key={item.id}
+              id={item.id}
               href={item.href}
               label={item.label}
               icon={item.icon}

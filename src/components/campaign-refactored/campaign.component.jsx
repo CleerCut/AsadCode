@@ -40,7 +40,7 @@ function CampaignShell() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex min-h-[30px] flex-1 basis-0 items-center justify-center truncate rounded-md border px-1 py-1 text-tab-sm font-medium leading-tight transition-colors active:opacity-90 sm:min-h-8 sm:px-1.5 sm:text-xs md:min-h-9 md:min-w-[112px] md:flex-none md:rounded-lg md:px-3 md:text-sm ${
+                className={`flex min-h-[30px] flex-1 basis-0 items-center justify-center truncate rounded-md border px-1 py-1 text-tab-sm font-medium leading-tight transition-colors active:opacity-90 sm:min-h-8 sm:px-1.5 sm:text-xs md:min-h-9 md:w-[124px] md:flex-none md:rounded-lg md:px-3 md:text-sm ${
                   activeTab === tab.id
                     ? "border-primary bg-primary text-white shadow-sm"
                     : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
