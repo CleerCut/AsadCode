@@ -69,6 +69,12 @@ export default function useShopifyIntegration() {
 
   const isConnected = connection?.connected === true;
   const isAccessLost = connection?.status === "access_lost";
+  const previousShopDomain = connection?.shopDomain || connection?.shopName || "";
+
+  useEffect(() => {
+    if (!isAccessLost || !previousShopDomain) return;
+    setShopInput((prev) => (prev?.trim() ? prev : previousShopDomain));
+  }, [isAccessLost, previousShopDomain]);
 
   const statusConfig = useMemo(() => {
     if (connectionLoading && !connection) {

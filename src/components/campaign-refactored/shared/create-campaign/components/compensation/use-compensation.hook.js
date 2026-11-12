@@ -38,6 +38,9 @@ export default function useCompensation({ campaignData, setValue }) {
   } = useSelector(selectShopifyProductsState);
 
   const isShopifyConnected = connection?.connected === true;
+  const isShopifyAccessLost = connection?.status === "access_lost";
+  const previousShopifyShop =
+    connection?.shopDomain || connection?.shopName || "";
   const shopifyProducts = productsData?.products || [];
   const hasLoadedProducts = Boolean(productsData);
 
@@ -164,6 +167,11 @@ export default function useCompensation({ campaignData, setValue }) {
   useEffect(() => {
     dispatch(getShopifyConnection());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!isShopifyAccessLost || !previousShopifyShop) return;
+    setShopInput((prev) => (prev?.trim() ? prev : previousShopifyShop));
+  }, [isShopifyAccessLost, previousShopifyShop]);
 
   useEffect(() => {
     if (isShopifyConnected && (isAffiliateCampaign || isGiftedCampaign)) {
@@ -338,6 +346,8 @@ export default function useCompensation({ campaignData, setValue }) {
     selectedCampaignTypeOption,
     creatorFee,
     isShopifyConnected,
+    isShopifyAccessLost,
+    previousShopifyShop,
     connectionLoading,
     connectLoading,
     shopInput,
