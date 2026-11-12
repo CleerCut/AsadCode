@@ -50,13 +50,19 @@ export default function ShopifyIntegration() {
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 sm:p-4">
             <div className="flex items-start gap-3">
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
-              <div>
+              <div className="min-w-0 flex-1">
                 <h3 className="mb-1 text-xs font-semibold text-amber-900 sm:text-sm">
                   Sales tracking is paused
                 </h3>
                 <p className="text-xs text-amber-900 sm:text-sm">
-                  We have lost connection to your Shopify. Reconnect the same store to resume
-                  tracking. Existing codes are not reminted.
+                  We have lost connection to your Shopify
+                  {connection?.shopDomain ? (
+                    <>
+                      {" "}
+                      (<span className="font-semibold">{connection.shopDomain}</span>)
+                    </>
+                  ) : null}
+                  . Reconnect the same store to resume tracking. Existing codes are not reminted.
                 </p>
               </div>
             </div>
@@ -103,9 +109,15 @@ export default function ShopifyIntegration() {
               {!isConnected && (
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
                   <p className="mb-3 text-xs text-gray-700 sm:text-sm">
-                    Enter your Shopify store domain to connect. Use{" "}
-                    <span className="font-medium">mystore</span> or{" "}
-                    <span className="font-medium">mystore.myshopify.com</span>.
+                    {isAccessLost
+                      ? "Confirm your Shopify store domain and reconnect. Use the same store to resume tracking."
+                      : (
+                        <>
+                          Enter your Shopify store domain to connect. Use{" "}
+                          <span className="font-medium">mystore</span> or{" "}
+                          <span className="font-medium">mystore.myshopify.com</span>.
+                        </>
+                      )}
                   </p>
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
                     <div className="min-w-0 flex-1">
@@ -117,7 +129,7 @@ export default function ShopifyIntegration() {
                       />
                     </div>
                     <CustomButton
-                      text="Connect Shopify"
+                      text={isAccessLost ? "Reconnect Shopify" : "Connect Shopify"}
                       className="btn-primary w-full sm:w-auto"
                       onClick={handleConnect}
                       startIcon={<ExternalLink size={16} />}
