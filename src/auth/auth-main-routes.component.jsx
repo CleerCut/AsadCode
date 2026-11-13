@@ -49,12 +49,13 @@ export default function AuthMainRoutes({ component }) {
     }
 
     if (!isOnboardingCompleted(user)) {
-      router.push("/onboarding");
+      const token = searchParams?.get("token");
+      router.push(token ? `/onboarding?token=${encodeURIComponent(token)}` : "/onboarding");
       return;
     }
 
     router.push("/campaign");
-  }, [router, pathname, resumeOnboarding]);
+  }, [router, pathname, resumeOnboarding, searchParams]);
 
   return component;
 }
