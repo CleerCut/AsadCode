@@ -66,9 +66,9 @@ function Compensation({ campaignData, errors = {}, register, setValue }) {
     previousShopifyShop,
     connectionLoading,
     connectLoading,
-    shopInput,
-    handleShopInputChange,
-    handleInlineConnect,
+    installLoading,
+    handleInlineReconnect,
+    handleInstallFromShopify,
     shopName,
     productOptions,
     selectedProductOptions,
@@ -321,28 +321,31 @@ function Compensation({ campaignData, errors = {}, register, setValue }) {
                     ) : (
                       <>
                         Affiliate campaigns need your Shopify store so CleerCut can pick products
-                        and track sales.
+                        and track sales. Install from Shopify to connect.
                       </>
                     )}
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
-                <CustomInput
-                  label="Store domain"
-                  placeholder="mystore.myshopify.com"
-                  value={shopInput}
-                  onChange={handleShopInputChange}
-                />
+              {isShopifyAccessLost && previousShopifyShop ? (
                 <CustomButton
-                  text={isShopifyAccessLost ? "Reconnect Shopify" : "Connect Shopify"}
+                  text="Reconnect Shopify"
                   className="btn-primary w-full sm:w-auto"
-                  onClick={handleInlineConnect}
+                  onClick={handleInlineReconnect}
                   startIcon={<ExternalLink size={16} />}
                   loading={connectLoading || connectionLoading}
-                  disabled={connectLoading || !shopInput.trim()}
+                  disabled={connectLoading || connectionLoading}
                 />
-              </div>
+              ) : (
+                <CustomButton
+                  text="Install from Shopify"
+                  className="btn-primary w-full sm:w-auto"
+                  onClick={handleInstallFromShopify}
+                  startIcon={<ExternalLink size={16} />}
+                  loading={installLoading || connectLoading || connectionLoading}
+                  disabled={installLoading || connectLoading || connectionLoading}
+                />
+              )}
             </div>
           ) : (
             <div className="space-y-3">
@@ -475,20 +478,16 @@ function Compensation({ campaignData, errors = {}, register, setValue }) {
                 )}{" "}
                 to load gift products from your catalog again.
               </p>
-              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
-                <CustomInput
-                  label="Store domain"
-                  placeholder="mystore.myshopify.com"
-                  value={shopInput}
-                  onChange={handleShopInputChange}
-                />
+              <div className="mt-3">
                 <CustomButton
                   text="Reconnect Shopify"
                   className="btn-primary w-full sm:w-auto"
-                  onClick={handleInlineConnect}
+                  onClick={handleInlineReconnect}
                   startIcon={<ExternalLink size={16} />}
                   loading={connectLoading || connectionLoading}
-                  disabled={connectLoading || !shopInput.trim()}
+                  disabled={
+                    connectLoading || connectionLoading || !previousShopifyShop
+                  }
                 />
               </div>
             </div>
