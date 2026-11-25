@@ -5,6 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { flushSync } from "react-dom";
 import { useDispatch } from "react-redux";
 import { exitImpersonation } from "@/provider/features/auth/auth.slice";
+import { getAdminSession } from "@/common/utils/admin-session.util";
 import { getUser } from "@/common/utils/users.util";
 
 const applyDragBox = (el, x, y) => {
@@ -30,8 +31,7 @@ const syncImpersonationState = ({ setCurrentUser, setAdminUser, setIsImpersonati
     return;
   }
   const activeUser = getUser();
-  const storedAdminUser = localStorage.getItem("admin_user");
-  const storedAdminToken = localStorage.getItem("admin_token");
+  const { token: storedAdminToken, userJson: storedAdminUser } = getAdminSession();
 
   let parsedAdminUser = null;
   if (storedAdminUser) {
