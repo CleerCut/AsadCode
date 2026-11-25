@@ -13,6 +13,7 @@ import EmojiPicker from "emoji-picker-react";
 import { useRef, useEffect, useState } from "react";
 import { FileText, Image as ImageIcon, X, Trash2 } from "lucide-react";
 import ConfirmationModal from "@/common/components/confirmation-modal/confirmation-modal.component";
+import { getSafeMediaUrl } from "@/common/utils/url.util";
 
 function Inbox({ selectedChatId }) {
   const {
@@ -96,25 +97,27 @@ function Inbox({ selectedChatId }) {
 
   // Render message content based on type
   const renderMessageContent = (message) => {
-    if (message.message_type === "IMAGE" && message.attachment_url) {
+    const safeAttachmentUrl = getSafeMediaUrl(message.attachment_url);
+
+    if (message.message_type === "IMAGE" && safeAttachmentUrl) {
       return (
         <div className="space-y-2">
           <img
-            src={message.attachment_url}
+            src={safeAttachmentUrl}
             alt="Attachment"
             className="max-w-xs rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-            onClick={() => window.open(message.attachment_url, "_blank")}
+            onClick={() => window.open(safeAttachmentUrl, "_blank")}
           />
           {message.content && <p className="text-sm">{message.content}</p>}
         </div>
       );
     }
 
-    if (message.message_type === "FILE" && message.attachment_url) {
+    if (message.message_type === "FILE" && safeAttachmentUrl) {
       return (
         <div className="space-y-2">
           <a
-            href={message.attachment_url}
+            href={safeAttachmentUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-2 p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
